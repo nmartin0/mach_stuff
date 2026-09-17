@@ -1,0 +1,122 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS 
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie the
+.\" rights to redistribute these changes.
+.\"
+.\" HISTORY
+.\" $Log: service_checkin.1,v $
+# Revision 1.1  1996/03/01  14:51:48  sclawson
+# Changes to install man pages.
+#
+.\" Revision 1.1.1.1  1995/05/04  06:57:07  sclawson
+.\" New files.
+.\"
+.\" Revision 2.2  92/11/13  17:12:24  mrt
+.\" 	Copied from Mach 2.5 sources.
+.\" 
+.\" 
+.\"
+.TH SERVICE_CHECKIN 3 11/13/92
+.SH NAME
+.nf
+service_checkin  \- get receive rights to a standard server port
+.SH SYNOPSIS
+#include <servers/service.h>
+
+kern_return_t service_checkin(ServicePort, service_desired,
+				service_granted);
+		mach_port_t	ServicePort;
+		mach_port_t	service_desired;
+		mach_port_t	*service_granted;
+
+.SH ARGUMENTS
+.TP 15
+.B ServicePort
+port to the Service server. 
+.I service_port
+exported by 
+.I mach_init
+should be used.
+.TP 15
+.B service_desired
+the port defined by 
+.I mach_init
+for the service that this server wishes to provide.
+.TP 15
+.B service_granted
+if 
+.I service_checkin 
+succeeded this will be the same port as 
+.I service_desired
+but with receive rights.
+.i0
+.DT
+.SH DESCRIPTION	
+The Service server is started early in system initialization and allocates
+service ports for the standard system servers. So far these are the
+Environment Manager and the Network Name Server.  Send rights to these
+ports are passed to all subsequently spawned tasks via the
+.I mach_init_ports
+array.
+
+When the Environment Manager and the Network Name Server tasks are
+created, they need to get receive rights to their respective service
+ports in order to provide their services. The
+.I service_checkin
+call provides this function. It can only grant receive rights once,
+so the first task that asks for the rights gets them. Since the
+standard servers are started before any user processes, this should
+not be a problem.
+
+If one of the standard servers should die, the receive rights will
+return to the Service server, which will then be able to grant 
+these rights to a new instantiation of a standard server. A user of these
+servers will be able to continue to use the same port to talk to
+the new server as it used for the old server. For a stateless server,
+such as the Network Name Server,
+the user will see nothing but a temporary loss of response. In the
+case of the Environment Manager, the client's state will be lost
+when the server crashes, so the restarting of a new server cannot
+be transparent.
+.SH RESULTS
+.TP 15
+.B KERN_SUCCESS
+the 
+.I service_desired
+port is returned with receive rights.
+.TP 15
+.B KERN_FAILURE
+the Service server didn't have receive rights to the
+.I service_desired
+port.
+
+.SH FILES
+/usr/mach/include/servers/service.h
+
+.SH SEE ALSO
+mach_init(3)
+
+.HISTORY
+.TP
+19-Nov-86  Mary Thompson (mrt) at Carnegie Mellon University
+Created.

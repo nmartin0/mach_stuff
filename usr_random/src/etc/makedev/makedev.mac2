@@ -1,0 +1,987 @@
+#! /bin/sh
+
+# /dev/MAKEDEV for mac2.
+
+# Optional argument is alternate /dev directory.
+
+if [ $1 ]; then
+  DEV=$1
+else
+  DEV=/dev
+fi
+
+rm -f $DEV/console
+mknod $DEV/console c 0 0
+chown root.bin $DEV/console
+chmod 666 $DEV/console
+ls -l $DEV/console
+
+rm -f $DEV/tty
+mknod $DEV/tty c 2 0
+chown root.bin $DEV/tty
+chmod 666 $DEV/tty
+ls -l $DEV/tty
+
+rm -f $DEV/kmem
+mknod $DEV/kmem c 3 1
+chown root.kmem $DEV/kmem
+chmod 440 $DEV/kmem
+ls -l $DEV/kmem
+
+rm -f $DEV/null
+mknod $DEV/null c 3 2
+chown root.bin $DEV/null
+chmod 666 $DEV/null
+ls -l $DEV/null
+
+rm -f $DEV/map
+mknod $DEV/map c 3 3
+chown root.kmem $DEV/map
+chmod 640 $DEV/map
+ls -l $DEV/map
+
+rm -f $DEV/keyboard
+mknod $DEV/keyboard c 10 2
+chown root.bin $DEV/keyboard
+chmod 444 $DEV/keyboard
+ls -l $DEV/keyboard
+
+rm -f $DEV/mouse
+mknod $DEV/mouse c 10 3
+chown root.bin $DEV/mouse
+chmod 444 $DEV/mouse
+ls -l $DEV/mouse
+
+rm -f $DEV/scn0
+mknod $DEV/scn0 c 5 0
+chown root.bin $DEV/scn0
+chmod 666 $DEV/scn0
+ls -l $DEV/scn0
+
+rm -f $DEV/scn1
+mknod $DEV/scn1 c 5 1
+chown root.bin $DEV/scn1
+chmod 666 $DEV/scn1
+ls -l $DEV/scn1
+
+rm -f $DEV/scn2
+mknod $DEV/scn2 c 5 2
+chown root.bin $DEV/scn2
+chmod 666 $DEV/scn2
+ls -l $DEV/scn2
+
+rm -f $DEV/scn3
+mknod $DEV/scn3 c 5 3
+chown root.bin $DEV/scn3
+chmod 666 $DEV/scn3
+ls -l $DEV/scn3
+
+rm -f $DEV/sony0
+mknod $DEV/sony0 c 9 1
+chown root.bin $DEV/sony0
+chmod 666 $DEV/sony0
+ls -l $DEV/sony0
+
+rm -f $DEV/sony1
+mknod $DEV/sony1 c 9 2
+chown root.bin $DEV/sony1
+chmod 666 $DEV/sony1
+ls -l $DEV/sony1
+
+rm -f $DEV/ramdisk0a
+mknod $DEV/ramdisk0a b 8 0
+chown root.bin $DEV/ramdisk0a
+chmod 640 $DEV/ramdisk0a
+ls -l $DEV/ramdisk0a
+
+rm -f $DEV/rramdisk0a
+mknod $DEV/rramdisk0a c 8 0
+chown root.bin $DEV/rramdisk0a
+chmod 640 $DEV/rramdisk0a
+ls -l $DEV/rramdisk0a
+
+rm -f $DEV/xramdisk0
+mknod $DEV/xramdisk0 c 12 0
+chown root.bin $DEV/xramdisk0
+chmod 640 $DEV/xramdisk0
+ls -l $DEV/xramdisk0
+
+rm -f $DEV/xramdisk1
+mknod $DEV/xramdisk1 c 12 8
+chown root.bin $DEV/xramdisk1
+chmod 640 $DEV/xramdisk1
+ls -l $DEV/xramdisk1
+
+rm -f $DEV/xramdisk2
+mknod $DEV/xramdisk2 c 12 16
+chown root.bin $DEV/xramdisk2
+chmod 640 $DEV/xramdisk2
+ls -l $DEV/xramdisk2
+
+rm -f $DEV/xramdisk3
+mknod $DEV/xramdisk3 c 12 24
+chown root.bin $DEV/xramdisk3
+chmod 640 $DEV/xramdisk3
+ls -l $DEV/xramdisk3
+
+rm -f $DEV/xramdisk4
+mknod $DEV/xramdisk4 c 12 32
+chown root.bin $DEV/xramdisk4
+chmod 640 $DEV/xramdisk4
+ls -l $DEV/xramdisk4
+
+rm -f $DEV/xramdisk5
+mknod $DEV/xramdisk5 c 12 40
+chown root.bin $DEV/xramdisk5
+chmod 640 $DEV/xramdisk5
+ls -l $DEV/xramdisk5
+
+rm -f $DEV/xramdisk6
+mknod $DEV/xramdisk6 c 12 48
+chown root.bin $DEV/xramdisk6
+chmod 640 $DEV/xramdisk6
+ls -l $DEV/xramdisk6
+
+rm -f $DEV/xramdisk7
+mknod $DEV/xramdisk7 c 12 56
+chown root.bin $DEV/xramdisk7
+chmod 640 $DEV/xramdisk7
+ls -l $DEV/xramdisk7
+
+rm -f $DEV/modem
+mknod $DEV/modem c 11 0
+chown root.daemon $DEV/modem
+chmod 660 $DEV/modem
+ls -l $DEV/modem
+
+rm -f $DEV/printer
+mknod $DEV/printer c 11 1
+chown root.daemon $DEV/printer
+chmod 660 $DEV/printer
+ls -l $DEV/printer
+
+rm -f $DEV/macdisk0
+mknod $DEV/macdisk0 c 7 0
+chown root.operator $DEV/macdisk0
+chmod 640 $DEV/macdisk0
+ls -l $DEV/macdisk0
+
+rm -f $DEV/macdisk1
+mknod $DEV/macdisk1 c 7 32
+chown root.operator $DEV/macdisk1
+chmod 640 $DEV/macdisk1
+ls -l $DEV/macdisk1
+
+rm -f $DEV/macdisk2
+mknod $DEV/macdisk2 c 7 64
+chown root.operator $DEV/macdisk2
+chmod 640 $DEV/macdisk2
+ls -l $DEV/macdisk2
+
+rm -f $DEV/macdisk3
+mknod $DEV/macdisk3 c 7 96
+chown root.operator $DEV/macdisk3
+chmod 640 $DEV/macdisk3
+ls -l $DEV/macdisk3
+
+rm -f $DEV/macdisk4
+mknod $DEV/macdisk4 c 7 128
+chown root.operator $DEV/macdisk4
+chmod 640 $DEV/macdisk4
+ls -l $DEV/macdisk4
+
+rm -f $DEV/macdisk5
+mknod $DEV/macdisk5 c 7 160
+chown root.operator $DEV/macdisk5
+chmod 640 $DEV/macdisk5
+ls -l $DEV/macdisk5
+
+rm -f $DEV/macdisk6
+mknod $DEV/macdisk6 c 7 192
+chown root.operator $DEV/macdisk6
+chmod 640 $DEV/macdisk6
+ls -l $DEV/macdisk6
+
+rm -f $DEV/disk0a
+mknod $DEV/disk0a b 6 0
+chown root.operator $DEV/disk0a
+chmod 640 $DEV/disk0a
+ls -l $DEV/disk0a
+
+rm -f $DEV/disk0b
+mknod $DEV/disk0b b 6 1
+chown root.operator $DEV/disk0b
+chmod 640 $DEV/disk0b
+ls -l $DEV/disk0b
+
+rm -f $DEV/disk0c
+mknod $DEV/disk0c b 6 2
+chown root.operator $DEV/disk0c
+chmod 640 $DEV/disk0c
+ls -l $DEV/disk0c
+
+rm -f $DEV/disk0d
+mknod $DEV/disk0d b 6 3
+chown root.operator $DEV/disk0d
+chmod 640 $DEV/disk0d
+ls -l $DEV/disk0d
+
+rm -f $DEV/disk0e
+mknod $DEV/disk0e b 6 4
+chown root.operator $DEV/disk0e
+chmod 640 $DEV/disk0e
+ls -l $DEV/disk0e
+
+rm -f $DEV/disk0f
+mknod $DEV/disk0f b 6 5
+chown root.operator $DEV/disk0f
+chmod 640 $DEV/disk0f
+ls -l $DEV/disk0f
+
+rm -f $DEV/disk0g
+mknod $DEV/disk0g b 6 6
+chown root.operator $DEV/disk0g
+chmod 640 $DEV/disk0g
+ls -l $DEV/disk0g
+
+rm -f $DEV/rdisk0a
+mknod $DEV/rdisk0a c 6 0
+chown root.operator $DEV/rdisk0a
+chmod 640 $DEV/rdisk0a
+ls -l $DEV/rdisk0a
+
+rm -f $DEV/rdisk0b
+mknod $DEV/rdisk0b c 6 1
+chown root.operator $DEV/rdisk0b
+chmod 640 $DEV/rdisk0b
+ls -l $DEV/rdisk0b
+
+rm -f $DEV/rdisk0c
+mknod $DEV/rdisk0c c 6 2
+chown root.operator $DEV/rdisk0c
+chmod 640 $DEV/rdisk0c
+ls -l $DEV/rdisk0c
+
+rm -f $DEV/rdisk0d
+mknod $DEV/rdisk0d c 6 3
+chown root.operator $DEV/rdisk0d
+chmod 640 $DEV/rdisk0d
+ls -l $DEV/rdisk0d
+
+rm -f $DEV/rdisk0e
+mknod $DEV/rdisk0e c 6 4
+chown root.operator $DEV/rdisk0e
+chmod 640 $DEV/rdisk0e
+ls -l $DEV/rdisk0e
+
+rm -f $DEV/rdisk0f
+mknod $DEV/rdisk0f c 6 5
+chown root.operator $DEV/rdisk0f
+chmod 640 $DEV/rdisk0f
+ls -l $DEV/rdisk0f
+
+rm -f $DEV/rdisk0g
+mknod $DEV/rdisk0g c 6 6
+chown root.operator $DEV/rdisk0g
+chmod 640 $DEV/rdisk0g
+ls -l $DEV/rdisk0g
+
+rm -f $DEV/disk1a
+mknod $DEV/disk1a b 6 8
+chown root.operator $DEV/disk1a
+chmod 640 $DEV/disk1a
+ls -l $DEV/disk1a
+
+rm -f $DEV/disk1b
+mknod $DEV/disk1b b 6 9
+chown root.operator $DEV/disk1b
+chmod 640 $DEV/disk1b
+ls -l $DEV/disk1b
+
+rm -f $DEV/disk1c
+mknod $DEV/disk1c b 6 10
+chown root.operator $DEV/disk1c
+chmod 640 $DEV/disk1c
+ls -l $DEV/disk1c
+
+rm -f $DEV/disk1d
+mknod $DEV/disk1d b 6 11
+chown root.operator $DEV/disk1d
+chmod 640 $DEV/disk1d
+ls -l $DEV/disk1d
+
+rm -f $DEV/disk1e
+mknod $DEV/disk1e b 6 12
+chown root.operator $DEV/disk1e
+chmod 640 $DEV/disk1e
+ls -l $DEV/disk1e
+
+rm -f $DEV/disk1f
+mknod $DEV/disk1f b 6 13
+chown root.operator $DEV/disk1f
+chmod 640 $DEV/disk1f
+ls -l $DEV/disk1f
+
+rm -f $DEV/disk1g
+mknod $DEV/disk1g b 6 14
+chown root.operator $DEV/disk1g
+chmod 640 $DEV/disk1g
+ls -l $DEV/disk1g
+
+rm -f $DEV/rdisk1a
+mknod $DEV/rdisk1a c 6 8
+chown root.operator $DEV/rdisk1a
+chmod 640 $DEV/rdisk1a
+ls -l $DEV/rdisk1a
+
+rm -f $DEV/rdisk1b
+mknod $DEV/rdisk1b c 6 9
+chown root.operator $DEV/rdisk1b
+chmod 640 $DEV/rdisk1b
+ls -l $DEV/rdisk1b
+
+rm -f $DEV/rdisk1c
+mknod $DEV/rdisk1c c 6 10
+chown root.operator $DEV/rdisk1c
+chmod 640 $DEV/rdisk1c
+ls -l $DEV/rdisk1c
+
+rm -f $DEV/rdisk1d
+mknod $DEV/rdisk1d c 6 11
+chown root.operator $DEV/rdisk1d
+chmod 640 $DEV/rdisk1d
+ls -l $DEV/rdisk1d
+
+rm -f $DEV/rdisk1e
+mknod $DEV/rdisk1e c 6 12
+chown root.operator $DEV/rdisk1e
+chmod 640 $DEV/rdisk1e
+ls -l $DEV/rdisk1e
+
+rm -f $DEV/rdisk1f
+mknod $DEV/rdisk1f c 6 13
+chown root.operator $DEV/rdisk1f
+chmod 640 $DEV/rdisk1f
+ls -l $DEV/rdisk1f
+
+rm -f $DEV/rdisk1g
+mknod $DEV/rdisk1g c 6 14
+chown root.operator $DEV/rdisk1g
+chmod 640 $DEV/rdisk1g
+ls -l $DEV/rdisk1g
+
+rm -f $DEV/disk2a
+mknod $DEV/disk2a b 6 16
+chown root.operator $DEV/disk2a
+chmod 640 $DEV/disk2a
+ls -l $DEV/disk2a
+
+rm -f $DEV/disk2b
+mknod $DEV/disk2b b 6 17
+chown root.operator $DEV/disk2b
+chmod 640 $DEV/disk2b
+ls -l $DEV/disk2b
+
+rm -f $DEV/disk2c
+mknod $DEV/disk2c b 6 18
+chown root.operator $DEV/disk2c
+chmod 640 $DEV/disk2c
+ls -l $DEV/disk2c
+
+rm -f $DEV/disk2d
+mknod $DEV/disk2d b 6 19
+chown root.operator $DEV/disk2d
+chmod 640 $DEV/disk2d
+ls -l $DEV/disk2d
+
+rm -f $DEV/disk2e
+mknod $DEV/disk2e b 6 20
+chown root.operator $DEV/disk2e
+chmod 640 $DEV/disk2e
+ls -l $DEV/disk2e
+
+rm -f $DEV/disk2f
+mknod $DEV/disk2f b 6 21
+chown root.operator $DEV/disk2f
+chmod 640 $DEV/disk2f
+ls -l $DEV/disk2f
+
+rm -f $DEV/disk2g
+mknod $DEV/disk2g b 6 22
+chown root.operator $DEV/disk2g
+chmod 640 $DEV/disk2g
+ls -l $DEV/disk2g
+
+rm -f $DEV/rdisk2a
+mknod $DEV/rdisk2a c 6 16
+chown root.operator $DEV/rdisk2a
+chmod 640 $DEV/rdisk2a
+ls -l $DEV/rdisk2a
+
+rm -f $DEV/rdisk2b
+mknod $DEV/rdisk2b c 6 17
+chown root.operator $DEV/rdisk2b
+chmod 640 $DEV/rdisk2b
+ls -l $DEV/rdisk2b
+
+rm -f $DEV/rdisk2c
+mknod $DEV/rdisk2c c 6 18
+chown root.operator $DEV/rdisk2c
+chmod 640 $DEV/rdisk2c
+ls -l $DEV/rdisk2c
+
+rm -f $DEV/rdisk2d
+mknod $DEV/rdisk2d c 6 19
+chown root.operator $DEV/rdisk2d
+chmod 640 $DEV/rdisk2d
+ls -l $DEV/rdisk2d
+
+rm -f $DEV/rdisk2e
+mknod $DEV/rdisk2e c 6 20
+chown root.operator $DEV/rdisk2e
+chmod 640 $DEV/rdisk2e
+ls -l $DEV/rdisk2e
+
+rm -f $DEV/rdisk2f
+mknod $DEV/rdisk2f c 6 21
+chown root.operator $DEV/rdisk2f
+chmod 640 $DEV/rdisk2f
+ls -l $DEV/rdisk2f
+
+rm -f $DEV/rdisk2g
+mknod $DEV/rdisk2g c 6 22
+chown root.operator $DEV/rdisk2g
+chmod 640 $DEV/rdisk2g
+ls -l $DEV/rdisk2g
+
+rm -f $DEV/disk3a
+mknod $DEV/disk3a b 6 24
+chown root.operator $DEV/disk3a
+chmod 640 $DEV/disk3a
+ls -l $DEV/disk3a
+
+rm -f $DEV/disk3b
+mknod $DEV/disk3b b 6 25
+chown root.operator $DEV/disk3b
+chmod 640 $DEV/disk3b
+ls -l $DEV/disk3b
+
+rm -f $DEV/disk3c
+mknod $DEV/disk3c b 6 26
+chown root.operator $DEV/disk3c
+chmod 640 $DEV/disk3c
+ls -l $DEV/disk3c
+
+rm -f $DEV/disk3d
+mknod $DEV/disk3d b 6 27
+chown root.operator $DEV/disk3d
+chmod 640 $DEV/disk3d
+ls -l $DEV/disk3d
+
+rm -f $DEV/disk3e
+mknod $DEV/disk3e b 6 28
+chown root.operator $DEV/disk3e
+chmod 640 $DEV/disk3e
+ls -l $DEV/disk3e
+
+rm -f $DEV/disk3f
+mknod $DEV/disk3f b 6 29
+chown root.operator $DEV/disk3f
+chmod 640 $DEV/disk3f
+ls -l $DEV/disk3f
+
+rm -f $DEV/disk3g
+mknod $DEV/disk3g b 6 30
+chown root.operator $DEV/disk3g
+chmod 640 $DEV/disk3g
+ls -l $DEV/disk3g
+
+rm -f $DEV/rdisk3a
+mknod $DEV/rdisk3a c 6 24
+chown root.operator $DEV/rdisk3a
+chmod 640 $DEV/rdisk3a
+ls -l $DEV/rdisk3a
+
+rm -f $DEV/rdisk3b
+mknod $DEV/rdisk3b c 6 25
+chown root.operator $DEV/rdisk3b
+chmod 640 $DEV/rdisk3b
+ls -l $DEV/rdisk3b
+
+rm -f $DEV/rdisk3c
+mknod $DEV/rdisk3c c 6 26
+chown root.operator $DEV/rdisk3c
+chmod 640 $DEV/rdisk3c
+ls -l $DEV/rdisk3c
+
+rm -f $DEV/rdisk3d
+mknod $DEV/rdisk3d c 6 27
+chown root.operator $DEV/rdisk3d
+chmod 640 $DEV/rdisk3d
+ls -l $DEV/rdisk3d
+
+rm -f $DEV/rdisk3e
+mknod $DEV/rdisk3e c 6 28
+chown root.operator $DEV/rdisk3e
+chmod 640 $DEV/rdisk3e
+ls -l $DEV/rdisk3e
+
+rm -f $DEV/rdisk3f
+mknod $DEV/rdisk3f c 6 29
+chown root.operator $DEV/rdisk3f
+chmod 640 $DEV/rdisk3f
+ls -l $DEV/rdisk3f
+
+rm -f $DEV/rdisk3g
+mknod $DEV/rdisk3g c 6 30
+chown root.operator $DEV/rdisk3g
+chmod 640 $DEV/rdisk3g
+ls -l $DEV/rdisk3g
+
+rm -f $DEV/disk4a
+mknod $DEV/disk4a b 6 32
+chown root.operator $DEV/disk4a
+chmod 640 $DEV/disk4a
+ls -l $DEV/disk4a
+
+rm -f $DEV/disk4b
+mknod $DEV/disk4b b 6 33
+chown root.operator $DEV/disk4b
+chmod 640 $DEV/disk4b
+ls -l $DEV/disk4b
+
+rm -f $DEV/disk4c
+mknod $DEV/disk4c b 6 34
+chown root.operator $DEV/disk4c
+chmod 640 $DEV/disk4c
+ls -l $DEV/disk4c
+
+rm -f $DEV/disk4d
+mknod $DEV/disk4d b 6 35
+chown root.operator $DEV/disk4d
+chmod 640 $DEV/disk4d
+ls -l $DEV/disk4d
+
+rm -f $DEV/disk4e
+mknod $DEV/disk4e b 6 36
+chown root.operator $DEV/disk4e
+chmod 640 $DEV/disk4e
+ls -l $DEV/disk4e
+
+rm -f $DEV/disk4f
+mknod $DEV/disk4f b 6 37
+chown root.operator $DEV/disk4f
+chmod 640 $DEV/disk4f
+ls -l $DEV/disk4f
+
+rm -f $DEV/disk4g
+mknod $DEV/disk4g b 6 38
+chown root.operator $DEV/disk4g
+chmod 640 $DEV/disk4g
+ls -l $DEV/disk4g
+
+rm -f $DEV/rdisk4a
+mknod $DEV/rdisk4a c 6 32
+chown root.operator $DEV/rdisk4a
+chmod 640 $DEV/rdisk4a
+ls -l $DEV/rdisk4a
+
+rm -f $DEV/rdisk4b
+mknod $DEV/rdisk4b c 6 33
+chown root.operator $DEV/rdisk4b
+chmod 640 $DEV/rdisk4b
+ls -l $DEV/rdisk4b
+
+rm -f $DEV/rdisk4c
+mknod $DEV/rdisk4c c 6 34
+chown root.operator $DEV/rdisk4c
+chmod 640 $DEV/rdisk4c
+ls -l $DEV/rdisk4c
+
+rm -f $DEV/rdisk4d
+mknod $DEV/rdisk4d c 6 35
+chown root.operator $DEV/rdisk4d
+chmod 640 $DEV/rdisk4d
+ls -l $DEV/rdisk4d
+
+rm -f $DEV/rdisk4e
+mknod $DEV/rdisk4e c 6 36
+chown root.operator $DEV/rdisk4e
+chmod 640 $DEV/rdisk4e
+ls -l $DEV/rdisk4e
+
+rm -f $DEV/rdisk4f
+mknod $DEV/rdisk4f c 6 37
+chown root.operator $DEV/rdisk4f
+chmod 640 $DEV/rdisk4f
+ls -l $DEV/rdisk4f
+
+rm -f $DEV/rdisk4g
+mknod $DEV/rdisk4g c 6 38
+chown root.operator $DEV/rdisk4g
+chmod 640 $DEV/rdisk4g
+ls -l $DEV/rdisk4g
+
+rm -f $DEV/disk5a
+mknod $DEV/disk5a b 6 40
+chown root.operator $DEV/disk5a
+chmod 640 $DEV/disk5a
+ls -l $DEV/disk5a
+
+rm -f $DEV/disk5b
+mknod $DEV/disk5b b 6 41
+chown root.operator $DEV/disk5b
+chmod 640 $DEV/disk5b
+ls -l $DEV/disk5b
+
+rm -f $DEV/disk5c
+mknod $DEV/disk5c b 6 42
+chown root.operator $DEV/disk5c
+chmod 640 $DEV/disk5c
+ls -l $DEV/disk5c
+
+rm -f $DEV/disk5d
+mknod $DEV/disk5d b 6 43
+chown root.operator $DEV/disk5d
+chmod 640 $DEV/disk5d
+ls -l $DEV/disk5d
+
+rm -f $DEV/disk5e
+mknod $DEV/disk5e b 6 44
+chown root.operator $DEV/disk5e
+chmod 640 $DEV/disk5e
+ls -l $DEV/disk5e
+
+rm -f $DEV/disk5f
+mknod $DEV/disk5f b 6 45
+chown root.operator $DEV/disk5f
+chmod 640 $DEV/disk5f
+ls -l $DEV/disk5f
+
+rm -f $DEV/disk5g
+mknod $DEV/disk5g b 6 46
+chown root.operator $DEV/disk5g
+chmod 640 $DEV/disk5g
+ls -l $DEV/disk5g
+
+rm -f $DEV/rdisk5a
+mknod $DEV/rdisk5a c 6 40
+chown root.operator $DEV/rdisk5a
+chmod 640 $DEV/rdisk5a
+ls -l $DEV/rdisk5a
+
+rm -f $DEV/rdisk5b
+mknod $DEV/rdisk5b c 6 41
+chown root.operator $DEV/rdisk5b
+chmod 640 $DEV/rdisk5b
+ls -l $DEV/rdisk5b
+
+rm -f $DEV/rdisk5c
+mknod $DEV/rdisk5c c 6 42
+chown root.operator $DEV/rdisk5c
+chmod 640 $DEV/rdisk5c
+ls -l $DEV/rdisk5c
+
+rm -f $DEV/rdisk5d
+mknod $DEV/rdisk5d c 6 43
+chown root.operator $DEV/rdisk5d
+chmod 640 $DEV/rdisk5d
+ls -l $DEV/rdisk5d
+
+rm -f $DEV/rdisk5e
+mknod $DEV/rdisk5e c 6 44
+chown root.operator $DEV/rdisk5e
+chmod 640 $DEV/rdisk5e
+ls -l $DEV/rdisk5e
+
+rm -f $DEV/rdisk5f
+mknod $DEV/rdisk5f c 6 45
+chown root.operator $DEV/rdisk5f
+chmod 640 $DEV/rdisk5f
+ls -l $DEV/rdisk5f
+
+rm -f $DEV/rdisk5g
+mknod $DEV/rdisk5g c 6 46
+chown root.operator $DEV/rdisk5g
+chmod 640 $DEV/rdisk5g
+ls -l $DEV/rdisk5g
+
+rm -f $DEV/disk6a
+mknod $DEV/disk6a b 6 48
+chown root.operator $DEV/disk6a
+chmod 640 $DEV/disk6a
+ls -l $DEV/disk6a
+
+rm -f $DEV/disk6b
+mknod $DEV/disk6b b 6 49
+chown root.operator $DEV/disk6b
+chmod 640 $DEV/disk6b
+ls -l $DEV/disk6b
+
+rm -f $DEV/disk6c
+mknod $DEV/disk6c b 6 50
+chown root.operator $DEV/disk6c
+chmod 640 $DEV/disk6c
+ls -l $DEV/disk6c
+
+rm -f $DEV/disk6d
+mknod $DEV/disk6d b 6 51
+chown root.operator $DEV/disk6d
+chmod 640 $DEV/disk6d
+ls -l $DEV/disk6d
+
+rm -f $DEV/disk6e
+mknod $DEV/disk6e b 6 52
+chown root.operator $DEV/disk6e
+chmod 640 $DEV/disk6e
+ls -l $DEV/disk6e
+
+rm -f $DEV/disk6f
+mknod $DEV/disk6f b 6 53
+chown root.operator $DEV/disk6f
+chmod 640 $DEV/disk6f
+ls -l $DEV/disk6f
+
+rm -f $DEV/disk6g
+mknod $DEV/disk6g b 6 54
+chown root.operator $DEV/disk6g
+chmod 640 $DEV/disk6g
+ls -l $DEV/disk6g
+
+rm -f $DEV/rdisk6a
+mknod $DEV/rdisk6a c 6 48
+chown root.operator $DEV/rdisk6a
+chmod 640 $DEV/rdisk6a
+ls -l $DEV/rdisk6a
+
+rm -f $DEV/rdisk6b
+mknod $DEV/rdisk6b c 6 49
+chown root.operator $DEV/rdisk6b
+chmod 640 $DEV/rdisk6b
+ls -l $DEV/rdisk6b
+
+rm -f $DEV/rdisk6c
+mknod $DEV/rdisk6c c 6 50
+chown root.operator $DEV/rdisk6c
+chmod 640 $DEV/rdisk6c
+ls -l $DEV/rdisk6c
+
+rm -f $DEV/rdisk6d
+mknod $DEV/rdisk6d c 6 51
+chown root.operator $DEV/rdisk6d
+chmod 640 $DEV/rdisk6d
+ls -l $DEV/rdisk6d
+
+rm -f $DEV/rdisk6e
+mknod $DEV/rdisk6e c 6 52
+chown root.operator $DEV/rdisk6e
+chmod 640 $DEV/rdisk6e
+ls -l $DEV/rdisk6e
+
+rm -f $DEV/rdisk6f
+mknod $DEV/rdisk6f c 6 53
+chown root.operator $DEV/rdisk6f
+chmod 640 $DEV/rdisk6f
+ls -l $DEV/rdisk6f
+
+rm -f $DEV/rdisk6g
+mknod $DEV/rdisk6g c 6 54
+chown root.operator $DEV/rdisk6g
+chmod 640 $DEV/rdisk6g
+ls -l $DEV/rdisk6g
+
+rm -f $DEV/ptyp0
+mknod $DEV/ptyp0 c 21 0
+chown root.tty $DEV/ptyp0
+chmod 666 $DEV/ptyp0
+ls -l $DEV/ptyp0
+
+rm -f $DEV/ptyp1
+mknod $DEV/ptyp1 c 21 1
+chown root.tty $DEV/ptyp1
+chmod 666 $DEV/ptyp1
+ls -l $DEV/ptyp1
+
+rm -f $DEV/ptyp2
+mknod $DEV/ptyp2 c 21 2
+chown root.tty $DEV/ptyp2
+chmod 666 $DEV/ptyp2
+ls -l $DEV/ptyp2
+
+rm -f $DEV/ptyp3
+mknod $DEV/ptyp3 c 21 3
+chown root.tty $DEV/ptyp3
+chmod 666 $DEV/ptyp3
+ls -l $DEV/ptyp3
+
+rm -f $DEV/ptyp4
+mknod $DEV/ptyp4 c 21 4
+chown root.tty $DEV/ptyp4
+chmod 666 $DEV/ptyp4
+ls -l $DEV/ptyp4
+
+rm -f $DEV/ptyp5
+mknod $DEV/ptyp5 c 21 5
+chown root.tty $DEV/ptyp5
+chmod 666 $DEV/ptyp5
+ls -l $DEV/ptyp5
+
+rm -f $DEV/ptyp6
+mknod $DEV/ptyp6 c 21 6
+chown root.tty $DEV/ptyp6
+chmod 666 $DEV/ptyp6
+ls -l $DEV/ptyp6
+
+rm -f $DEV/ptyp7
+mknod $DEV/ptyp7 c 21 7
+chown root.tty $DEV/ptyp7
+chmod 666 $DEV/ptyp7
+ls -l $DEV/ptyp7
+
+rm -f $DEV/ptyp8
+mknod $DEV/ptyp8 c 21 8
+chown root.tty $DEV/ptyp8
+chmod 666 $DEV/ptyp8
+ls -l $DEV/ptyp8
+
+rm -f $DEV/ptyp9
+mknod $DEV/ptyp9 c 21 9
+chown root.tty $DEV/ptyp9
+chmod 666 $DEV/ptyp9
+ls -l $DEV/ptyp9
+
+rm -f $DEV/ptypa
+mknod $DEV/ptypa c 21 10
+chown root.tty $DEV/ptypa
+chmod 666 $DEV/ptypa
+ls -l $DEV/ptypa
+
+rm -f $DEV/ptypb
+mknod $DEV/ptypb c 21 11
+chown root.tty $DEV/ptypb
+chmod 666 $DEV/ptypb
+ls -l $DEV/ptypb
+
+rm -f $DEV/ptypc
+mknod $DEV/ptypc c 21 12
+chown root.tty $DEV/ptypc
+chmod 666 $DEV/ptypc
+ls -l $DEV/ptypc
+
+rm -f $DEV/ptypd
+mknod $DEV/ptypd c 21 13
+chown root.tty $DEV/ptypd
+chmod 666 $DEV/ptypd
+ls -l $DEV/ptypd
+
+rm -f $DEV/ptype
+mknod $DEV/ptype c 21 14
+chown root.tty $DEV/ptype
+chmod 666 $DEV/ptype
+ls -l $DEV/ptype
+
+rm -f $DEV/ptypf
+mknod $DEV/ptypf c 21 15
+chown root.tty $DEV/ptypf
+chmod 666 $DEV/ptypf
+ls -l $DEV/ptypf
+
+rm -f $DEV/ttyp0
+mknod $DEV/ttyp0 c 20 0
+chown root.tty $DEV/ttyp0
+chmod 666 $DEV/ttyp0
+ls -l $DEV/ttyp0
+
+rm -f $DEV/ttyp1
+mknod $DEV/ttyp1 c 20 1
+chown root.tty $DEV/ttyp1
+chmod 666 $DEV/ttyp1
+ls -l $DEV/ttyp1
+
+rm -f $DEV/ttyp2
+mknod $DEV/ttyp2 c 20 2
+chown root.tty $DEV/ttyp2
+chmod 666 $DEV/ttyp2
+ls -l $DEV/ttyp2
+
+rm -f $DEV/ttyp3
+mknod $DEV/ttyp3 c 20 3
+chown root.tty $DEV/ttyp3
+chmod 666 $DEV/ttyp3
+ls -l $DEV/ttyp3
+
+rm -f $DEV/ttyp4
+mknod $DEV/ttyp4 c 20 4
+chown root.tty $DEV/ttyp4
+chmod 666 $DEV/ttyp4
+ls -l $DEV/ttyp4
+
+rm -f $DEV/ttyp5
+mknod $DEV/ttyp5 c 20 5
+chown root.tty $DEV/ttyp5
+chmod 666 $DEV/ttyp5
+ls -l $DEV/ttyp5
+
+rm -f $DEV/ttyp6
+mknod $DEV/ttyp6 c 20 6
+chown root.tty $DEV/ttyp6
+chmod 666 $DEV/ttyp6
+ls -l $DEV/ttyp6
+
+rm -f $DEV/ttyp7
+mknod $DEV/ttyp7 c 20 7
+chown root.tty $DEV/ttyp7
+chmod 666 $DEV/ttyp7
+ls -l $DEV/ttyp7
+
+rm -f $DEV/ttyp8
+mknod $DEV/ttyp8 c 20 8
+chown root.tty $DEV/ttyp8
+chmod 666 $DEV/ttyp8
+ls -l $DEV/ttyp8
+
+rm -f $DEV/ttyp9
+mknod $DEV/ttyp9 c 20 9
+chown root.tty $DEV/ttyp9
+chmod 666 $DEV/ttyp9
+ls -l $DEV/ttyp9
+
+rm -f $DEV/ttypa
+mknod $DEV/ttypa c 20 10
+chown root.tty $DEV/ttypa
+chmod 666 $DEV/ttypa
+ls -l $DEV/ttypa
+
+rm -f $DEV/ttypb
+mknod $DEV/ttypb c 20 11
+chown root.tty $DEV/ttypb
+chmod 666 $DEV/ttypb
+ls -l $DEV/ttypb
+
+rm -f $DEV/ttypc
+mknod $DEV/ttypc c 20 12
+chown root.tty $DEV/ttypc
+chmod 666 $DEV/ttypc
+ls -l $DEV/ttypc
+
+rm -f $DEV/ttypd
+mknod $DEV/ttypd c 20 13
+chown root.tty $DEV/ttypd
+chmod 666 $DEV/ttypd
+ls -l $DEV/ttypd
+
+rm -f $DEV/ttype
+mknod $DEV/ttype c 20 14
+chown root.tty $DEV/ttype
+chmod 666 $DEV/ttype
+ls -l $DEV/ttype
+
+rm -f $DEV/ttypf
+mknod $DEV/ttypf c 20 15
+chown root.tty $DEV/ttypf
+chmod 666 $DEV/ttypf
+ls -l $DEV/ttypf
+
+# default tar device is the floppy disk
+rm -f $DEV/rmt8
+ln -s sony0 $DEV/rmt8

@@ -1,0 +1,58 @@
+#
+# XXX This is really gross and will probably fail all over the place.
+# However, it sort-of works most of the time, so it's at least
+# somewhat useful.
+#
+
+ifndef MANGRP
+MANGRP=		bin
+endif
+ifndef MANOWN
+MANOWN=		bin
+endif
+ifndef MANMODE
+MANMODE=	444
+endif
+
+MANDIR=		$(prefix)/man
+ifndef MINSTALL
+#MINSTALL=	${INSTALL} -o ${MANOWN} -g ${MANGRP} -m ${MANMODE}
+MINSTALL=	${INSTALL} -m ${MANMODE}
+endif
+
+ifdef COMPRESSMAN
+MCOMPRESS=	gzip -f -c
+ZEXTENSION=	.gz
+endif
+
+BASENAME=	basename
+DIRNAME=	dirname
+
+
+MSECTIONS= 1 2 3 4 5 6 7 8 
+
+MANONLY= $(filter $(foreach tmp, ${MSECTIONS}, %.$(tmp)), ${MAN})
+
+MANALL= $(foreach tmp, ${MANONLY}, \
+	${MANDIR}/man$(subst .,,$(suffix $(tmp)))/$(tmp))
+	
+
+installman:
+ifndef NOINSTALLMAN
+	@for instpage in ${MANALL}; do \
+		test -d ${MANDIR} || $(MKDIR) ${MANDIR}; \
+		dir=`${DIRNAME} $$instpage`; \
+		test -d $$dir || $(MKDIR) $$dir; \
+		page=${SRCDIR}/`${BASENAME} $$instpage`; \
+		if [ X"${MCOMPRESS}" = X ]; then \
+			echo ${MINSTALL} $$dir $$page; \
+			${MINSTALL} $$page $$dir; \
+		else \
+			rm -f $$instpage${ZEXTENSION}; \
+			echo ${MCOMPRESS} $$page \> $$instpage${ZEXTENSION}; \
+			${MCOMPRESS} $$page > $$instpage${ZEXTENSION}; \
+			chown ${MANOWN}:${MANGRP} $$instpage${ZEXTENSION}; \
+			chmod ${MANMODE} $$instpage${ZEXTENSION}; \
+		fi \
+	done
+endif

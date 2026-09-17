@@ -1,0 +1,82 @@
+User distribution 
+University of Utah, Computer Systems Laboratory
+April 10, 1996
+
+
+     The user collection is a group of programs and libraries that
+work with Mach and Lites (and probably UX, but I haven't built them
+for UX for a while).  These programs were taken from the USER
+collection, release 22 (USER22) distributed by CMU and put into a
+``mach4'' style configure framework and some of them were modified to
+work with Lites (most notably ps, top and w).  
+
+
+Why you want the user collection:
+
+     The user collection contains a bunch of programs that are
+required to have a fully funtional Mach/Lites system.  Most notably
+they include mach_init, which is required to boot.  Other programs
+like machid and snames are required for gdb support under Lites.
+
+
+Programs included in the user distribution:
+
+     Flags, mcreate, swapon, mkill, thstate, envmgr, mnice, top,
+     hash_info, mpolicy, vminfo, hostinfo, ms, vmread, ipc_test, mt,
+     vmsearch, mach3, netmemoryserver, vmstat, macherr, pinfo, w, machid,
+     ps, waitfor, machipc, snames, xptest, massign, stacks, zprint and
+     
+     mach_init
+
+Libraries included in user:
+
+     libenv, libnetmemory, libservice, libcmucs, libmachid, libnetname and
+     libxmm
+
+     (There really isn't much use in having swapon in the collection,
+since it dosen't work with mach4 (or mach3 for that matter), but
+perhaps someone still needs it.)
+
+
+INSTALLATION:
+
+Building user22:
+
+     Most of the programs can probably be built with the cross-build
+tools, but to really build everything, you'll need to get some sort of
+build environment with libc.  This could either be the old CMU mach
+libraries/includes or a *BSD/Lites environment.  (For more information
+about setting up a *BSD/Lites build environment, take a look at 
+http://www.cs.utah.edu/projects/flux/....
+
+     tar xfvz user.tar.gz
+     (make an object directory and cd into it)
+     ../user/configure --prefix=/usr/mach4
+     gmake
+     gmake install
+
+     Doing a `gmake install' from the root object directory will
+install all the binaries, includes, libraries and manpages for the
+user collection.  You'll want to do this as root if you expect ps and
+top to work (or you can go back later and make these programs suid
+root).
+
+NOTE:
+
+     By default, the programs will install into /usr/mach4 (instead of
+the GNU standard /usr/local).  If you want them in /usr/local, then
+you'll have to specify that prefix.  The configure script isn't very
+good at finding mig if it's not in your path, if it dosen't find it
+there, it'll assume that it's in /usr/mach4/bin.
+
+
+     As usual, if you find any problems, or have enhancements that you
+would like to make to them, send mail to either
+mach4-users@cs.utah.edu, or mail sclawson@cs.utah.edu directly.  
+
+
+
+Stephen Clawson, sclawson@cs.utah.edu
+Computer Systems Laboratory, University of Utah
+
+

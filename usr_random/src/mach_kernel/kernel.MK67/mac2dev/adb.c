@@ -1,0 +1,331 @@
+/* 
+ * MacMach Operating System
+ * Copyright (c) 1992 Carnegie Mellon University
+ * All Rights Reserved.
+ * 
+ * MacMach was developed by CMU with support from Apple Computer, Inc.
+ * Use of this software is constrained by the MacMach End-User license.
+ */
+
+/*
+ * HISTORY
+ * $Log:	adb.c,v $
+ * Revision 2.2  91/09/12  16:45:38  bohman
+ * 	Created.
+ * 	[91/09/11  15:23:32  bohman]
+ * 
+ */
+
+/*
+ *	Apple Macintosh II Mach (macmach)
+ *
+ *	File: mac2dev/adb.c
+ *	Author: David E. Bohman II (CMU macmach)
+ */
+
+#include <mach/mach_types.h>
+
+#include <device/device_types.h>
+#include <device/io_req.h>
+#include <device/cirbuf.h>
+
+#include <kern/queue.h>
+
+#include <mac2os/Types.h>
+#include <mac2os/DeskBus.h>
+
+#include <mac2dev/adb.h>
+
+/* Macintosh ADB driver for MACH 3.0 */
+
+#define ADB_CBUF_SIZE 1024
+
+#define	ADB_EXISTS	 0x01
+#define ADB_OPEN	 0x02
+#define ADB_CONSOLE_OPEN 0x04
+
+typedef struct adb {
+  unsigned char oaddr;	/* original ADB address */
+  unsigned char type;	/* ADB device type */
+  queue_head_t pending;	/* queue of pending io requests */
+  struct cirbuf	cbuf;	/* input character buffer */
+  int flags;
+  void (*console_input)();
+} *adb_t;
+
+static struct adb adb_info[16];
+
+typedef struct {
+  unsigned :28,
+  addr:4;
+} *adb_id_t;
+
+void adb_dequeue();
+
+io_return_t adb_open(int number, dev_mode_t mode, io_req_t ior)
+{
+  register adb_id_t dev = (adb_id_t)&number;
+  register adb_t a;
+
+  if (dev->addr == 0) return D_NO_SUCH_DEVICE;
+  a = &adb_info[dev->addr];
+  if (!(a->flags & ADB_EXISTS)) return D_NO_SUCH_DEVICE;
+  if (!(a->flags & ADB_OPEN)) {
+    cb_alloc(&a->cbuf, ADB_CBUF_SIZE);
+    a->flags |= ADB_OPEN;
+  }
+  return D_SUCCESS;
+}
+
+io_return_t adb_close(int number)
+{
+  register adb_id_t dev = (adb_id_t)&number;
+  register adb_t a;
+
+  a = &adb_info[dev->addr];
+  if (a->flags & ADB_OPEN) {
+    a->flags &= ~ADB_OPEN;
+    cb_free(&a->cbuf);
+  }
+  return D_SUCCESS;
+}
+
+io_return_t adb_read(int number, register io_req_t ior)
+{
+  register adb_id_t dev = (adb_id_t)&number;
+  register kern_return_t result;
+  register adb_t a;
+  register int s;
+  boolean_t adb_read_done();
+
+  a = &adb_info[dev->addr];
+  if (ior->io_mode & D_NOWAIT) {
+    s = spl1();
+    if (a->cbuf.c_cc <= 0) {
+      (void)splx(s);
+      return D_WOULD_BLOCK;
+    }
+    (void) splx(s);
+  }
+  result = device_read_alloc(ior, ior->io_count);
+  if (result != KERN_SUCCESS) return result;
+  s = spl1();
+  if (ior->io_mode & D_NOWAIT) {
+    if (a->cbuf.c_cc <= 0) {
+      (void)splx(s);
+      return D_WOULD_BLOCK;
+    }
+  }
+  if (!queue_empty(&a->pending) || a->cbuf.c_cc <= 0) {
+    ior->io_done = adb_read_done;
+    enqueue_tail(&a->pending, (queue_entry_t)ior);
+    (void)splx(s);
+    return D_IO_QUEUED;
+  }
+  if (ior->io_count > 0) adb_dequeue(a, ior);
+  (void)splx(s);
+  return D_SUCCESS;
+}
+
+boolean_t adb_read_done(register io_req_t ior)
+{
+  register adb_id_t dev = (adb_id_t)&ior->io_unit;
+  register adb_t a;
+  int s;
+
+  a = &adb_info[dev->addr];
+  s = spl1();
+  if (a->cbuf.c_cc <= 0) {
+    enqueue_tail(&a->pending, (queue_entry_t)ior);
+    (void)splx(s);
+    return FALSE;
+  }
+  if (ior->io_count > 0) adb_dequeue(a, ior);
+  (void)splx(s);
+  return ds_read_done(ior);
+}
+
+/* Special 'quick' versions of qgetc() and qputc(). */
+#define qgetc(c, q) \
+MACRO_BEGIN				\
+    (c) = *(q)->c_cf; (q)->c_cc--;	\
+    if (++(q)->c_cf == (q)->c_end)	\
+	(q)->c_cf = (q)->c_start;	\
+MACRO_END
+
+#define qputc(c, q) \
+MACRO_BEGIN				\
+    *(q)->c_cl = (c); (q)->c_cc++;	\
+    if (++(q)->c_cl == (q)->c_end)	\
+	(q)->c_cl = (q)->c_start;	\
+MACRO_END
+
+void adb_dequeue(register adb_t a, register io_req_t ior)
+{
+  register struct cirbuf *cb = &a->cbuf;
+  register int i, n;
+
+  if (ior->io_count > cb->c_cc) n = cb->c_cc;
+  else n = ior->io_count;
+  for (i = 0; i < n; i++) qgetc(*(ior->io_data + i), cb);
+  ior->io_residual = ior->io_count - n;
+}
+
+#define cb_size(cb) ((cb)->c_end - (cb)->c_start)
+
+void adb_enqueue(adb_cmd_t cmd, unsigned char data[])
+{
+  adb_t a = &adb_info[cmd.reg.addr];
+  register struct cirbuf *cb = &a->cbuf;
+  register io_req_t ior;
+  register int i;
+
+  if ((sizeof (cmd.cmd) + cmd.cmd.len) <= (cb_size(cb) - cb->c_cc)) {
+    qputc(cmd.cmd.cmd, cb);
+    qputc(cmd.cmd.len, cb);
+    for (i = 0; i < cmd.cmd.len; i++) qputc(*(data + i), cb);
+  }
+  while (ior = (io_req_t)dequeue_head(&a->pending)) iodone(ior);
+}
+
+io_return_t adb_getstat(int number,
+                        register int flavor,
+                        dev_status_t data,
+                        unsigned int *count)
+{
+  register adb_id_t dev = (adb_id_t)&number;
+  register adb_t a;
+  register adb_info_t *info = (adb_info_t *)data;
+
+  a = &adb_info[dev->addr];
+  switch (flavor) {
+    case ADB_INFO:
+      info->addr = a->oaddr;
+      info->type = a->type;
+      *count = ADB_INFO_COUNT;
+      break;
+    default:
+      return D_INVALID_OPERATION;
+  }
+  return D_SUCCESS;
+}
+
+io_return_t adb_setstat(int number,
+                        register int flavor,
+                        dev_status_t data,
+                        unsigned int count)
+{
+  register adb_id_t dev = (adb_id_t)&number;
+  register adb_t a;
+  register int s;
+
+  a = &adb_info[dev->addr];
+  switch (flavor) {
+    case ADB_FLUSH:
+      s = spl1();
+      ndflush(&a->cbuf, a->cbuf.c_cc);
+      (void)splx(s);
+      break;
+    default:
+      return D_INVALID_OPERATION;
+  }
+  return D_SUCCESS;
+}
+
+void adb_setup(void)
+{
+  register short i, n = CountADBs();
+  register int addr;
+  ADBDataBlock *db;
+  ADBSetInfoBlock *sib;
+  adb_t a;
+  extern void adb_service();
+
+  db = (ADBDataBlock *)NewPtr(sizeof (ADBDataBlock));
+  sib = (ADBSetInfoBlock *)NewPtr(sizeof (ADBSetInfoBlock));
+  if (db && sib) for (i = 1; i <= n; i++) {
+    addr = GetIndADB(db, i);
+    if (addr >= 0) {
+      a = &adb_info[addr];
+      a->oaddr = db->origADBAddr;
+      a->type = db->devType;
+      queue_init(&a->pending);
+      sib->siServiceRtPtr = adb_service;
+      sib->siDataAreaAddr = 0;
+      SetADBInfo(sib, addr);
+      a->flags = ADB_EXISTS;
+    }
+  }
+  if (db) DisposPtr(db);
+  if (sib) DisposPtr(sib);
+}
+
+void adb_input(adb_cmd_t cmd, unsigned char data[])
+{
+  register adb_t a;
+#ifdef MODE24
+  register unsigned char mode;
+#endif
+
+  if (cmd.gen.cmd == ADB_reset || cmd.gen.cmd == ADB_flush) return;
+  a = &adb_info[cmd.reg.addr];
+  if (a->flags & ADB_OPEN) {
+#ifdef MODE24
+    mode = SwapMMUMode(TRUE);
+#endif /* MODE24 */
+    (void)adb_enqueue(cmd, data);
+#ifdef MODE24
+    (void)SwapMMUMode(mode);
+#endif /* MODE24 */
+  }
+  else if (a->flags & ADB_CONSOLE_OPEN) {
+#ifdef MODE24
+    mode = SwapMMUMode(TRUE);
+#endif /* MODE24 */
+    (*a->console_input)(cmd, data);
+#ifdef MODE24
+    (void) SwapMMUMode(mode);
+#endif /* MODE24 */
+  }
+}
+
+int console_adb_query(register int oaddr, register int type, register int n)
+{
+  register adb_t a;
+  register int addr;
+
+  for (addr = 0; addr < 16; addr++) {
+    a = &adb_info[addr];
+    if (a->oaddr == oaddr
+        && (type == -1 || a->type == type)
+        && (a->flags & ADB_EXISTS)
+        && n-- == 0)
+      return addr;
+  }
+  return -1;
+}
+
+boolean_t console_adb_open(register int addr, void (*input)())
+{
+  register adb_t a;
+
+  if (addr >= 0 && addr < 16) {
+    a = &adb_info[addr];
+    if ((a->flags & (ADB_EXISTS | ADB_CONSOLE_OPEN)) == ADB_EXISTS) {
+      a->console_input = input;
+      a->flags |= ADB_CONSOLE_OPEN;
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+void console_adb_close(register int addr)
+{
+  register adb_t a;
+
+  if (addr >= 0 && addr < 16) {
+    a = &adb_info[addr];
+    a->flags &= ~ADB_CONSOLE_OPEN;
+  }
+}

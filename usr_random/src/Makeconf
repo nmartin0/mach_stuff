@@ -1,0 +1,80 @@
+# Mach Operating System
+# Copyright (c) 1992 Carnegie Mellon University
+# All Rights Reserved.
+# 
+# Permission to use, copy, modify and distribute this software and its
+# documentation is hereby granted, provided that both the copyright
+# notice and this permission notice appear in all copies of the
+# software, derivative works or modified versions, and any portions
+# thereof, and that both notices appear in supporting documentation.
+# 
+# CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+# CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+# ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+# 
+# Carnegie Mellon requests users of this software to return to
+# 
+#  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+#  School of Computer Science
+#  Carnegie Mellon University
+#  Pittsburgh PA 15213-3890
+# 
+# any improvements or extensions that they make and grant Carnegie Mellon 
+# the rights to redistribute these changes.
+
+# Makeconf for MACH3.0+BSD4.3 /usr/src.
+
+# Uncomment the following four lines to do traditional system building.
+INSTALL_TREE=/
+BUILD_TREE=/
+OBJECT_TREE=/usr/obj
+SOURCE_TREE=/usr/src
+
+HOST= ${HOST?${HOST}:${MACHINE}}
+# The HOST is the local host machine.
+# Note that the local "make" must be able to handle this Makeconf.
+# The default HOST is "${MACHINE}".
+
+TARGET= ${TARGET?${TARGET}:${HOST}}
+# The TARGET is used to configure the compilation environment used to build a
+# system for a particular machine type.
+# The default TARGET is "${HOST}".
+
+SOURCE_TREE= ${SOURCE_TREE?${SOURCE_TREE}:/usr/src}
+# The SOURCE_TREE contains *ALL* system sources.
+# The SOURCE_TREE can (and should) be a read-only file system.
+# The default SOURCE_TREE is "/usr/src".
+
+INSTALL_TREE= ${INSTALL_TREE?${INSTALL_TREE}:/usr/build/${TARGET}}
+# The INSTALL_TREE is where the completed system files are installed.
+# The default INSTALL_TREE is "/usr/build/${TARGET}".
+
+OBJECT_TREE= ${OBJECT_TREE?${OBJECT_TREE}:/usr/build/${TARGET}.object}
+# The OBJECT_TREE is a writable tree that contains all of the the compilation
+# object files.
+# The default OBJECT_TREE is "/usr/build/${TARGET}.object".
+
+BUILD_TREE= ${BUILD_TREE?${BUILD_TREE}:/usr/build/${HOST}.${TARGET}}
+# The BUILD_TREE is the compilation environment that builds everything.
+# The default BUILD_TREE is "/usr/build/${HOST}.${TARGET}".
+
+# Setup the default compilation environment variables.
+BUILD_PATH=${BUILD_PATH?${BUILD_PATH}:${BUILD_TREE}/bin:${BUILD_TREE}/usr/bin:${BUILD_TREE}/usr/ucb:${BUILD_TREE}/etc}
+BUILD_CPATH=${BUILD_CPATH?${BUILD_CPATH}:${BUILD_TREE}/usr/include}
+BUILD_LPATH=${BUILD_LPATH?${BUILD_LPATH}:${BUILD_TREE}/lib:${BUILD_TREE}/usr/lib}
+PATH=${BUILD_PATH}
+CPATH=${BUILD_CPATH}
+LPATH=${BUILD_LPATH}
+
+# backwards compatibility for UX
+MKINC=${BUILD_TREE}/usr/include
+MKLIB=${BUILD_TREE}/usr/lib
+
+# backwards compatibility for X11 and motif...
+DESTDIR=${INSTALL_TREE}
+IMAKECPP=${BUILD_TREE}/lib/pcccpp
+IMAKEMAKE=${BUILD_TREE}/bin/make
+
+# Export all of the interesting variables.
+.EXPORT: HOST TARGET SOURCE_TREE INSTALL_TREE OBJECT_TREE BUILD_TREE \
+	 PATH CPATH LPATH MKINC MKLIB DESTDIR IMAKECPP IMAKEMAKE

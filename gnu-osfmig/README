@@ -1,0 +1,11 @@
+-*- mode:text -*- Time-stamp: "2003-08-25 20:17:34 jemarch"
+
+
+GNU-OSFMIG README
+=================
+
+
+This implementation of MIG derives from the original osfmk sources.
+
+It is for use with gnu-osfmk.
+

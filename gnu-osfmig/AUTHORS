@@ -1,0 +1,12 @@
+-*- mode: text -*- Time-stamp: "2003-08-25 19:55:43 jemarch"
+
+GNU-OSFMK AUTHORS
+=================
+
+Most source code by Carnegie mellon University and Open Software
+Foundation, Inc.
+
+Patches to work with gnu-osfmk and autotools stuff by 
+José E. Marchesi <jemarch@gnu.org>
+
+

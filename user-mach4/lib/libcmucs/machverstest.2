@@ -1,0 +1,61 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS 
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie the
+.\" rights to redistribute these changes.
+.\"
+.\"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+.\" HISTORY
+.\" $Log: machverstest.2,v $
+# Revision 1.1  1996/03/01  14:51:52  sclawson
+# Changes to install man pages.
+#
+.\" Revision 1.1.1.1  1995/05/04  06:56:39  sclawson
+.\" New files.
+.\"
+.\" Revision 2.2  92/11/13  17:31:39  mrt
+.\" 		Created
+.\" 	[92/11/11            mrt]
+.\" 
+.\" 
+.\"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+.TH MACH_VERS_TEST 2 11/12/92
+.CM 4
+.SH "NAME"
+mach_vers_test \- Executes a Mach syscall that only succeeds on Mach 3.0
+
+.SH "SYNOPSIS"
+.sp
+.ft B
+int mach_vers_test ();
+.ft R
+.sp
+.fi
+.SH "DESCRIPTION"
+.I
+mach_vers_test
+returns error code 4, KERN_INVALID_ARG on a Mach 2.5 kernel, returns
+a reference to the mach_task_self port on a Mach 3.0 kernel.
+
+.SH "SEE ALSO"
+mk_major_vers(3)
+

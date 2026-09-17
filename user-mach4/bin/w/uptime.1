@@ -1,0 +1,35 @@
+.\" Copyright (c) 1980 Regents of the University of California.
+.\" All rights reserved.  The Berkeley software License Agreement
+.\" specifies the terms and conditions for redistribution.
+.\"
+.\"	@(#)uptime.1	6.1 (Berkeley) 4/29/85
+.\"
+.\" HISTORY
+.\" $Log: uptime.1,v $
+# Revision 1.1  1996/03/01  14:51:39  sclawson
+# Changes to install man pages.
+#
+.\" Revision 1.1.1.1  1995/05/04  06:57:05  sclawson
+.\" New files.
+.\"
+.\" Revision 2.2  92/01/22  23:04:01  rpd
+.\" 	Copied.
+.\" 	[92/01/22            rpd]
+.\" 
+.TH UPTIME 1 "April 29, 1985"
+.UC
+.SH NAME
+uptime \- show how long system has been up
+.SH SYNOPSIS
+.B uptime
+.SH DESCRIPTION
+Uptime prints the current time, the length of time the system has been up,
+and the average number of jobs in the run queue over the last 1, 5 and
+15 minutes.
+It is, essentially, the first line of a
+.IR w (1)
+command.
+.SH FILES
+/vmunix	system name list
+.SH SEE ALSO
+w(1)

@@ -1,0 +1,61 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1992 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS 
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie the
+.\" rights to redistribute these changes.
+.\"
+.\" HISTORY
+.\" $Log: waitfor.1,v $
+# Revision 1.1  1996/03/01  14:51:42  sclawson
+# Changes to install man pages.
+#
+.\" Revision 1.1.1.1  1995/05/04  06:57:05  sclawson
+.\" New files.
+.\"
+.\" Revision 2.2  92/01/22  23:03:40  rpd
+.\" 	Created.
+.\" 	[92/01/22            rpd]
+.\" 
+.TH WAITFOR 1 6/18/90
+.CM 4
+.SH NAME
+waitfor \- wait for a system service to come up
+.SH SYNOPSIS
+\fBwaitfor\fP [\fBnetname\fP|\fBslot\fP slot-num]
+.SH DESCRIPTION
+\fIwaitfor(1)\fR is used to wait for a system service to come up.
+For example, a common usage is
+.nf
+.in +5n
+.ft B
+	snames &
+	waitfor netname
+	machid &
+.fi
+.in -5n
+.ft R
+which starts a name server, waits for the name service to come up,
+and then starts a program which will use the name service.
+If \fIwaitfor\fR were omitted, the program might start running
+before the name server started.
+.SH "SEE ALSO"
+mach_ports_lookup(2), service_waitfor(3).

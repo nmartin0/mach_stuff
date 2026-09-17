@@ -1,0 +1,34 @@
+/.cvsignore/1.1/Fri Jun 18 06:28:49 1999//
+/Makefile/1.1.1.1/Mon Sep 28 15:09:21 1998//
+D/COPYLEFT////
+D/busses////
+D/cbus////
+D/chips////
+D/conf////
+D/ddb////
+D/device////
+D/dipc////
+D/flipc////
+D/hp_pa////
+D/i386////
+D/include////
+D/intel////
+D/ipc////
+D/kern////
+D/kgdb////
+D/mach////
+D/mach_debug////
+D/mbus////
+D/norma////
+D/ppc////
+D/profiling////
+D/scsi////
+D/sqt////
+D/sqtconf////
+D/sqtmbad////
+D/sqtsec////
+D/sqtzdc////
+D/sys////
+D/uk_xkern////
+D/vm////
+D/xmm////

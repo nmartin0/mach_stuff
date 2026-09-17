@@ -1,0 +1,299 @@
+Mach Operating System
+Copyright (c) 1991,1990,1989 Carnegie Mellon University
+All Rights Reserved.
+
+Permission to use, copy, modify and distribute this software and its
+documentation is hereby granted, provided that both the copyright
+notice and this permission notice appear in all copies of the
+software, derivative works or modified versions, and any portions
+thereof, and that both notices appear in supporting documentation.
+
+CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+
+Carnegie Mellon requests users of this software to return to
+
+ Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+ School of Computer Science
+ Carnegie Mellon University
+ Pittsburgh PA 15213-3890
+
+any improvements or extensions that they make and grant Carnegie Mellon
+the rights to redistribute these changes.
+
+machterm -- A terminal emulator.
+
+Created by Zonnie L. Williamson at CMU, 1992
+
+This is a simple black and white terminal emulator.
+It is similar to a vt52 with the following added features:
+  - Multiple Font Sizes: 6x13, 7x13 and 9x13
+  - Line Graphics
+  - Bold, Underline and Standout Character Attributes
+  - termcap of Termcap Description
+  - Multiple Cursor Types
+  - Black on White or White on Black Operation
+
+The terminal emulator operates on a bit-mapped display.  The display buffer
+is one bit per pixel, 0=white and 1=black.  The display buffer is accessed
+as an array of int's.  The following code demonstrates the how the pixels
+are arranged in the buffer.  Note that position (x=0,y=0) is the upper left
+corner of the display.
+
+void set_pixel(buffer, height, width, rowsize, x, y, value)
+unsigned int *buffer;
+int height, width, rowsize;
+int x, y, value;
+{
+  if ((rowsize % sizeof(int)) != 0) return;
+  if (width > (rowsize * 8)) return;
+  if ((x < 0) || (x >= width)) return;
+  if ((y < 0) || (y >= height)) return;
+  bit = value << (sizeof(int) - 1 - x % sizeof(int));
+  if (bit != 0)
+    buffer[y * rowsize / sizeof(int) + x / sizeof(int)] |= bit;
+  else
+    buffer[y * rowsize / sizeof(int) + x / sizeof(int)] &= ~bit;
+}
+
+The first two tests assert that the buffer can be accessed as an array of
+int's and that the number of pixels in a row actually fits.
+The second two tests assert that the specified point (x,y) is actually in
+the display.
+The value argument is 0 for a white pixel and 1 for a black pixel.  The
+left shift moves the bit to the correct position within the int.
+The final test chooses an OR operation to set the display bit and an AND
+operation to clear the display bit.
+The buffer index calculation first determines the index of the first int
+of the row and then adds an offset to the correct int in the row.
+
+Character fonts are stored as an array of pixel rows, grouped by the font
+height.  The array may be unsigned char or unsigned short depending on the
+width of the font.  The character set consists of 128 characters.  The font
+array contains the normal characters, followed by the bold characters.
+For example, a 6x13 font is stored as unsigned char[(128 + 128) * 13] and
+a 9x15 font is stored as unsigned short[(128 + 128) * 15].  The maximum
+font width is 16.  Three fonts, 6x13, 7x13 and 9x15 are supported.  User
+defined fonts are supported.
+
+******************************************************************************
+
+Three functions and a data type are exported.  They are:
+
+  machterm_setup()       -- setup a display context
+  small_machterm_setup() -- setup a display context
+  machterm_buffer()      -- switch to a new display buffer
+  machterm()             -- display a character
+  machterm_context_t     -- terminal context structure
+
+Note that the machterm_context_t is a simple character array.  The details
+of the context structure are for internal use only.  One terminal context
+structure is allocated internally.  It is used when a zero context pointer
+is given.
+
+  typedef char machterm_context_t[128];
+
+The small_machterm_setup() is identical to machterm_setup(), except that
+the only default font is 6x13 normal.  Use small_machterm_setup() when
+space is a concern.
+
+The small_machterm() is identical to machterm(), except that the font
+width must be less or equal to 8 bits.  Use small_machterm() when space
+is a concern.
+
+Use machterm_setup() to prepare a context for the machterm().
+It returns non-zero if an error is detected. The arguments are:
+  machterm_context     -- a pointer to a terminal context
+  display_buffer       -- memory-mapped display, 1 bit per pixel
+  display_height       -- display height, in pixels
+  display_width        -- display width, in pixels
+  display_rowsize      -- number of bytes in a display row
+  font_bits            -- array of font bits (normal)
+  bold_bits            -- array of font bits (bold)
+  font_height          -- font height, in pixels
+  font_width           -- font width, in pixels
+  initial_cursor       -- graphics character to use as a cursor
+  white_on_black       -- if zero, black on white, otherwise white on black
+  ungetc               -- write characters into the terminal input stream
+  ungetc_argument      -- second argument to be given to ungetc()
+  bell                 -- beep the bell
+
+extern int machterm_setup(machterm_context_t *machterm_context,
+                          char *display_buffer,
+                          int display_height,
+                          int display_width,
+                          int display_rowsize,
+                          char *font_bits,
+                          char *bold_bits,
+                          int font_height,
+                          int font_width,
+                          char initial_cursor,
+                          int white_on_black,
+                          void (*ungetc)(char, char*),
+                          char *ungetc_argument,
+                          void (*bell)(void));
+
+Use machterm_buffer() to switch to a new display buffer.  The contents of
+the old buffer are copied into the new buffer.  It returns non-zero if an
+error is detected.  The arguments are:
+  machterm_context     -- a pointer to a terminal context
+  display_buffer       -- memory-mapped display, 1 bit per pixel
+  display_rowsize      -- number of bytes in a display row
+
+extern int machterm_buffer(machterm_context_t *machterm_context,
+                           char *display_buffer,
+                           int display_rowsize);
+
+Use machterm() to display characters in a given terminal context.
+The arguments are:
+  machterm_context -- a pointer to a terminal context
+  c                -- the character to display
+
+extern void machterm(machterm_context_t *machterm_context, char c);
+
+******************************************************************************
+
+This is the character set.  Note that the codes 0-32 are only
+accessable as the "alternate character set", offset by 95.
+For example, the following sequence will display the Copyright symbol.
+  machterm(27);
+  machterm('n');
+  machterm(97);
+  machterm(27);
+  machterm('o');
+The Escape-'n' selects the alternate character set.
+The 97 is the Copyright symbol in the alternate character set.
+Note that 97 = 95 + 2 = 'a'.
+The Escape-'o' restores the normal character set.
+
+DEC  OCT  HEX
+000 0000 0x00 -undefined-
+001 0001 0x01 -undefined-
+002 0002 0x02 Copyright (graphics 'a')
+003 0003 0x03 Null Cursor (graphics 'b')
+004 0004 0x04 Closed Box Cursor (graphics 'c')
+005 0005 0x05 Open Box Cursor (graphics 'd')
+006 0006 0x06 Closed Oval Cursor (graphics 'e')
+007 0007 0x07 Open Oval Cursor (graphics 'f')
+008 0010 0x08 Closed Line Cursor (graphics 'g')
+009 0011 0x09 Open Line Cursor (graphics 'h')
+010 0012 0x0A -undefined-
+011 0013 0x0B Lower Right Corner (graphics 'j')
+012 0014 0x0C Upper Right Corner (graphics 'k')
+013 0015 0x0D Upper Left Corner (graphics 'l')
+014 0016 0x0E Lower Left Corner (graphics 'm')
+015 0017 0x0F Cross (graphics 'n')
+016 0020 0x10 High Line (graphics 'o')
+017 0021 0x11 Medium High Line (graphics 'p')
+018 0022 0x12 Horizontal Line (graphics 'q')
+019 0023 0x13 Medium Low Line (graphics 'r')
+020 0024 0x14 Low Line (graphics 's')
+021 0025 0x15 Tee Right (graphics 't')
+022 0026 0x16 Tee Left (graphics 'u')
+023 0027 0x17 Tee Up (graphics 'v')
+024 0030 0x18 Tee Down (graphics 'w')
+025 0031 0x19 Vertical Line (graphics 'x')
+026 0032 0x1A Less or Equal (graphics 'y')
+027 0033 0x1B Greater or Equal (graphics 'z')
+028 0034 0x1C Pi (graphics '{')
+029 0035 0x1D Not Equal (graphics '|')
+030 0036 0x1E -undefined- (graphics '}')
+031 0037 0x1F Degree (graphics '~')
+032 0040 0x20 Space
+033 0041 0x21 Exclamation Mark
+034 0042 0x22 Double Quote
+035 0043 0x23 Hash
+036 0044 0x24 Dollar
+037 0045 0x25 Percent
+038 0046 0x26 Ampersand
+039 0047 0x27 Single Quote
+040 0050 0x28 Left Paren
+041 0051 0x29 Right Paren
+042 0052 0x2A Star
+043 0053 0x2B Plus
+044 0054 0x2C Comma
+045 0055 0x2D Minus
+046 0056 0x2E Period
+047 0057 0x2F Slash
+048 0060 0x30 Zero
+049 0061 0x31 One
+050 0062 0x32 Two
+051 0063 0x33 Three
+052 0064 0x34 Four
+053 0065 0x35 Five
+054 0066 0x36 Six
+055 0067 0x37 Seven
+056 0070 0x38 Eight
+057 0071 0x39 Nine
+058 0072 0x3A Colon
+059 0073 0x3B Semicolon
+060 0074 0x3C Less Than
+061 0075 0x3D Equal
+062 0076 0x3E Greater Than
+063 0077 0x3F Question
+064 0100 0x40 At Sign
+065 0101 0x41 Uppercase A
+066 0102 0x42 Uppercase B
+067 0103 0x43 Uppercase C
+068 0104 0x44 Uppercase D
+069 0105 0x45 Uppercase E
+070 0106 0x46 Uppercase F
+071 0107 0x47 Uppercase G
+072 0110 0x48 Uppercase H
+073 0111 0x49 Uppercase I
+074 0112 0x4A Uppercase J
+075 0113 0x4B Uppercase K
+076 0114 0x4C Uppercase L
+077 0115 0x4D Uppercase M
+078 0116 0x4E Uppercase N
+079 0117 0x4F Uppercase O
+080 0120 0x50 Uppercase P
+081 0121 0x51 Uppercase Q
+082 0122 0x52 Uppercase R
+083 0123 0x53 Uppercase S
+084 0124 0x54 Uppercase T
+085 0125 0x55 Uppercase U
+086 0126 0x56 Uppercase V
+087 0127 0x57 Uppercase W
+088 0130 0x58 Uppercase X
+089 0131 0x59 Uppercase Y
+090 0132 0x5A Uppercase Z
+091 0133 0x5B Left Bracket
+092 0134 0x5C Back Slash
+093 0135 0x5D Right Bracket
+094 0136 0x5E Caret
+095 0137 0x5F Underscore
+096 0140 0x60 Back Quote
+097 0141 0x61 Lowercase A
+098 0142 0x62 Lowercase B
+099 0143 0x63 Lowercase C
+100 0144 0x64 Lowercase D
+101 0145 0x65 Lowercase E
+102 0146 0x66 Lowercase F
+103 0147 0x67 Lowercase G
+104 0150 0x68 Lowercase H
+105 0151 0x69 Lowercase I
+106 0152 0x6A Lowercase J
+107 0153 0x6B Lowercase K
+108 0154 0x6C Lowercase L
+109 0155 0x6D Lowercase M
+110 0156 0x6E Lowercase N
+111 0157 0x6F Lowercase O
+112 0160 0x70 Lowercase P
+113 0161 0x71 Lowercase Q
+114 0162 0x72 Lowercase R
+115 0163 0x73 Lowercase S
+116 0164 0x74 Lowercase T
+117 0165 0x75 Lowercase U
+118 0166 0x76 Lowercase V
+119 0167 0x77 Lowercase W
+120 0170 0x78 Lowercase X
+121 0171 0x79 Lowercase Y
+122 0172 0x7A Lowercase Z
+123 0173 0x7B Left Brace
+124 0174 0x7C Vertical Bar
+125 0175 0x7D Right Brace
+126 0176 0x7E Tilde
+127 0177 0x7F -undefined-
+

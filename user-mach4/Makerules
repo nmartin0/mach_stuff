@@ -1,0 +1,272 @@
+#
+# Copyright (c) 1994 The University of Utah and
+# the Computer Systems Laboratory (CSL).  All rights reserved.
+#
+# Permission to use, copy, modify and distribute this software and its
+# documentation is hereby granted, provided that both the copyright
+# notice and this permission notice appear in all copies of the
+# software, derivative works or modified versions, and any portions
+# thereof, and that both notices appear in supporting documentation.
+#
+# THE UNIVERSITY OF UTAH AND CSL ALLOW FREE USE OF THIS SOFTWARE IN ITS "AS
+# IS" CONDITION.  THE UNIVERSITY OF UTAH AND CSL DISCLAIM ANY LIABILITY OF
+# ANY KIND FOR ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+#
+# CSL requests users of this software to return to csl-dist@cs.utah.edu any
+# improvements that they make and grant CSL redistribution rights.
+#
+#      Author: Bryan Ford, University of Utah CSL
+#
+
+
+# This makefile defines generic symbols and rules
+# used by the makefiles in the various mach4 subdirectories.
+# It is heavily dependent on GNU make running on something like Unix.
+# Building the game with different tools requires a different set of makefiles.
+#
+# SECTIONS must be the list of program sections to include
+# (directory names relative to the top of the source tree).
+#
+# TOP_SRCDIR must be set to the top-level directory of the source tree.
+# (The current directory is always assumed to be an object directory.)
+#
+# TOP_OBJDIR must be set to the top-level object directory
+# (i.e. a series of `..'s indicating how deep we are at the moment).
+#
+# DEFINES can be set to a string of -D options (e.g. -DDEBUG).
+# INCDIRS can be a list of system include directories to be searched by #include <>'s.
+# LIBDIRS can be a list of library directories.
+# xxx_CPPFLAGS can be set to other flags for the C preprocessor and anything that uses it.
+# xxx_CFLAGS can be set to other flags for the C compiler.
+# xxx_LDFLAGS can be set to other flags for the linker.
+#
+# Replace xxx with HOST, TARGET, or ALL
+# depending on which rules you want to affect.
+#
+# The standard flags variables (CFLAGS, CPPFLAGS, etc.)
+# are used by the rules but never defined,
+# so you can supply them on the make command line
+# (e.g. `make CFLAGS=-save-temps').
+
+
+# Always use the traditional Bourne shell for commands.
+SHELL := /bin/sh
+
+
+# For each specified section in SECTIONS,
+# also look any OS- and architecture-specific subdirectories.
+#SECTIONS := $(foreach SEC,$(SECTIONS),			\
+#		$(SEC)/$(TARGET_OS)/$(TARGET_ARCH)	\
+#		$(SEC)/$(TARGET_OS)			\
+#		$(SEC)/$(TARGET_ARCH)			\
+#		$(SEC))
+
+# Source directories in the generic source tree to search in.
+SRCDIRS += $(addprefix $(TOP_SRCDIR)/,$(SECTIONS))
+
+# Compilation of Mach itself and its satellite programs
+# should always use the headers in the source and object directories
+# instead of any that might already be in the installation directory.
+# XXX generate MIG includes in $(TOP_OBJDIR)/include instead?
+INCDIRS += $(SRCDIR) $(TOP_SRCDIR) $(TOP_OBJDIR) 
+HOST_INCDIRS += $(INCDIRS)
+TARGET_INCDIRS += $(INCDIRS)
+
+# Where to find the libraries we build.
+LIBDIRS += $(TOP_OBJDIR)/lib
+
+# Command to make multiple levels of directories in one shot.
+# XXX install can do this too; would it be better?
+# Perhaps a job for autoconf?
+MKDIR = mkdir -p
+
+# If we're going to be using mkdir to create directories, we might as
+# well try to check to see if they're there or not.
+define mktargetdir
+  -test -d $(dir $@) || $(MKDIR) $(patsubst %/,%,$(dir $@))
+endef
+
+# Some of the rules below may be used to build things
+# to be executed on either the host or the target.
+# The COMPILE_FOR variable is used to select HOST_* or TARGET_* variables.
+# Use TARGET_* by default.
+ifndef COMPILE_FOR
+COMPILE_FOR = TARGET
+endif
+TARGET_CC = $(CC)
+
+
+# Compilation flags
+# XXX -I- should be between SRCDIRS and INCDIRS
+ifeq ($(TARGET_ARCH), parisc)
+# XXX hack for HPBSD builds
+DEFINES		+= -Dparisc
+endif
+ALL_CPPFLAGS	+= -MD $(DEFINES) -I. $(addprefix -I,$(SRCDIRS)) -I-
+HOST_CPPFLAGS	+= $(ALL_CPPFLAGS) $(addprefix -I,$(HOST_INCDIRS))
+TARGET_CPPFLAGS	+= $(ALL_CPPFLAGS) $(addprefix -I,$(TARGET_INCDIRS))
+
+#ALL_CFLAGS	+= -g
+ALL_CFLAGS	+= 
+HOST_CFLAGS	+= $(HOST_CPPFLAGS) $(ALL_CFLAGS) -O
+TARGET_CFLAGS	+= $(TARGET_CPPFLAGS) $(ALL_CFLAGS) -O2 -fno-unroll-loops
+
+# MIG is never used to generate anything that will run on the host.
+TARGET_MIGFLAGS += $(TARGET_CPPFLAGS)
+
+# Required compiler/assembler flags.
+# Note that we don't have to bother with HOST_anything
+# for assembly language sources:
+TARGET_ASFLAGS  += -DASSEMBLER
+
+
+#ALL_LDFLAGS	+= -g $(addprefix -L,$(LIBDIRS))
+ALL_LDFLAGS	+= $(addprefix -L,$(LIBDIRS))
+HOST_LDFLAGS	+= $(ALL_LDFLAGS)
+TARGET_LDFLAGS	+= $(ALL_LDFLAGS)
+
+
+
+# Where to find source files
+space := $(empty) $(empty)
+VPATH := $(subst $(space),:, $(SRCDIRS))
+
+# First find a list of every file that might possibly be a source file,
+# so we only have to scan the source directories once.
+FILES := $(foreach DIR, $(SRCDIRS), $(wildcard $(DIR)/*))
+
+
+# C and C++ source files
+CFILES := $(filter %.c, $(FILES))
+CCFILES := $(filter %.cc, $(FILES))
+
+# How to compile them.
+%.o: %.c
+	$($(COMPILE_FOR)_CC) -c $(CPPFLAGS) $(CFLAGS) $($(COMPILE_FOR)_CFLAGS) $<
+%.o: %.cc
+	$($(COMPILE_FOR)_CC) -c $(CPPFLAGS) $(CFLAGS) $($(COMPILE_FOR)_CFLAGS) $<
+
+# Assembly source files
+SFILES := $(filter %.s, $(FILES))
+
+# how to compile them.
+
+%.o: %.s
+	cp $< /tmp/foo.S
+	$(TARGET_CC) -c -E $(CPPFLAGS) $(ASFLAGS) \
+		$(TARGET_CPPFLAGS) $(TARGET_ASFLAGS) -MD /tmp/foo.S | tr \! '\012' | $(AS) -o $@
+	rm -f /tmp/foo.S
+
+
+
+
+# Building lex and yacc files into C files
+
+%.c: %.y
+	$(YACC)	$<
+	mv -f y.tab.c $@
+%.c: %.l
+	$(LEX) $<
+	mv -f lex.yy.c $@
+
+
+# Server-side presentation files
+SRVFILES := $(filter %.srv, $(FILES))
+
+# Client-side presentation files
+CLIFILES := $(filter %.cli, $(FILES))
+
+# Client-and-server presentation files
+PRESFILES := $(filter %.pres, $(FILES))
+
+# C files automatically generated from these MIG definitions.
+GEN_CFILES += \
+        $(patsubst %.srv,%_server.c, $(notdir $(SRVFILES))) \
+        $(patsubst %.cli,%_user.c, $(notdir $(CLIFILES))) \
+        $(patsubst %.pres,%_user.c, $(notdir $(PRESFILES))) \
+        $(patsubst %.pres,%_server.c, $(notdir $(PRESFILES)))
+CLEAN_FILES += $(GEN_CFILES) \
+        $(patsubst %.srv,%_interface.h, $(notdir $(SRVFILES))) \
+        $(patsubst %.cli,%.h, $(notdir $(CLIFILES))) \
+        $(patsubst %.pres,%.h, $(notdir $(PRESFILES)))
+.PRECIOUS: $(GEN_CFILES)
+
+# How to generate MIG stubs from presentation files.
+%_interface.h %_server.c: %.srv
+	$(MIG) $(MIGFLAGS) $(TARGET_MIGFLAGS) \
+	-header $*_interface.h -server $*_server.c -user /dev/null $<
+%.h %_user.c: %.cli
+	$(MIG) $(MIGFLAGS) $(TARGET_MIGFLAGS) \
+		-header $*.h -user $*_user.c -server /dev/null $<
+%.h %_user.c %_server.c: %.pres
+	$(MIG) $(MIGFLAGS) $(TARGET_MIGFLAGS) \
+		-header $*.h -user $*_user.c -server $*_server.c $<
+
+
+# How to install files into their final resting places.
+$(INSTALL_BINDIR)/%: %
+	$(mktargetdir)
+ifdef BINMODE
+	$(INSTALL) -m $(BINMODE) $< $@
+else
+	$(INSTALL) $< $@
+endif
+
+$(INSTALL_LIBDIR)/%: %
+	$(mktargetdir)
+	$(INSTALL) $< $@
+
+$(INSTALL_INCDIR)/include/%.h: include/%.h
+	$(mktargetdir)
+	$(INSTALL) -m 644 $< $@
+
+# XXX hack, hack, hack.  I really hate this.
+$(INSTALL_INCDIR)/servers/%: %
+	$(mktargetdir)
+	$(INSTALL) -m 644 $< $@
+
+
+# Get rid of a bunch of nasty built-in implicit rules,
+# to avoid bogus circular dependencies and make things go faster.
+# Use the `-r' command line option to make to get even better performance.
+.SUFFIXES:
+
+
+# The generated object files have the same prefix names as the source files,
+# except they live in the current (object) directory.
+# Compile MIG files before other C source files,
+# because they create header files used in the other sources.
+# The $(sort)s are to eliminate duplicate files,
+# which might appear when files are being overridden.
+GEN_OBJFILES += \
+	$(sort $(patsubst %.c, %.o, $(GEN_CFILES))) \
+	$(sort $(patsubst %.c, %.o, $(notdir $(CFILES)))) \
+	$(sort $(patsubst %.cc, %.o, $(notdir $(CCFILES)))) \
+	$(sort $(patsubst %.s, %.o, $(notdir $(SFILES))))
+
+# Make sure we only clean the object files we generated.
+OBJFILES += $(GEN_OBJFILES)
+CLEAN_FILES += $(GEN_OBJFILES)
+.PRECIOUS: $(GEN_OBJFILES)
+
+
+# How to clean out the automatically built stuff in an object directory.
+clean:
+	rm -rf *.d *.bak tags depend include $(CLEAN_FILES)
+
+# How to update the dependency file in an object directory.
+# This funny bit of magic (hopefully the most obscure thing here)
+# basically replaces the `md' program in ODE.
+# The `sed' line removes the dependencies being replaced,
+# the `for' line tacks the new dependencies to the end of the file,
+# and then the individual dependency files are deleted.
+comma := ,
+depend: $(wildcard *.d)
+	@if test -f depend; then sed $(patsubst %.d,-e '/^%\./$(comma)/^#/d',$^) <depend >depend.new; fi; true
+	@(for file in $^ /dev/null; do (cat $$file; echo '#'); done) >>depend.new
+	@mv -f depend.new depend
+	@if test "" != "$^"; then rm -f $^; fi; true
+
+
+# Include the dependency graph (if it exists).
+-include depend

@@ -1,0 +1,724 @@
+3X11 XAllocColor, XAllocNamedColor, XAllocColorCells, XAllocColorPlanes, XFreeColors
+3X11 XChangeKeyboardMapping, XGetKeyboardMapping, XDisplayKeycodes,
+3X11 XChangeWindowAttributes, XSetWindowBackground, XSetWindowBackgroundPixmap,
+3X11 XCreateGC, XCopyGC, XChangeGC, XGetGCValues, XFreeGC, XGContextFromGC, XGCValues
+3X11 XGetWindowProperty, XListProperties, XChangeProperty, XRotateWindowProperties,
+3X11 XInstallColormap, XUninstallColormap, XListInstalledColormaps .TH XIntersectRegion 3X11 "Release 4" "X Version 11"
+3X11 XListFonts, XFreeFontNames, XListFontsWithInfo, XFreeFontInfo
+3X11 XLoadFont, XQueryFont, XLoadQueryFont, XFreeFont, XGetFontProperty,
+3X11 XLookupKeysym, XRefreshKeyboardMapping, XLookupString, XRe-     bindKeySym
+3X11 XRaiseWindow, XLowerWindow, XCirculateSubwindows, XCirculateSubwindowsUp,
+3X11 XStoreBytes, XStoreBuffer, XFetchBytes, XFetchBuffer, XRotateBuffers
+3X11 XTextExtents, XTextExtents16, XQueryTextExtents, XQueryTextExtents16
+3Xt XtAddCallback, XtAddCallbacks, XtRemoveCallback, XtRemoveCallbacks, .TH XtAddEventHandler 3Xt "1 September 1988" "X Version 11"
+3Xt XtDisplay, XtParent, XtScreen, XtWindow .TH XtDisplayInitialize 3Xt "1 September 1988" "X Version 11"
+3Xt XtGetSubresources, XtGetApplicationResources .TH XtMakeGeometryRequest 3Xt "1 September 1988" "X Version 11"
+3Xt XtNameToWidget, XtWidgetToWindow .TH XtOffset 3Xt "1 September 1988" "X Version 11"
+3Xt XtOwnSelection, XtDisownSelection .TH XtParseAcceleratorTable 3Xt "1 September 1988" "X Version 11"
+3Xt XtSetKeyTranslator, XtTranslateKeycode, XtRegisterCaseConverter, .TH XtSetSensitive 3Xt "1 September 1988" "X Version 11"
+MazeWar (6) - distributed rats in a maze
+NNAAMMEE XtParseTranslationTable, XtAugmentTranslations, XtOverrideTranslations, .TH XtPopdown 3Xt "1 September 1988" "X Ver-     sion 11"
+NAAMMEE XSetWMProperties, XWMGeometry (N) - window manager convenience functions
+NAAMMEE XtAddExposureToRegion (N) - merge exposure events into a region
+NAAMMEE XtAppGetErrorDatabase, XtAppGetErrorDatabaseText (N) - obtain error database
+NAAMMEE XtBuildEventMask (N) - retrieve a widget's event mask
+NAAMMEE XtGetGC, XtReleaseGC (N) - obtain and destroy a sharable GC
+NAAMMEE XtMapWidget, XtSetMappedWhenManaged, XtUnmapWidget (N) - map and unmap widgets
+X (1) - X Window System server
+X (1) - a portable, network-transparent window system
+XAllowEvents (3X11) - release queued events
+XAnyEvent, XEvent (3X11) - generic X event structures
+XButtonEvent, XKeyEvent, XMotionEvent (3X11) - KeyPress, KeyRelease, ButtonPress,
+XChangePointerControl, XGetPointerControl (3X11) - control pointer
+XChangeSaveSet, XAddToSaveSet, XRemoveFromSaveSet (3X11) - change a client's save set
+XCirculateEvent (3X11) - CirculateNotify event structure
+XCirculateRequestEvent (3X11) - CirculateRequest event structure
+XClearArea, XClearWindow (3X11) - clear area or window
+XClientMessageEvent (3X11) - ColormapNotify event structure
+XColormapEvent (3X11) - ColormapNotify event structure
+XConfigureEvent (3X11) - ConfigureNotify event structure
+XConfigureRequestEvent (3X11) - ConfigureRequest event structure
+XCopyArea, XCopyPlane (3X11) - copy areas
+XCreateFontCursor, XCreatePixmapCursor, XCreateGlyphCursor (3X11) -     create cursors
+XCreateImage, XGetPixel, XPutPixel, XSubImage, XAddPixel, XDestroyImage (3X11) - image utilities
+XCreatePixmap, XFreePixmap (3X11) - create or destroy pixmaps
+XCreateRegion, XSetRegion, XDestroyRegion (3X11) - create or destroy regions
+XCreateWindowEvent (3X11) - CreateNotify event structure
+XCrossingEvent (3X11) - EnterNotify and LeaveNotify event structure
+XDefineCursor, XUndefineCursor (3X11) - define cursors
+XDestroyWindow, XDestroySubwindows (3X11) - destroy windows
+XDestroyWindowEvent (3X11) - DestroyNotify event structure
+XDrawArc, XDrawArcs, XArc (3X11) - draw arcs and arc structure
+XDrawImageString, XDrawImageString16 (3X11) - draw image text
+XDrawString, XDrawString16 (3X11) - draw text characters
+XErrorEvent (3X11) - X error event structure
+XExposeEvent (3X11) - Expose event structure
+XFillRectangle, XFillRectangles, XFillPolygon, XFillArc, XFillArcs (3X11) - fill rectangles, polygons, or arcs
+XFlush, XSync, XEventsQueued, XPending (3X11) - handle output buffer or event queue
+XFocusChangeEvent (3X11) - FocusIn and FocusOut event structure
+XFree, XNoOp (3X11) - free client data
+XGetDefault, XResourceManagerString (3X11) - get X program defaults
+XGrabButton, XUngrabButton (3X11) - grab pointer buttons
+XGrabKey, XUngrabKey (3X11) - grab keyboard keys
+XGrabKeyboard, XUngrabKeyboard (3X11) - grab the keyboard
+XGrabPointer, XUngrabPointer, XChangeActivePointerGrab (3X11) -     grab the pointer
+XGrabServer, XUngrabServer (3X11) - grab the server
+XGravityEvent (3X11) - GravityNotify event structure
+XInternAtom, XGetAtomName (3X11) - create or return atom names
+XKeymapEvent (3X11) - KeymapNotify event structure
+XMapEvent, XMappingEvent (3X11) - MapNotify and MappingNotify event structures
+XMapRequestEvent (3X11) - MapRequest event structure
+XMapWindow, XMapRaised, XMapSubwindows (3X11) - map windows
+XNSrouted (8C) - NS Routing Information Protocol daemon
+XOpenDisplay, XCloseDisplay (3X11) - connect or disconnect to X server
+XParseGeometry, XParseColor (3X11) - parse window geometry and color
+XPolygonRegion, XClipBox (3X11) - generate regions
+XPropertyEvent (3X11) - PropertyNotify event structure
+XPutBackEvent (3X11) - put events back on the queue
+XPutImage, XGetImage, XGetSubImage (3X11) - transfer images
+XQueryBestSize, XQueryBestTile, XQueryBestStipple (3X11) - determine efficient sizes
+XQueryColor, XQueryColors, XLookupColor (3X11) - obtain color values
+XQueryPointer (3X11) - get pointer coordinates
+XQueryTree (3X11) - query window tree information
+XReadBitmapFile, XWriteBitmapFile, XCreatePixmapFromBitmapData, XCreateBitmapFromData (3X11) - manipulate bitmaps
+XRecolorCursor, XFreeCursor, XQueryBestCursor (3X11) - manipulate cursors
+XReparentEvent (3X11) - ReparentNotify event structure
+XReparentWindow (3X11) - reparent windows
+XResizeRequestEvent (3X11) - ResizeRequest event structure
+XSelectInput (3X11) - select input events
+XSelectionClearEvent (3X11) - SelectionClear event structure
+XSetArcMode, XSetSubwindowMode, XSetGraphicsExposure (3X11) - GC convenience routines
+XSetClipOrigin, XSetClipMask, XSetClipRectangles (3X11) - GC convenience routines
+XSetCloseDownMode, XKillClient (3X11) - control clients
+XSetCommand, XGetCommand (3X11) - set or read a window's WM_COMMAND property
+XSetErrorHandler, XGetErrorText, XDisplayName, XSetIOEr-     rorHandler, XGetErrorDatabaseText (3X11) - default error handlers
+XSetFillStyle, XSetFillRule (3X11) - GC convenience routines
+XSetFont (3X11) - GC convenience routines
+XSetFontPath, XGetFontPath, XFreeFontPath (3X11) - set, get, or free the font search path
+XSetInputFocus, XGetInputFocus (3X11) - control input focus
+XSetLineAttribute, XSetDashes (3X11) - GC convenience routines
+XSetPointerMapping, XGetPointerMapping (3X11) - manipulate pointer settings
+XSetSelectionOwner, XGetSelectionOwner, XConvertSelection (3X11) -     manipulate window selection
+XSetTextProperty, XGetTextProperty (3X11) - set and read text properties
+XSetTile, XSetStipple, XSetTSOrigin (3X11) - GC convenience routines
+XStoreColors, XStoreColor, XStoreNamedColor (3X11) - set colors
+XStringToKeysym, XKeysymToString, XKeycodeToKeysym, XKeysymToKeycode (3X11) - convert keysyms
+XSynchronize, XSetAfterFunction (3X11) - enable or disable synchronization
+XTextWidth, XTextWidth16 (3X11) - compute text width
+XTranslateCoordinates (3X11) - translate window coordinates
+XUnmapEvent (3X11) - UnmapNotify event structure
+XUnmapWindow, XUnmapSubwindows (3X11) - unmap windows
+XVisibilityNotifyEvent (3X11) - VisibilityNotify event structure
+XWarpPointer (3X11) - move pointer
+Xmac2 (1) - MacMach Macintosh II server for X Version 11 Release 4
+XrmGetResource, XrmQGetResource, XrmQGetSearchList, XrmQGetSearchResource (3X11) - retrieve database resources and search lists
+XrmPutResource, XrmQPutResource, XrmPutStringResource, XrmQPutStringResource, XrmPutLineResource (3X11) - store database resources
+XrmUniqueQuark, XrmStringToQuark, XrmQuarkToString, XrmStringToQuarkList, XrmStringToBindingQuarkList (3X11) - manipulate resource quarks
+XtAddGrab, XtRemoveGrab (3Xt) - redirect user input to a modal widget
+XtAppAddActions (3Xt) - register an action table
+XtAppAddConverter (3Xt) - register resource converter
+XtAppAddInput, XtRemoveInput (3Xt) - register and remove an input source
+XtAppAddTimeOut, XtRemoveTimeOut (3Xt) - register and remove timeouts
+XtCallAcceptFocus (3Xt) - calla widget's accept_focus procedure
+XtCallCallbacks, XtHasCallbacks (3Xt) - process callbacks
+XtConvert, XtDirectConvert (3Xt) - invoke resource converters
+XtCreateWidget, XtCreateManagedWidget, XtDestroyWidget (3Xt) - .TH XtCreateWindow 3Xt "1 September 1988" "X Version 11"
+XtGetResourceList (3Xt) - obtain resource list
+XtGetSelectionValue, XtGetSelectionValues (3Xt) - obtain selection values
+XtSetKeyboardFocus (3Xt) - focus events on a child widget
+XtTranslateCoordinates (3Xt) - translate widget coordinates
+abort (3) - generate a fault
+abs (3) - integer absolute value
+ac (8) - login accounting
+accept (2) - accept a connection on a socket
+access (2) - determine accessibility of file
+acct (2) - turn accounting on or off
+adb (1) - debugger
+adduser (8) - procedure for adding new users
+adjtime (2) - correct the time to allow synchronization of the system clock
+alarm (3C) - schedule signal after specified time
+apply (1) - apply a command to a set of arguments
+appres (1) - list application resource database
+apropos (1) - locate commands by keyword lookup
+ar (1) - archive and library maintainer
+archie (1) - query archie anonymous ftp databases using Prospero
+asinh, acosh, atanh (3M) - inverse hyperbolic functions
+assert (3) - program verification
+at (1) - execute commands at a later time
+atof, atoi, atol (3) - convert ASCII to numbers
+atot (3) - convert ascii date string to time
+awk (1) - pattern scanning and processing language
+badsect (8) - create files to contain bad sectors
+basename (1) - strip filename affixes
+bc (1) - arbitrary-precision arithmetic language and calculator
+bcopy, bcmp, bzero, ffs (3) - bit and byte string operations
+bdftosnf (1) - BDF to SNF font compiler for X11
+biff (1) - be notified if mail arrives and who it is from
+bind (2) - bind a name to a socket
+bindresvport (3N) - bind a socket to a privileged IP port
+binmail (1) - send or receive mail among users
+bison (1) - GNU Project parser generator (yacc replacement)
+bitmap, bmtoa, atobm (1) - bitmap editor and converter utilities for X
+boolarg (3) - parse boolean argument or ask user
+brk, sbrk (2) - change data segment size
+cal (1) - print calendar
+calendar (1) - reminder service
+cat (1) - catenate and print
+cb (1) - C program beautifier
+cbrt, sqrt (3M) - cube root, square root
+cc (1) - C compiler
+chdir (2) - change current working directory
+checknr (1) - check nroff/troff files
+chfn, chsh, passwd (1) - change password file information
+chgrp (1) - change group
+chmod (1) - change mode
+chmod (2) - change mode of file
+chown (2) - change owner and group of a file
+chown (8) - change owner
+chroot (2) - change root directory
+chroot (8) - change root directory
+clear (1) - clear terminal screen
+close (2) - delete a descriptor
+clri (8) - clear i-node
+cmp (1) - compare two files
+col (1) - filter reverse line feeds
+colcrt (1) - filter nroff output for CRT previewing
+colrm (1) - remove columns from a file
+comm (1) - select or reject lines common to two sorted files
+compress, uncompress, zcat (1) - compress and expand data
+comsat (8C) - biff server
+concat, vconcat (3) - concatenate strings into a buffer
+connect (2) - initiate a connection on a socket
+copysign, drem, finite, logb, scalb (3M) - copysign, remainder,
+cp (1) - copy
+cpio (1) - copy file archives in and out
+crash (8V) - what happens when the system crashes
+creat (2) - create a new file
+cron (8) - clock daemon
+crypt (1) - encode/decode
+crypt, setkey, encrypt (3) - DES encryption
+csh (1) - a shell (command interpreter) with C-like syntax
+ctags (1) - create a tags file
+ctime, localtime, gmtime, asctime, timezone, tzset (3) -  convert date and time to ASCII
+curses (3X) - screen functions with ``optimal'' cursor motion
+ddooggss (1X) - no man page available in motif 1.1.1 release
+date (1) - print and set the date
+dbm_open, dbm_close, dbm_fetch, dbm_store, dbm_delete, dbm_firstkey, dbm_nextkey, dbm_error, dbm_clearerr (3) - data base subroutines
+dbminit, fetch, store, delete, firstkey, nextkey (3X) - data base subroutines
+dc (1) - desk calculator
+dcheck (8) - file system directory consistency check
+dd (1) - convert and copy a file
+deroff (1) - remove nroff, troff, tbl and eqn constructs
+df (1) - disk free
+diction, explain (1) - print wordy sentences; thesaurus for diction
+diff (1) - differential file and directory comparator
+diff3 (1) - 3-way differential file comparison
+disklabel (8) - read and write disk pack label
+diskpart (8) - calculate default disk partition sizes
+dmesg (8) - collect system diagnostic messages to form error log
+dsh (1X) - distributed shell
+du (1) - summarize disk usage
+dump (8) - incremental file system dump
+dumpfs (8) - dump file system information
+dup, dup2 (2) - duplicate a descriptor
+echo (1) - echo arguments
+ecvt, fcvt, gcvt (3) - output conversion
+ed (1) - text editor
+edquota (8) - edit user quotas
+efl (1) - Extended Fortran Language
+emacs (1) - GNU project Emacs
+end, etext, edata (3) - last locations in program
+eqn, neqn, checkeq (1) - typeset mathematics
+erf, erfc (3M) - error functions
+error (1) - analyze and disperse compiler error messages
+ex, edit (1) - text editor
+execl, execv, execle, execlp, execvp, exec, execve, exect, environ (3) - execute a file
+execve (2) - execute a file
+exit (2) - terminate a process
+exit (3) - terminate a process after flushing any pending output
+exp, expm1, log, log10, log1p, pow (3M) - exponential, logarithm, power
+expand, unexpand (1) - expand tabs to spaces, and vice versa
+expr (1) - evaluate arguments as an expression
+fabs, floor, ceil, rint (3M) - absolute value, floor, ceiling, and
+false, true (1) - provide truth values
+fastboot, fasthalt (8) - reboot/halt the system without checking the disks
+fclose, fflush (3S) - close or flush a stream
+fcntl (2) - file control
+ferror, feof, clearerr, fileno (3S) - stream status inquiries
+file (1) - determine file type
+find (1) - find files
+finger (1) - user information lookup program
+fingerd (8C) - remote user information server
+fixit (1) - check and fix files and directories
+flock (2) - apply or remove an advisory lock on an open file
+fmt (1) - simple text formatter
+fold (1) - fold long lines for finite width output device
+fopen, freopen, fdopen (3S) - open a stream
+fork (2) - create a new process
+fread, fwrite (3S) - buffered binary input/output
+frexp, ldexp, modf (3) - split into mantissa and exponent
+from (1) - who is my mail from?
+fsck (8) - file system consistency check and interactive repair
+fsdb (8) - file system debugger
+fseek, ftell, rewind (3S) - reposition a stream
+fstat (8) - file status
+fsync (2) - synchronize a file's in-core state with that on disk
+ftp (1C) - ARPANET file transfer program
+ftpd (8C) - DARPA Internet File Transfer Protocol server
+gcc (1) - GNU project C Compiler
+gcore (1) - get core images of running processes
+getc, getchar, fgetc, getw (3S) - get character or word from stream
+getdirentries (2) - gets directory entries in a filesystem independent format
+getdiskbyname (3) - get generic disk description by its name
+getdomainname, setdomainname (2) - get/set name of current domain
+getdtablesize (2) - get descriptor table size
+getenv, setenv, unsetenv (3) - manipulate environmental variables
+getfsent, getfsspec, getfsfile, getfstype, setfsent, endfsent (3) - get file system descriptor file entry
+getgid, getegid (2) - get group identity
+getgrent, getgrgid, getgrnam, setgrent, endgrent setgrfile (3) -     get group file entry
+getgroups (2) - get group access list
+gethostbyname, gethostbyaddr, gethostent, sethostent, endhostent, herror (3N) - get network host entry
+gethostid, sethostid (2) - get/set unique identifier of current host
+gethostname, sethostname (2) - get/set name of current host
+getitimer, setitimer (2) - get/set value of interval timer
+getlogin (3) - get login name
+getnetent, getnetbyaddr, getnetbyname, setnetent, endnetent (3N) - get network entry
+getopt (3) - get option letter from argv
+getpagesize (2) - get system page size
+getpass (3) - read a password
+getpeername (2) - get name of connected peer
+getpgrp (2) - get process group
+getpid, getppid (2) - get process identification
+getpriority, setpriority (2) - get/set program scheduling priority
+getprotoent, getprotobynumber, getprotobyname, setprotoent, endprotoent (3N) - get protocol entry
+getpw (3C) - get name from uid
+getpwent, getpwuid, getpwnam, setpwent, endpwent, setpwfile (3) - get password file entry
+getrlimit, setrlimit (2) - control maximum system resource consumption
+getrpcent, getrpcbyname, getrpcbynumber (3N) - get RPC entry
+getrpcport (3R) - get RPC port number
+getrusage (2) - get information about resource utilization
+gets, fgets (3S) - get a string from a stream
+getservent, getservbyport, getservbyname, setservent, endservent (3N) - get service entry
+getsockname (2) - get socket name
+getsockopt, setsockopt (2) - get and set options on sockets
+gettable (8C) - get NIC format host tables from a host
+gettimeofday, settimeofday (2) - get/set date and time
+getttyent, getttynam, setttyent, endttyent (3) - get ttys file entry
+getty (8) - set terminal mode
+getuid, geteuid (2) - get user identity
+getusershell, setusershell, endusershell (3) - get legal user shells
+getwd (3) - get current working directory pathname
+gprof (1) - display call graph profile data
+graph (1G) - draw a graph
+grep, egrep, fgrep (1) - search a file for a pattern
+groups (1) - show group memberships
+hhoossttiidd (1) - set or print identifier of current host system
+hhoossttnnaammee (1) - set or print name of current host system
+halt (8) - stop the processor
+hardcrypt (3) - harder DES encryption
+head (1) - give first few lines
+htable (8) - convert NIC standard format host tables
+htonl, htons, ntohl, ntohs (3N) - convert values between host and network byte order
+hypot, cabs (3M) - Euclidean distance, complex absolute value
+icheck (8) - file system storage consistency check
+ico (1) - animate an icosahedron or other polyhedron
+ifconfig (8C) - configure network interface parameters
+imake (1) - C preprocessor interface to the make utility
+indent (1) - indent and format C program source
+inet_addr, inet_network, inet_ntoa, inet_makeaddr, inet_lnaof, inet_netof (3N) - Internet address manipulation routines
+inetd (8) - internet ``super-server''
+infnan (3M) - signals invalid floating-point operations on a VAX (temporary)
+init (8) - process control initialization
+initgroups (3) - initialize group access list
+insque, remque (3) - insert/remove element from a queue
+install (1) - install binaries
+intro (1) - introduction to commands
+intro (2) - introduction to system calls and error numbers
+intro (3) - introduction to C library functions
+intro (8) - introduction to system maintenance and operation commands
+ioctl (2) - control device
+ipc_test (1) - test Mach IPC
+isalpha, isupper, islower, isdigit, isxdigit, isalnum, isspace, ispunct, isprint, isgraph, iscntrl, isascii, toupper, tolower, toascii (3) - character classification macros
+j0, j1, jn, y0, y1, yn (3M) - bessel functions
+join (1) - relational database operator
+kermit (1C) - file transfer, management, and terminal connection
+kgmon (8) - generate a dump of the operating system's profile buffers
+kill (1) - terminate a process with extreme prejudice
+kill (2) - send signal to a process
+killpg (2) - send signal to a process group
+last (1) - indicate last logins of users and ttys
+lastcomm (1) - show last commands executed in reverse order
+ld (1) - link editor
+learn (1) - computer aided instruction about UNIX
+leave (1) - remind you when you have to leave
+lex (1) - generator of lexical analysis programs
+lgamma (3M) - log gamma function
+lib2648 (3X) - subroutines for the HP 2648 graphics terminal
+link (2) - make a hard link to a file
+lint (1) - a C program verifier
+listen (2) - listen for connections on a socket
+listres (1) - list resources in widgets
+ln (1) - make links
+lock (1) - reserve a terminal
+logger (1) - make entries in the system log
+login (1) - sign on
+look (1) - find lines in a sorted list
+lorder (1) - find ordering relation for an object library
+ls (1) - list contents of directory
+lseek (2) - move read/write pointer
+mmoottiiffggiiff (1X) - no man page available in motif 1.1.1 release
+mmrree (1X) - no man page available in motif 1.1.1 release
+mmwwmm (1X) - The Motif Window Manager.
+m4 (1) - macro processor
+mach3 (1) - Mach 3.x predicate
+machid (1) - operate on MachIDs
+mail (1) - send and receive mail
+make (1) - maintain program groups
+makedepend (1) - create dependencies in makefiles
+makedev (8) - make system special files
+makekey (8) - generate encryption key
+makepath (3) - create intermediate directories for a path
+malloc, free, realloc, calloc, alloca (3) - memory allocator
+man (1) - print out the manual
+map3270 (5) - database for mapping ascii keystrokes into IBM 3270 keys
+map_fd (2) - cause a file to be mapped into virtual memory
+massign (1) - assign tasks, threads, and processors to a processor set
+math (3M) - introduction to mathematical library functions
+maze (1) - an automated maze program... [ demo ][ X11 ]
+mazefind (6) - discover current MazeWar games
+mcreate (1) - create tasks, threads, and processor sets
+md (1) - create makefile dependencies from .d files created by -MD option to cc
+mesg (1) - permit or deny messages
+mig (1) - Mach message interface generator for Mach 2.5 systems
+mig (1) - Mach message interface generator for Mach 3.0 systems
+mkdep (1) - construct Makefile dependency list
+mkdir (1) - make a directory
+mkdir (2) - make a directory file
+mkfontdir (1) - create fonts.dir file from directory of font files.
+mkhosts (8) - generate hashed host table
+mkill (1) - terminate, suspend, or resume a task or thread
+mklost+found (8) - make a lost+found directory for fsck
+mknod (2) - make a special file
+mknod (8) - build special file
+mkpasswd (8) - generate hashed password table
+mkproto (8) - construct a prototype file system
+mkstr (1) - create an error message file by massaging C source
+mktemp (3) - make a unique file name
+mnice (1) - change priorities
+monitor, monstartup, moncontrol (3) - prepare execution profile
+more, page (1) - file perusal filter for crt viewing
+mount, umount (2) - mount or remove file system
+mount, umount (8) - mount and dismount file system
+mpolicy (1) - change scheduling policies
+ms (1) - display Mach status
+msgs (1) - system messages and junk mail program
+mt (1) - magnetic tape manipulating program
+muncher (1) - draw interesting patterns in an X window
+mv (1) - move or rename files
+named (8) - Internet domain name server
+ncheck (8) - generate names from i-numbers
+netmsgserver (8) - Mach network server
+netstat (1) - show network status
+newaliases (1) - rebuild the data base for the mail aliases file
+newfs (8) - construct a new file system
+nice (3C) - set program priority
+nice, nohup (1) - run a command at low priority (_s_h only)
+nlist (3) - get entries from name list
+nm (1) - print name list
+nroff (1) - text formatting
+ns_addr, ns_ntoa (3N) - Xerox NS(tm)  address conversion routines
+nslookup (1) - query name servers interactively
+nxtarg (3) - parse arguments from a string
+oclock (1) - display time of day
+od (1) - octal, decimal, hex, ascii dump
+open (2) - open a file for reading or writing, or create a new file
+opendir, readdir, telldir, seekdir, rewinddir, closedir, dirfd (3) - directory operations
+ppiicctt (1X) - no man page available in motif 1.1.1 release
+pagesize (1) - print system page size
+parsedate (3) - parse date specification
+patch (1) - a program for applying a diff file to an original
+pathof (3) - find absolute path of subprogram
+pause (3C) - stop until signal
+perror, sys_errlist, sys_nerr (3) - system error messages
+pinfo (1) - display info about a task's port name space
+ping (8) - send ICMP ECHO_REQUEST packets to network hosts
+pipe (2) - create an interprocess communication channel
+plaid (1) - paint some plaid-like patterns in an X window
+plot (1G) - graphics filters
+plot: openpl, erase, label, line, circle, arc, move, cont, point, linemod, space, closepl (3X) - graphics interface
+popen, pclose (3) - initiate I/O to/from a process
+pr (1) - print file
+printenv (1) - print out the environment
+printf, fprintf, sprintf (3S) - formatted output conversion
+prof (1) - display profile data
+profil (2) - execution time profile
+ps (1) - process status
+psignal, sys_siglist (3) - system signal messages
+pstat (8) - print system facts
+ptrace (2) - process trace
+ptx (1) - permuted index
+putc, putchar, fputc, putw (3S) - put character or word on a stream
+puts, fputs (3S) - put a string on a stream
+puzzle (1) - 15-puzzle game for X
+pwd (1) - working directory name
+qsort (3) - quicker sort
+quot (8) - summarize file system ownership
+quota (1) - display disc usage and limits
+quota (2) - manipulate disk quotas
+quotacheck (8) - file system quota consistency checker
+quotaon, quotaoff (8) - turn file system quotas on and off
+rand, srand (3C) - random number generator
+random, srandom, initstate, setstate (3) - better random number generator; routines for changing generators
+ranlib (1) - convert archives to random libraries
+rc (8) - command script for auto-reboot and daemons
+rcmd, rresvport, ruserok (3) - routines for returning a stream to a remote command
+rcp (1C) - remote file copy
+rdist (1) - remote file distribution program
+rdump (8C) - file system dump across the network
+re_comp, re_exec (3) - regular expression handler
+read, readv (2) - read input
+readlink (2) - read value of a symbolic link
+reboot (2) - reboot system or halt processor
+reboot (8) - UNIX bootstrapping procedures
+recv, recvfrom, recvmsg (2) - receive a message from a socket
+regcomp, regexec, regsub, regerror (3) - regular expression handlers
+rename (2) - change the name of a file
+renice (8) - alter priority of running processes
+repquota (8) - summarize quotas for a file system
+res_mkquery, res_send, res_init, dn_comp, dn_expand (3) -     resolver routines
+resize (1) - utility to set TERMCAP and terminal settings to current window size
+restore (8) - incremental file system restore
+rev (1) - reverse lines of a file
+rexec (3) - return stream to a remote command
+rexecd (8C) - remote execution server
+rlogin (1C) - remote login
+rlogind (8C) - remote login server
+rm, rmdir (1) - remove (unlink) files or directories
+rmail (1) - handle remote mail received via uucp
+rmdir (2) - remove a directory file
+rmdir, rm (1) - remove (unlink) directories or files
+rmt (8C) - remote magtape protocol module
+route (8C) - manually manipulate the routing tables
+routed (8C) - network routing daemon
+rpause (2) - manage resource pause error disposition for a process
+rpc (3N) - library routines for remote procedure calls
+rpc (5) - rpc program number data base
+rrestore (8C) - restore a file system dump across the network
+rsh (1C) - remote shell
+rshd (8C) - remote shell server
+run, runv, runp, runvp, runc, runcv, runcp, runcvp (3) - execute process and wait for it
+ruptime (1C) - show host status of local machines
+rwho (1C) - who's logged in on local machines
+rwhod (8C) - system status server
+sa, accton (8) - system accounting
+savecore (8) - save a core dump of the operating system
+sc (1) - spreadsheet calculator
+scandir, alphasort (3) - scan a directory
+scanf, fscanf, sscanf (3S) - formatted input conversion
+sccs (1) - front end for the SCCS subsystem
+script (1) - make typescript of terminal session
+sed (1) - stream editor
+select (2) - synchronous I/O multiplexing
+send, sendto, sendmsg (2) - send a message from a socket
+sendbug (1) - mail a system bug report to 4bsd-bugs
+sendmail (8) - send mail over the internet
+setbuf, setbuffer, setlinebuf (3S) - assign buffering to a stream
+setgroups (2) - set group access list
+setjmp, longjmp (3) - non-local goto
+setmntent, getmntent, addmntent, endmntent, hasmntopt (3) - get file system descriptor file entry
+setpgrp (2) - set process group
+setquota (2) - enable/disable quotas on a file system
+setregid (2) - set real and effective group ID
+setreuid (2) - set real and effective user ID's
+setuid, seteuid, setruid, setgid, setegid, setrgid (3) - set user and group ID
+sh, for, case, if, while, ::, .., break, continue, cd, eval, exec, exit, export, login, read, readonly, set, shift, times, trap, umask, wait (1) - command language
+showsnf (1) - print contents of an SNF file
+shutdown (2) - shut down part of a full-duplex connection
+shutdown (8) - close down the system at a given time
+sigblock (2) - block signals
+siginterrupt (3) - allow signals to interrupt system calls
+signal (3C) - simplified software signal facilities
+sigpause (2) - atomically release blocked signals and wait for interrupt
+sigreturn (2) - return from signal
+sigsetmask (2) - set current signal mask
+sigstack (2) - set and/or get signal stack context
+sigvec (2) - software signal facilities
+sin, cos, tan, asin, acos, atan, atan2 (3M) - trigonometric functions
+sinh, cosh, tanh (3M) - hyperbolic functions
+size (1) - size of an object file
+slattach (8C) - attach serial lines as network interfaces
+sleep (1) - suspend execution for an interval
+sleep (3) - suspend execution for interval
+slot_name (3) - Convert machine slot values to human readable strings
+snames (1) - simple name server
+socket (2) - create an endpoint for communication
+socketpair (2) - create a pair of connected sockets
+soelim (1) - eliminate .so's from nroff input
+sort (1) - sort or merge files
+spell, spellin, spellout (1) - find spelling errors
+spline (1G) - interpolate smooth curve
+split (1) - split a file into pieces
+stacks (1) - display kernel stack usage information
+stat, lstat, fstat (2) - get file status
+statfs (2) - get file system statistics
+stdio (3S) - standard buffered input/output package
+sticky (8) - persistent text and append-only directories
+strings (1) - find the printable strings in a file
+strip (1) - remove symbols and relocation bits
+stty (1) - set terminal options
+stty, gtty (3C) - set and get terminal state (defunct)
+su (1) - substitute user id temporarily
+sum (1) - sum and count blocks in a file
+swab (3) - swap bytes
+swapon (2) - add a swap device for interleaved paging/swapping
+symlink (2) - make symbolic link to a file
+symorder (1) - rearrange name list
+sync (2) - update super-block
+sync (8) - update the super block
+syscall (2) - indirect system call
+sysline (1) - display system status on status line of a terminal
+syslog, openlog, closelog, setlogmask (3) - control system log
+syslogd (8) - log systems messages
+systat (1) - display system statistics on a crt
+system (3) - issue a shell command
+table (2) - examine/update element(s) from system table
+tabs (1) - set terminal tabs
+tac (1) - concatenate and print files in reverse
+tail (1) - deliver the last part of a file
+talk (1) - talk to another user
+talkd (8C) - remote user communication server
+tar (1) - tape archiver
+tbl (1) - format tables for nroff or troff
+tc (1) - photoypesetter simulator
+tcopy (1) - copy and/or verify mag tapes
+tee (1) - pipe fitting
+telnet (1C) - user interface to the TELNET protocol
+telnetd (8C) - DARPA TELNET protocol server
+termcap (5) - terminal capability data base
+test (1) - condition command
+tftp (1C) - trivial file transfer program
+tftpd (8C) - DARPA Trivial File Transfer Protocol server
+tgetent, tgetnum, tgetflag, tgetstr, tgoto, tputs (3X) - terminal independent operation routines
+threads (3) - support for parallel programming in C under Mach
+thstate (1) - display a thread's register state
+time (1) - time a command
+time, ftime (3C) - get date and time
+timed (8) - time server daemon
+timedc (8) - timed control program
+times (3C) - get process times
+tip, cu (1C) - connect to a remote system
+tk (1) - paginator for the Tektronix 4014
+tmail (1) - print out mail messages, most recent first
+tn3270 (1) - full-screen remote login to IBM VM/CMS
+touch (1) - update date last modified of a file
+tp (1) - manipulate tape archive
+tr (1) - translate characters
+troff, nroff (1) - text formatting and typesetting
+true, false (1) - provide truth values
+truncate (2) - truncate a file to a specified length
+tset (1) - terminal dependent initialization
+tsort (1) - topological sort
+tty (1) - get terminal name
+ttyname, isatty, ttyslot (3) - find name of a terminal
+tunefs (8) - tune up an existing file system
+twm (1) - Tab Window Manager for the X Window System
+uuiill (1X) - The user interface language compiler for X window system.
+ualarm (3) - schedule signal after specified time
+ul (1) - do underlining
+umask (2) - set file creation mode mask
+ungetc (3S) - push character back into input stream
+unifdef (1) - remove ifdef'ed lines
+uniq (1) - report repeated lines in a file
+units (1) - conversion program
+unlink (2) - remove directory entry
+unmount (2) - remove a file system
+update (8) - periodically update the super block
+uptime (1) - show how long system has been up
+users (1) - compact list of users who are on the system
+usleep (3) - suspend execution for interval
+utime (3C) - set file times
+utimes (2) - set file times
+uucico, uucpd (8C) - transfer files queued by uucp or uux
+vacation (1) - return ``I am not here'' indication
+valloc (3C) - aligned memory allocator
+varargs (3) - variable argument list
+version (8) - print kernel version identification string
+vfork (2) - spawn new process in a virtual memory efficient way
+vfsmount (2) - mount file system
+vgrind (1) - grind nice listings of programs
+vhangup (2) - virtually ``hangup'' the current control terminal
+vi (1) - screen oriented (visual) display editor based on ex
+vipw (8) - edit the password file
+vlimit (3C) - control maximum system resource consumption
+vminfo (1) - display info about a task's address space
+vmread (1) - read a task's address space
+vmsearch (1) - search a task's address space for a word
+vmstat (1) - display Mach VM statistics
+vtimes (3C) - get information about resource utilization
+wwiiddggeettVViieeww (1X) - no man page available in motif 1.1.1 release
+w (1) - who is on and what they are doing
+wait, wait3 (2) - wait for process to terminate
+wall (1) - write to all users
+wc (1) - word count
+what (1) - show what versions of object modules were used to construct a file
+whatis (1) - describe what a command is
+whereis (1) - locate source, binary, and or manual for program
+which (1) - locate a program file including aliases and paths (_c_s_h only)
+who (1) - who is on the system
+whoami (1) - print effective current user id
+whois (1) - DARPA Internet user name directory service
+window (1) - window environment
+write (1) - write to another user
+write, writev (2) - write output
+xxmmtteerr (1X) - no man page available in motif 1.1.1 release
+x_m_h (1) - X interface to the MH message handling system
+xauth (1) - X authority file utility
+xbiff (1) - mailbox flag for X
+xcalc (1) - scientific calculator for X
+xclipboard (1) - X clipboard client
+xclock (1) - analog / digital clock for X
+xcolors (1) - display all X11 color names and colors
+xconsole (1) - display output directed to /dev/console
+xcutsel (1) - interchange between cut buffer and selection
+xditview (1) - display ditroff DVI files
+xdm (1) - X Display Manager
+xdpr (1) - dump an X window directly to a printer
+xdpyinfo (1) - display information utility for X
+xdr (3N) - library routines for external data representation
+xedit (1) - simple text editor for X
+xev (1) - print contents of X events
+xeyes (1) - watch over your shoulder
+xfd (1) - font displayer for X
+xgc (1) - X graphics demo
+xhost (1) - server access control program for X
+xinit (1) - X Window System initializer
+xkill (1) - kill a client by its X resource
+xload (1) - load average display for X
+xloadimage, xsetbg, xview (1) - load images into an X11 window or onto
+xlogo (1) - X Window System logo
+xlsatoms (1) - list interned atoms defined on server
+xlsclients (1) - list client applications running on a display
+xlsfonts (1) - server font list displayer for X
+xlswins (1) - server window list displayer for X
+xmag (1) - magnify parts of the screen
+xman (1) - Manual page display program for the X Window System.
+xmodmap (1) - utility for modifying keymaps in X
+xpr (1) - print an X window dump
+xprop (1) - property displayer for X
+xptest (1) - test external-pager functionality
+xrdb (1) - X server resource database utility
+xrefresh (1) - refresh all or part of an X screen
+xsend, xget, enroll (1) - secret mail
+xset (1) - user preference utility for X
+xsetroot (1) - root window parameter setting utility for X
+xstdcmap (1) - X standard colormap utility
+xstr (1) - extract strings from C programs to implement shared strings
+xterm (1) - terminal emulator for X
+xtetris (1) - spacial reasoning game
+xtrekd (1) - X based space warfare extravaganza
+xwd (1) - dump an image of an X window
+xwininfo (1) - window information utility for X
+xwud (1) - image displayer for X
+yacc (1) - yet another compiler-compiler
+yes (1) - be repetitively affirmative
+zprint (1) - show information about kernel zones

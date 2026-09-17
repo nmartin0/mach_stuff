@@ -1,0 +1,120 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1991 Carnegie Mellon University
+ * All Rights Reserved.
+ * 
+ * Permission to use, copy, modify and distribute this software and its
+ * documentation is hereby granted, provided that both the copyright
+ * notice and this permission notice appear in all copies of the
+ * software, derivative works or modified versions, and any portions
+ * thereof, and that both notices appear in supporting documentation.
+ * 
+ * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS 
+ * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+ * 
+ * Carnegie Mellon requests users of this software to return to
+ * 
+ *  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+ *  School of Computer Science
+ *  Carnegie Mellon University
+ *  Pittsburgh PA 15213-3890
+ * 
+ * any improvements or extensions that they make and grant Carnegie the
+ * rights to redistribute these changes.
+ */
+/*
+ * HISTORY
+ * $Log: memory_object.defs,v $
+# Revision 1.1.1.1  1995/05/04  06:56:41  sclawson
+# New files.
+#
+ * Revision 2.3  92/01/22  22:53:30  rpd
+ * 	Removed old IPC types.  Added change_completed.
+ * 	[92/01/18            rpd]
+ * 
+ * Revision 2.2  91/07/06  15:15:35  jsb
+ * 	First checkin.
+ * 
+ */
+/*
+ *	File:	memory_object.defs
+ *	Author:	Joseph S. Barrera III
+ *	Date:	1991
+ *
+ *	Private defs file for xmm use.
+ */
+
+subsystem memory_object 2200;
+
+#include <mach/std_types.defs>
+#include <mach/mach_types.defs>
+
+serverprefix	memory_object_;
+userprefix	proxy_;
+
+simpleroutine	init(
+		memory_object		: memory_object_t;
+		memory_control		: memory_object_control_t;
+		memory_object_name	: memory_object_name_t;
+		memory_object_page_size	: vm_size_t);
+
+simpleroutine	terminate(
+		memory_object		: memory_object_t;
+		memory_control		: memory_object_control_t
+						= MACH_MSG_TYPE_MOVE_RECEIVE;
+		memory_object_name	: memory_object_name_t
+						= MACH_MSG_TYPE_MOVE_RECEIVE);
+
+simpleroutine	copy(
+		old_memory_object	: memory_object_t;
+		old_memory_control	: memory_object_control_t;
+		offset			: vm_offset_t;
+		length			: vm_size_t;
+		new_memory_object	: memory_object_t
+						= MACH_MSG_TYPE_MOVE_RECEIVE);
+
+simpleroutine	data_request(
+		memory_object		: memory_object_t;
+		memory_control		: memory_object_control_t;
+		offset			: vm_offset_t;
+		length			: vm_size_t;
+		desired_access		: vm_prot_t);
+
+simpleroutine	data_unlock(
+		memory_object		: memory_object_t;
+		memory_control		: memory_object_control_t;
+		offset			: vm_offset_t;
+		length			: vm_size_t;
+		desired_access		: vm_prot_t);
+
+simpleroutine	data_write(
+		memory_object		: memory_object_t;
+		memory_control		: memory_object_control_t;
+		offset			: vm_offset_t;
+		data			: pointer_t);
+
+simpleroutine	lock_completed(
+		memory_object		: memory_object_t;
+		memory_control		: memory_object_control_t;
+		offset			: vm_offset_t;
+		length			: vm_size_t);
+
+simpleroutine	supply_completed(
+		memory_object		: memory_object_t;
+		memory_control		: memory_object_control_t;
+		offset			: vm_offset_t;
+		length			: vm_size_t;
+		result			: kern_return_t;
+		error_offset		: vm_offset_t);
+
+simpleroutine	data_return(
+		memory_object		: memory_object_t;
+		memory_control		: memory_object_control_t;
+		offset			: vm_offset_t;
+		data			: pointer_t);
+
+simpleroutine	change_completed(
+		memory_object		: memory_object_t;
+		may_cache		: boolean_t;
+		copy_strategy		: memory_object_copy_strategy_t);

@@ -1,0 +1,62 @@
+61
+7x13B.snf        -misc-fixed-bold-r-normal--13-120-75-75-c-70-iso8859-1
+8x13B.snf        -misc-fixed-bold-r-normal--13-120-75-75-c-80-iso8859-1
+9x15B.snf        -misc-fixed-bold-r-normal--15-140-75-75-c-90-iso8859-1
+6x13B.snf        -misc-fixed-bold-r-semicondensed--13-120-75-75-c-60-iso8859-1
+6x10.snf         -misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1
+7x13.snf         -misc-fixed-medium-r-normal--13-120-75-75-c-70-iso8859-1
+8x13.snf         -misc-fixed-medium-r-normal--13-120-75-75-c-80-iso8859-1
+k14.snf          -misc-fixed-medium-r-normal--14-130-75-75-c-140-jisx0208.1983-0
+7x14.snf         -misc-fixed-medium-r-normal--14-130-75-75-c-70-iso8859-1
+7x14rk.snf       -misc-fixed-medium-r-normal--14-130-75-75-c-70-jisx0201.1976-0
+9x15.snf         -misc-fixed-medium-r-normal--15-140-75-75-c-90-iso8859-1
+10x20.snf        -misc-fixed-medium-r-normal--20-200-75-75-c-100-iso8859-1
+5x8.snf          -misc-fixed-medium-r-normal--8-80-75-75-c-50-iso8859-1
+6x9.snf          -misc-fixed-medium-r-normal--9-90-75-75-c-60-iso8859-1
+6x12.snf         -misc-fixed-medium-r-semicondensed--12-110-75-75-c-60-iso8859-1
+6x13.snf         -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+clB6x10.snf      -schumacher-clean-bold-r-normal--10-100-75-75-c-60-iso8859-1
+clB8x10.snf      -schumacher-clean-bold-r-normal--10-100-75-75-c-80-iso8859-1
+clB6x12.snf      -schumacher-clean-bold-r-normal--12-120-75-75-c-60-iso8859-1
+clB8x12.snf      -schumacher-clean-bold-r-normal--12-120-75-75-c-80-iso8859-1
+clB8x13.snf      -schumacher-clean-bold-r-normal--13-130-75-75-c-80-iso8859-1
+clB8x14.snf      -schumacher-clean-bold-r-normal--14-140-75-75-c-80-iso8859-1
+clB9x15.snf      -schumacher-clean-bold-r-normal--15-150-75-75-c-90-iso8859-1
+clB8x16.snf      -schumacher-clean-bold-r-normal--16-160-75-75-c-80-iso8859-1
+clB8x8.snf       -schumacher-clean-bold-r-normal--8-80-75-75-c-80-iso8859-1
+clI6x12.snf      -schumacher-clean-medium-i-normal--12-120-75-75-c-60-iso8859-1
+clI8x8.snf       -schumacher-clean-medium-i-normal--8-80-75-75-c-80-iso8859-1
+clR5x10.snf      -schumacher-clean-medium-r-normal--10-100-75-75-c-50-iso8859-1
+clR6x10.snf      -schumacher-clean-medium-r-normal--10-100-75-75-c-60-iso8859-1
+clR7x10.snf      -schumacher-clean-medium-r-normal--10-100-75-75-c-70-iso8859-1
+clR8x10.snf      -schumacher-clean-medium-r-normal--10-100-75-75-c-80-iso8859-1
+clR6x12.snf      -schumacher-clean-medium-r-normal--12-120-75-75-c-60-iso8859-1
+clR7x12.snf      -schumacher-clean-medium-r-normal--12-120-75-75-c-70-iso8859-1
+clR8x12.snf      -schumacher-clean-medium-r-normal--12-120-75-75-c-80-iso8859-1
+clR6x13.snf      -schumacher-clean-medium-r-normal--13-130-75-75-c-60-iso8859-1
+clR8x13.snf      -schumacher-clean-medium-r-normal--13-130-75-75-c-80-iso8859-1
+clR7x14.snf      -schumacher-clean-medium-r-normal--14-140-75-75-c-70-iso8859-1
+clR8x14.snf      -schumacher-clean-medium-r-normal--14-140-75-75-c-80-iso8859-1
+clR9x15.snf      -schumacher-clean-medium-r-normal--15-150-75-75-c-90-iso8859-1
+clR8x16.snf      -schumacher-clean-medium-r-normal--16-160-75-75-c-80-iso8859-1
+clR4x6.snf       -schumacher-clean-medium-r-normal--6-60-75-75-c-40-iso8859-1
+clR5x6.snf       -schumacher-clean-medium-r-normal--6-60-75-75-c-50-iso8859-1
+clR6x6.snf       -schumacher-clean-medium-r-normal--6-60-75-75-c-60-iso8859-1
+clR5x8.snf       -schumacher-clean-medium-r-normal--8-80-75-75-c-50-iso8859-1
+clR6x8.snf       -schumacher-clean-medium-r-normal--8-80-75-75-c-60-iso8859-1
+clR7x8.snf       -schumacher-clean-medium-r-normal--8-80-75-75-c-70-iso8859-1
+clR8x8.snf       -schumacher-clean-medium-r-normal--8-80-75-75-c-80-iso8859-1
+8x16.snf         -sony-fixed-medium-r-normal--16-120-100-100-c-80-iso8859-1
+8x16rk.snf       -sony-fixed-medium-r-normal--16-120-100-100-c-80-jisx0201.1976-0
+12x24.snf        -sony-fixed-medium-r-normal--24-170-100-100-c-120-iso8859-1
+12x24rk.snf      -sony-fixed-medium-r-normal--24-170-100-100-c-120-jisx0201.1976-0
+olcursor.snf     -sun-open look cursor-----12-120-75-75-p-160-sunolcursor-1
+olgl10.snf       -sun-open look glyph-----10-100-75-75-p-101-sunolglyph-1
+olgl12.snf       -sun-open look glyph-----12-120-75-75-p-113-sunolglyph-1
+olgl14.snf       -sun-open look glyph-----14-140-75-75-p-128-sunolglyph-1
+olgl19.snf       -sun-open look glyph-----19-190-75-75-p-154-sunolglyph-1
+cursor.snf       cursor
+deccurs.snf      decw$cursor
+decsess.snf      decw$session
+nil2.snf         nil2
+xtrek.snf        xtrek

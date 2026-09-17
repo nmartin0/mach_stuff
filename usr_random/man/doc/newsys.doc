@@ -1,0 +1,121 @@
+******************************************************************************
+
+4/13/92 MacMach note:
+
+The "Mach Kernel" that is shipped along with the "Mach" control panel will
+automatically run the "newsys" program when booted.  Some manual setup is
+required before running "newsys".
+
+The disk devices are specified as "/dev/disk#?" where '#' is the SCSI ID of
+the disk and '?' is a letter indicating the disk partition.  For destination
+disks, use partition 'a'.  For source disks, use the 'c' partition.
+
+Before a Macintosh disk can be accessed by "newsys", it must be formatted and
+partitioned with a Macintosh utility such as "HD Setup" or "Silverlining".
+
+Allocate a paging partition, usually 10MB, of type "Apple_Scratch".
+
+Allocate an "Apple_Free" partition for the Unix file system.  This will later
+be converted into a "Mach_UNIX_BSD4.3" partition.  For SMALL systems, allocate
+at least 60MB.  For FULL systems, allocate at least 100MB.  If SOURCE is
+included, add another 300MB.
+
+The best way to install a system that will have sources is to first install
+the system without the sources.  Format another disk with a 300MB partition.
+Run the "mac2part" program and the "newfs" program.  Mount the 'c' partition
+as "/usr/src" and then run "newsys" to update, adding the SOURCE module.
+
+Open the "Mach" control panel.
+
+The "Time Offset" converts between the Macintosh's local time and GMT.  Select
+the appropriate offset for your time zone.
+
+The "Default Root Device" is the same as the DESTINATION "Disk Device" that
+will be supplied to "newsys".
+The "Default Root Device" is where the Mach Kernel finds the Unix Server.
+
+The "Default Load Device" is usually the same as the "Default Root Device".
+The "Default Load Device" is where the Mach Kernel is loaded from.
+
+The "Default Kernel" is usually "/mach_kernel".  This is the name of the
+file containing the Mach Kernel.
+
+The "Alternate Root Device", "Alternate Load Device" and "Alternate Kernel"
+usually reference the "Mach Kernel" that is shipped along with the "Mach"
+control panel.  Note that Mach Kernel's can be loaded from Macintosh files.
+
+Check the "Enable Mach startup after restart." box and restart the machine.
+The "newsys" program will then complete the installation process.
+
+A final note: The single-user box can be selected when the "Mach Kernel" boots.
+This will boot a single user shell.  The "Mach Kernel" that is shipped along
+with the "Mach" control panel contains a small ramdisk with some utilities on
+it.
+
+******************************************************************************
+
+
+Collect the following information before running the "newsys" program.
+
+
+*** DESTINATION ***
+
+Select:                        INSTALL
+
+Directory (update):            ________________________
+
+OR
+
+Disk Device (install):         ________________________
+
+
+*** NAME ***
+
+    Will this system have network access?
+
+    NO:
+
+        System Name:           ________________________
+
+    YES:
+
+        Host Name:             ________________________
+
+        Network Address:       ________________________
+
+        Is there a gateway?
+
+        YES:
+
+            Gateway Address:   ________________________
+
+Note: Network parameters must be verified by the local
+      network administrator!
+
+
+*** SOURCE ***
+
+Directory:                     ________________________
+
+OR
+
+Disk Device:                   ________________________
+
+OR
+
+FTP Server:                    ________________________
+
+    FTP Source Directory:      ________________________
+
+    FTP User:                  ________________________
+
+    FTP Password:              ************************
+
+
+*** MODULES ***
+
+SMALL                          ________________________
+
+FULL                           ________________________
+
+SOURCE                         ________________________

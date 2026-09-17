@@ -1,0 +1,98 @@
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990,1989 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie Mellon
+.\" the rights to redistribute these changes.
+.\"/
+.TH SOLICIT 3  "April 15 1992"
+.UC 4
+.SH NAME
+count_items, add_item, select_item, search_items,
+sort_items, solicit_text, solicit_password, solicit_items,
+solicit_item, solicit_yesno \- solicitation operations
+.SH SYNOPSIS
+.B cc [ flags ] files
+.B \-lsolicit
+[ libraries ]
+.PP
+.nf
+.B #include <solicit.h>
+.PP
+.B int count_items(list)
+.B char *list;
+.PP
+.B char void add_item(list, item)
+.B char *list, *item;
+.PP
+.B int select_item(list, item, n)
+.B char *list, *item;
+.B int n;
+.PP
+.B int search_items(list, target)
+.B char *list, *target;
+.PP
+.B void sort_items(list, unique)
+.B char *list;
+.B int unique;
+.PP
+.B char *solicit_text(prompt, default_text, help)
+.B char *prompt, *default_text, *help;
+.PP
+.B char *solicit_password(prompt, help)
+.B char *promtp, *help;
+.PP
+.B solicit_item(list, prompt, help)
+.B char *list, *prompt, *help;
+.PP
+.B solicit_items(list, prompt, help)
+.B char *list, *prompt, *help;
+.PP
+.B int solicit_yesno(question)
+.B char *question;
+.fi
+.SH DESCRIPTION
+These functions implement a simple user interface.
+.PP
+\fIcount_items\fP counts the items in the \fIlist\fP.
+.PP
+\fIadd_item\fP adds an \fIitem\fP to the \fIlist\fP.
+.PP
+\fIselect_item\fP copies the \fIn\fPth \fIitem\fP from the \fIlist\fP.
+.PP
+\fIsearch_items\fP returns non-zero if the \fIitem\fP is not in the \fIlist\fP.
+.PP
+\fIsort_items\fP sorts the \fIlist\fP, removing duplicates if \fIunique\fP is non-zero.
+.PP
+\fIsolicit_text\fP solicits free-form text.
+.PP
+\fIsolicit_text\fP solicits a password.
+.PP
+\fIsolicit_item\fP solicits one item from a list.
+.PP
+\fIsolicit_items\fP solicits one or more items from a list.
+.PP
+\fIsolicit_yesno\fP presents a question and returns non-zero if the user responds "yes".
+.SH BUGS
+This is a VERY trivial user interface.
+.SH AUTHOR
+The
+.I solicit
+library was written by Zonnie L. Williamson at CMU, 1992.

@@ -1,0 +1,7 @@
+If you run on 4x0/6x0 model Towers, beware of this:
+The default maximum virtual address space of a process is 1Mb.  This is
+not enough to run gcc -O on large files.  The problem is typically seen
+while compiling gcc with itself.  You have to change your kernel
+configuration file, adding a line like this:
+MAXUMEM = 4096
+Then relink the kernel and reboot.

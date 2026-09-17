@@ -1,0 +1,172 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1993,1992 Carnegie Mellon University
+ * All Rights Reserved.
+ * 
+ * Permission to use, copy, modify and distribute this software and its
+ * documentation is hereby granted, provided that both the copyright
+ * notice and this permission notice appear in all copies of the
+ * software, derivative works or modified versions, and any portions
+ * thereof, and that both notices appear in supporting documentation.
+ * 
+ * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+ * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+ * 
+ * Carnegie Mellon requests users of this software to return to
+ * 
+ *  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+ *  School of Computer Science
+ *  Carnegie Mellon University
+ *  Pittsburgh PA 15213-3890
+ * 
+ * any improvements or extensions that they make and grant Carnegie Mellon 
+ * the rights to redistribute these changes.
+ */
+
+/*
+ *	Matchmaker definitions file for Mach4 kernel interface.
+ */
+
+/*
+ * HISTORY
+ * $Log:	mach4.defs,v $
+ * Revision 2.4  93/11/17  17:39:01  dbg
+ * 	Made PC sampling calls 64-bit clean.
+ * 	[93/09/27            dbg]
+ * 
+ * 	Return actual wakeup time for timer_sleep.
+ * 	[93/07/13            dbg]
+ * 
+ * 	Added calls for new timers and for real-time threads.
+ * 	[93/03/24            dbg]
+ * 
+ * Revision 2.3  93/08/03  12:31:33  mrt
+ * 	Addded flavor argument to sampling interface.
+ * 	[93/07/30  10:25:45  bershad]
+ * 
+ * Revision 2.2  93/01/24  13:20:41  danner
+ * 	Recast Maeda's pc sampling code into new interface file.  Also
+ * 	redefined how it works.
+ * 	[93/01/11            rvb]
+ * 
+ */
+
+subsystem
+#if	KERNEL_SERVER
+	  KernelServer
+#endif	/* KERNEL_SERVER */
+#if	KERNEL_USER
+	  KernelUser
+#endif	/* KERNEL_USER */
+		       mach4 4000;
+
+#include <mach/std_types.defs>
+#include <mach/mach_types.defs>
+
+
+type sampled_pc_t 	= struct[3]    of natural_t;
+type sampled_pc_array_t = array[*:512] of sampled_pc_t;
+type sampled_pc_seqno_t = unsigned;
+type sampled_pc_flavor_t = natural_t;
+
+type policy_param_realtime_t	= struct[7] of natural_t;
+
+routine task_enable_pc_sampling(
+		host          : task_t;
+		out tick      : int;     /* sample frequency in usecs	*/
+		flavor	      : sampled_pc_flavor_t );
+
+routine task_disable_pc_sampling(
+		host          : task_t;
+		out samplecnt : int);
+				 
+routine task_get_sampled_pcs(
+		host	        : task_t;
+		inout seqno     : sampled_pc_seqno_t;
+		out sampled_pcs : sampled_pc_array_t);
+
+routine thread_enable_pc_sampling(
+		host          : thread_t;
+		out tick      : int;     /* sample frequency in	usecs*/
+		flavor	      : sampled_pc_flavor_t );		
+
+routine thread_disable_pc_sampling(
+		host          : thread_t;
+		out samplecnt : int);
+				 
+routine thread_get_sampled_pcs(
+		host	        : thread_t;
+		inout seqno     : sampled_pc_seqno_t;
+		out sampled_pcs : sampled_pc_array_t);
+
+
+skip	/* pc_sampling reserved 1*/;
+skip	/* pc_sampling reserved 2*/;
+skip	/* pc_sampling reserved 3*/;
+skip	/* pc_sampling reserved 4*/;
+
+routine timer_create(
+		clock		: mach_clock_t;
+	out	timer		: mach_timer_t);
+
+routine timer_terminate(
+		timer		: mach_timer_t);
+
+routine timer_get_evc(
+		timer		: mach_timer_t;
+	out	event		: natural_t);
+
+routine timer_arm(
+		timer		: mach_timer_t;
+		expire_time	: time_spec_t;
+		interval_time	: time_spec_t;
+		expire_port	: expire_port_t;
+		thread		: thread_t;
+		flags		: int);
+
+routine timer_sleep(
+		timer		: mach_timer_t;
+		expire_time	: time_spec_t;
+		flags		: int;
+	out	wakeup_time	: time_spec_t);
+
+routine timer_cancel(
+		timer		: mach_timer_t;
+		flags		: int);
+
+routine timer_info(
+		target_timer	: mach_timer_t;
+		flavor		: int;
+	out	clock		: mach_clock_t;
+	out	expire_port	: expire_port_t;
+	out	thread		: thread_t;
+	out	timer_info_out	: mach_timer_info_t, CountInOut);
+
+skip;	/* timer_expire */
+skip;	/* timer reserved */
+skip;	/* timer reserved */
+
+routine	thread_get_periodic_timers(
+		thread		: thread_t;
+	out	wakeup_timer	: mach_timer_t;
+	out	deadline_timer	: mach_timer_t);
+
+routine	thread_set_periodic_timers(
+		thread		: thread_t;
+		wakeup_timer	: mach_timer_t;
+		deadline_timer	: mach_timer_t);
+
+routine	periodic_thread_create(
+		parent_task	: task_t;
+		clock		: mach_clock_t;
+		param		: policy_param_realtime_t;
+		deadline_port	: expire_port_t;
+		initial_flavor	: int;
+		initial_state	: thread_state_t;
+	out	thread		: thread_t);
+
+routine	periodic_thread_restart(
+		thread		: thread_t);
+
+

@@ -1,0 +1,30 @@
+/*
+ * HISTORY
+ * $Log:	regexp.h,v $
+ * Revision 2.2  91/10/14  16:47:12  berman
+ * 	Created for updated make from bww's merge.
+ * 
+ */
+/*
+ * Definitions etc. for regexp(3) routines.
+ *
+ * Caveat:  this is V8 regexp(3) [actually, a reimplementation thereof],
+ * not the System V one.
+ *
+ *	@(#)regexp.h	1.1 (Berkeley) 9/29/87
+ */
+#define NSUBEXP  10
+typedef struct regexp {
+	char *startp[NSUBEXP];
+	char *endp[NSUBEXP];
+	char regstart;		/* Internal use only. */
+	char reganch;		/* Internal use only. */
+	char *regmust;		/* Internal use only. */
+	int regmlen;		/* Internal use only. */
+	char program[1];	/* Unwarranted chumminess with compiler. */
+} regexp;
+
+extern regexp *regcomp();
+extern int regexec();
+extern void regsub();
+extern void regerror();

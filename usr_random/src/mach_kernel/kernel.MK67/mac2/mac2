@@ -1,0 +1,8 @@
+ident		MACH
+options		MACH_KERNEL
+options		STAT_TIME
+pseudo-device	cpus		1
+conftype	"mac2"
+platform	"mac2"
+config		mach_kernel	swap generic
+options		CMUCS_DISK

@@ -1,0 +1,952 @@
+                               Mach Bibliography
+                          School of Computer Science
+                          Carnegie Mellon University
+                           Pittsburgh, PA 15213-3890
+
+                                January 9, 1992
+
+
+This bibliography suggests background reading about the Mach operating system.
+
+We have tried to include enough information about unpublished works so that you
+will be able to obtain copies without too much trouble. Whenever  possible,  we
+have included where to get these documents by anonymous FTP.
+
+   1. Mike  Accetta,  Robert  Baron,  David  Golub, Richard Rashid, Avadis
+      Tevanian, and Michael Young. Mach: A New Kernel Foundation for  UNIX
+      Development.  Technical Report, School of Computer Science, Carnegie
+      Mellon University, Pittsburgh, August 1986.  Also in Proceedings  of
+      the Summer 1986 USENIX Conference, pp. 93-112, July 1986.
+
+      This is an introduction to Mach 2.5.
+
+      This  paper  describes  Mach  and  the  motivations which led to its
+      design.    Also  described  are  some  of   the   details   of   its
+      implementation and status at the time of writing.
+
+      You  may  order  printed copies from the School of Computer Science,
+      Carnegie Mellon University by sending a message  to  mach@cs.cmu.edu
+      or by calling 412/268-8166.
+
+   2. Robert  V.  Baron,  David  Black,  William  Bolosky,  Jonathan Chew,
+      Richard P.  Draves,  David  B.  Golub,  Richard  F.  Rashid,  Avadis
+      Tevanian,  Jr.,  and  Michael  Wayne  Young.   Mach Kernel Interface
+      Manual.  August, 1990.  Unpublished manuscript from  the  School  of
+      Computer Science, Carnegie Mellon University.
+
+      This manual describes the interface to the Mach kernel in detail for
+      a wide variety of uniprocessor and multiprocessor architectures.
+
+      Additions to the manual after 1990: Processor  allication  primitive
+      and  scheduling primitives.  These can also be found in the document
+      called procmanual.  (These are not implemented in 2.5.)
+
+      Copies    are    available    on     host     mach.cs.cmu.edu     in
+      /usr/mach/public/doc/manual.ps                                    or
+      /usr/mach/public/doc/procmanual{doc, ps} through anonymous FTP.  You
+      may  also  order printed copies from the School of Computer Science,
+      Carnegie Mellon University by sending a message  to  mach@cs.cmu.edu
+      or by calling 412/268-8166
+
+   3. David L. Black.  The Mach cpu_server: An Implementation of Processor
+      Allocation.  August 1989.  Unpublished manuscript from the School of
+      Computer Science, Carnegie Mellon University.
+
+      This  document  describes  the  cpu_server, a user-mode server which
+      performs processor allocation for the Mach operating system.
+
+      Copies are available through anonymous FTP on  host  mach.cs.cmu.edu
+      in /usr/mach/public/doc/cpuserver{doc, ps}.
+
+   4. David.   L.   Black.      Scheduling  Support  for  Concurrency  and
+      Parallellism in the Mach Operating System.    CMU  Technical  Report
+      CMU-CS-90-125,  April  1990.   A revised version can be found in the
+      May 1990 issues of IEEE Computer.
+
+      Changes in the use of multiprocessors are  placing  new  demands  on
+      operating system schedulers.  This article describes some of the new
+      challenges  posed  by  parallel  and  concurrent  applications,  and
+      introduces  techniques  developed  by the Mach project to meet these
+      challenges.  An overview of the technique of timesharing  scheduling
+      and a description of Mach are also included.
+
+      This  article describes work to incorporate processor allocation and
+      control into the Mach operating system.  The design approach divides
+      the   implementation  into  three  components:  (1)basic  mechanisms
+      implemented in the kernel, (2)long  term  policy  implemented  in  a
+      server,  and  (3)optional  user implementation of short term policy.
+      Isolating long term policy in  a  server  yields  the  advantage  of
+      policy-machanism separation while avoiding the drawbacks encountered
+      in  previous  applications  of  this  principle  to   multiprocessor
+      scheduling.  The design and implementation of a processor allocation
+      server for a gang scheduling policy is also described.
+
+      This  article  also  describes  work  to   support   the   effective
+      multiprogrammed  use of multiprocessors.  The approach taken to this
+      problem implements the scheduler in the kernel, but encourages users
+      to  provide  hints.   This allows the scheduler to take advantage of
+      user knowledge without requiring users  to  implement  sophisticated
+      scheduling modules.
+
+      You  may  order  printed  copies from the School of Computer Science
+      Carnegie Mellon University by sending mail to mach@cs.cmu.edu or  by
+      calling 412/268-8166.
+
+   5. David.  L. Black.  Scheduling and Resource Management Techniques for
+      Multiprocessors.  CMU Thesis CMU-CS-90-152, July 1990.
+
+      This thesis describes research in the design and  implementation  of
+      multiprocessor  resource  management and related areas.  Application
+      requirements  motivated  the   major   research   areas,   processor
+      scheduling and non-uniform memory management, as these areas contain
+      the most important problems raised by the changing design and use of
+      multiprocessors.
+
+      You  may  order  printed copies from the School of Computer Science,
+      Carnegie Mellon University by sending a message  to  mach@cs.cmu.edu
+      or by calling 412/268-8166.
+
+   6. David  L. Black, David B. Golub, Richard F. Rashid, Avadis Tevanian,
+      Jr., and Michael W. Young.  The Mach  Exception  Handling  Facility.
+      Technical Report CMU-CS-88-129, School of Computer Science, Carnegie
+      Mellon University, April 1988.
+
+      Exceptions are caused by the occurrence of unusual conditions during
+      program execution; raising an exception invokes the operating system
+      to manage recovery  from  the  unusual  condition.    Although  many
+      exceptions  can  be  handled and dismissed transparently to the user
+      (e.g., page faults), some must be  exported  in  some  form  (invoke
+      handler,  core  dump,  etc.).  This  paper  concerns  the design and
+      implementation of exception handling facilities  that  perform  this
+      exporting  for  general purpose operating systems. It discusses both
+      the overall design principles for these facilities and the  specific
+      design  and implementation of an exception handling facility for the
+      Mach operating system.  It also discusses the  support  provided  to
+      applications  that  use exception (e.g., debuggers) by this facility
+      and other Mach kernel facilities.
+
+      You may order printed copies from the School  of  Computer  Science,
+      Carnegie  Mellon  University by sending a message to mach@cs.cmu.edu
+      or by calling 412/268-8166.
+
+   7. Deborah Casewell, David. Black.  Implementing a  Mach  Debugger  for
+      Multithreaded  Applications.    CMU  Technical Report CMU-CS-89-154,
+      November 1989.  Also can be found in the Proceddings of Winter  1990
+      USENIX Technical Conference and Exhibition, January 1990.
+
+      Multiple  threads  of  control  add  new  challenges  to the task of
+      application debugging and require the development of  new  debuggers
+      to  meet  these  challenges.    This  paper describes the design and
+      implementation of modifications to an exisiting debugger  (gdb)  for
+      debugging   multithreaded  applications  under  the  Mach  operatinf
+      system.  It also describes the operating facilities that support it.
+      Although  certain  implementations details are specific to Mach, the
+      underlying desgin principles are applicable to  other  systems  that
+      support threads in a Unix compatible environment.
+
+      You  may  order  printed copies from the School of Computer Science,
+      Carnegie Mellon University by sending a message  to  mach@cs.cmu.edu
+      or by calling 412/268-8166.
+
+   8. Eric  C.  Cooper and Richard P. Draves. C Threads.  Technical Report
+      CMU-  CS-88-154,  School  of  Computer  Science,   Carnegie   Mellon
+      University, February 1988.
+
+      The  C  Threads  package  allows parallel programming in C under the
+      Mach operating system.  The package  provides  multiple  threads  of
+      control within a single shared address space, mutual exclusion locks
+      for protection of critical  regions,  and  condition  variables  for
+      thread synchronization.
+
+      Copies     are     available     on    host    mach.cs.cmu.edu    in
+      /usr/mach/public/doc/threads.ps through anonymous FTP. You may  also
+      order  printed  copies from the School of Computer Science, Carnegie
+      Mellon University by sending a  message  to  mach@cs.cmu.edu  or  by
+      calling 412/268-8166.
+
+   9. Randall  Dean,  Francois  Armand*.    Data  Movement  in  Kernelized
+      Systems.
+
+      This paper considers how two kernelized systems, Mach 3.0  with  the
+      BSD4.3 Single Server and Chorus/MiX V.4, move data to and from files
+      under a variety of circumstances.  We give an overview of the kernel
+      abstractions and system server and describe in detail the read() and
+      write() paths of these two systems.  We then break down their read()
+      and  write() performance and compare them to two monolithic systems,
+      Mach 2.6MSD(BSD4.3) and  System  V  R4.0.    We  then  describe  the
+      compromises  each  of  the  2  kernelized  systems  make in order to
+      achieve a goal of performance comparable to the monolithic  systems.
+      We  conclude  with a description of what techniques each system uses
+      that could  benefit  both  each  other  and  traditional  monolithic
+      systems.
+
+      *Francois Armand is currently with CHORUS Systems-Cedex, France.
+
+      Copies     are     available     on    host    mach.cs.cmu.edu    in
+      /usr/mach/public/doc/mach3/ datamovement.{ps, doc} through anonymous
+      FTP,  You  may also order printed copies from the School of Computer
+      Science,  Carnegie  Mellon  University  by  sending  a  message   to
+      mach@cs.cmu.edu or by calling 412/268-8166.
+
+  10. Richard  P.  Draves.  The Revised IPC Interface.  Proceedings of the
+      USENIX Mach Conference, October 1990.
+
+      The Mach 3.0 IPC facility efficently supports many different  styles
+      of  communication,  including  server-client remote procedure calls,
+      distributed object-oriented programming, and streams.  As a building
+      block,  the  interface  provides  a  general message primitive.  The
+      message primitive operates on capabilites for  communication  ports.
+      The  interface  remedies numerous problems that were observed in the
+      older  Mach  2.5  interface.    The  implementation  provides   good
+      performance,   running  30%-40%  faster  than  Mach  2.5  with  data
+      structures 50%  smaller.    The  Mach  3.0  implementation  provides
+      backwards-compatibilities for the older interface.
+
+      Copies     are     available     on    host    mach.cs.cmu.edu    in
+      /usr/mach/public/doc/ipc.ps through anonymous FTP.    You  may  also
+      order  printed  copies from the School of Computer Science, Carnegie
+      Mellon University by sending a  message  to  mach@cs.cmu.edu  or  by
+      calling 412/268-8166.
+
+  11. Richard  P. Draves, Michael B. Jones, and Mary R. Thompson.  MIG ---
+      The MACH Interface Generator.  July 1989.    Unpublished  manuscript
+      from the School of Computer Science, Carnegie Mellon University.
+
+      Matchmaker   is   a  language  for  specifying  and  automating  the
+      generation of multilingual  interprocess  communication  interfaces.
+      MIG  is  an  interim  implementation  of  a subset of the Matchmaker
+      language that generates C and C++ remote procedure  call  interfaces
+      for interprocess communication between Mach tasks.
+
+      Copies     are     available     on    host    mach.cs.cmu.edu    in
+      /usr/mach/public/doc/mig.ps through  anonymous  FTP.  You  may  also
+      order  printed  copies from the School of Computer Science, Carnegie
+      Mellon University by calling 412/268-8166.
+
+  12. Alessandro Forin, Joseph Barrera,  Michael  Young,  Richard  Rashid.
+      Design,  Implementation  and Performance Evaluation of a Distributed
+      Shared Memory Server for Mach.  A  shorter  version  of  this  paper
+      appears  in the Proceedings of the Winter USENIX Conference, January
+      1989.
+
+      This report describes the  design,  implementation  and  performance
+      evaluation  of a virtual shared memory server for the Mach operating
+      system.  The server  provided  unrestricted  sharing  of  read-write
+      memory  between  tasks running on either strongly coupled or loosely
+      coupled architectures, and any mixture thereof.  A number of  memory
+      coherency  algorithms have been implemented and evaluated, including
+      a new distributed algorithm that is shown to outperform  centralized
+      ones.    Some  of  the  features  of  the server include support for
+      machines with multiple page sizes, for heterogeneous shared  memory,
+      and   for  fault  tolerance.    Extensive  performance  measures  of
+      applications are presented, and the intrinsic costed evaluated.
+
+      You may order printed copies from the School  of  Computer  Science,
+      Carnegie  Mellon  University by sending a message to mach@cs.cmu.edu
+      or by calling 412/268-8166
+
+  13. David Golub, Randall Dean, Alessandro Forin, Richard Rashid.    Unix
+      as  an Application Program.  This article appears in the Proceedings
+      of the USENIX Summer Conference, June 1990.
+
+      This is an introduction to the Mach 3.0 kernel.
+
+      Since March 1989 we have been running at CMU a computing environment
+      in  which  the  functions  of  a  tradional  Unix system are cleanly
+      divided  into  two  parts:facilities  which  manages  the   hardware
+      resources  of  a  computer  system(such  as  CPU. I/O and memory)and
+      support for higher-level resource abstractions used in the  building
+      of  application  programs,  e.g.  files  and  sockets.    This paper
+      describes the implementation of Unix as a multithreaded  application
+      program  running  on  the  Mach  kernel.    The  rationale,  design,
+      implementation history and performance of the system is present.
+
+      Copies    are    available    on     host     mach.cs.cmu.edu     in
+      /usr/mach/public/doc/   mach_3intro.usenix.90.ps  through  anonymous
+      FTP.  You may also order printed copies from the School of  Computer
+      Science,   Carnegie  Mellon  University  by  sending  a  message  to
+      mach@cs.cmu.edu or by calling 412/268-8166.
+
+  14. Michael B. Jones, Richard F. Rashid.  Mach  and  Matchmaker:  Kernel
+      and   Language  Support  for  Object-Oriented  Distributed  Systems.
+      Technical  Report  CS-CMU-88-129,  School  for   Computer   Science,
+      Carnegie Mellon University, September 1986.
+
+      Mach,   a   multiprocessing   operating   system   kernel  providing
+      capability-based  interprocess  communtication  and  Matchmaker,   a
+      language   for   specifying   and   automating   the  generation  of
+      multi-ligual interprocess communtication interfaces, are  presented.
+      Their   usage   together   providing  a  heterogenous,  distributed,
+      object-oriented programming environment is described.    Performance
+      and  usage  statistics  are presented.  Comparisons are made between
+      the Mach/Matchmaker environment and other related systems.  Possible
+      future directions are examined.
+
+      You  may  order  printed copies from the School of Computer Science,
+      Carnegie Mellon University by sending a message  to  mach@cs.cmu.edu
+      or by calling 412/268-8166.
+
+  15. Dan  Julin. Network Server Design, Mach Networking Group.  September
+      1989.
+
+      This document describes the design of the network server and details
+      the  interfaces to the modules that are used to implement it.  It is
+      intended for implementers rather than users.  This document reflects
+      the  current  state of the implementation, and does not constitute a
+      commitment for future developments.
+
+      Copies    are    available    on     host     mach.cs.cmu.edu     in
+      /usr/mach/public/doc/  netmsgserver.{doc,ps}  through anonymous FTP.
+      You may also order copies  from  the  School  of  Computer  Science,
+      Carnegie  Mellon  University by sending a message to mach@cs.cmu.edu
+      or by calling 412/268-8166.
+
+  16. Ted Lehr, David L. Black.   Mach  Kernel  Monitor(with  applications
+      using the PIE environment).  February, 1990.
+
+      Factors  such as the decomposition of parallel programs affect their
+      performance.   Measurements  of  parallel  program  performance  are
+      improved  in  supported  by  information  such  as  how programs are
+      scheduled.  This manual  describes  how  to  use  MKM  (Mach  Kernel
+      Monitor).   Special examples of data obtained by using MKM are shown
+      via the PIE performance monitoring environment.
+
+      Copies are available on host mach.cs.cmu.edu in /usr/mach/public/doc
+      /monmanual.{doc,  ps}  through  anonymous  FTP.   You may also order
+      copies  from  the  School  of  Computer  Science,  Carnegie   Mellon
+      University  by  sending  a  message to mach@cs.cmu.edu or by calling
+      412/268-8166.
+
+  17. Richard Rashid.  Threads of a New System.  Unix Review Vol.  4,  No.
+      8, Pgs:37-49.
+
+      This article describes the origin of the Mach operating system.
+
+      You  may  order  printed copies from the School of Computer Science,
+      Carnegie Mellon University by sending a message  to  mach@cs.cmu.edu
+      or by calling 412/268-8166.
+
+  18. R.  F.  Rashid.    From  RIG  to  Accent to Mach: The Evolution of a
+      Network Operating System.  In Proceedings of the  ACM/IEEE  Computer
+      Society, Fall Joint Computer Conference, ACM, November 1986.
+
+      This   paper   describes   experiences  gained  during  the  design,
+      implementation and use of the CMU Accent Network  Operating  System,
+      its  predecessor,  the  University  of  Rochester RIG system and its
+      successor CMU's Mach multiprocessor operating system.   It  outlines
+      the major design decisions on which the Accent kernel was based, how
+      those decisions evolved from the RIG experiences and how they had to
+      be  modified  to  properly handle general purpose multiprocessors in
+      Mach.   Also  discussed  are  some  the  the  major  issues  in  the
+      implementation of message-based systems, the usage patterns observed
+      with Accent over a three year period of extensive use at CMU  and  a
+      timing analysis of various Accent functions.
+
+  19. Richard  Rashid,  Avadis  Tevanian, Jr., Michael Young, David Golub,
+      Robert Baron, David  Black,  William  Bolosky,  and  Jonathan  Chew.
+      Machine-Independent Virtual Memory Management for Paged Uniprocessor
+      and Multiprocessor Architectures.  Technical  Report  CMU-CS-87-140,
+      School  of  Computer Science, Carnegie Mellon University, July 1987.
+      Also in Proceedings of the 2nd Symposium  on  Architectural  Support
+      for Programming Languages and Operating Systems, ACM, October, 1987.
+
+      This paper describes the design and implementation of virtual memory
+      management within the CMU Mach Operating System and the  experiences
+      gained  by the Mach kernel group in porting that system to a variety
+      of architectures. As of this writing, Mach runs on more than half  a
+      dozen  uniprocessors and multiprocessors including the VAX family of
+      uniprocessors and multiprocessors, the IBM RT PC,  the  SUN  3,  the
+      Encore  MultiMax, the Sequent Balance 21000 and several experimental
+      computers. Although these systems vary considerably in the  kind  of
+      hardware   support   for   memory   management   they  provide,  the
+      machine-dependent portion of  Mach  virtual  memory  consists  of  a
+      single  code module and its related header file.  This separation of
+      software  memory  management  from   hardware   support   has   been
+      accomplished without sacrificing system performance.  In addition to
+      improving portability,  it  makes  possible  a  relatively  unbiased
+      examination  of  the  pros  and  cons  of  various  hardware  memory
+      management schemes, especially as  they  apply  to  the  support  of
+      multiprocessors.
+
+      You  may  order  printed copies from the School of Computer Science,
+      Carnegie Mellon University by send a message to  mach@cs.cmu.edu  or
+      by calling 412/268-8166
+
+  20. Avadis   Tevanian,  Jr.    Architecture-Independent  Virtual  Memory
+      Management for Parallel and Distributed Environments.   PhD  thesis,
+      School  of  Computer  Science,  Carnegie Mellon University, December
+      1987.  Also as Technical Report CMU-CS-88-106  from  the  School  of
+      Computer Science, Carnegie Mellon University, 1987.
+
+      This  thesis  describes  the  design  and  implementation  of a new,
+      portable, memory  management  system  and  evaluates  it  by  direct
+      comparison  with  commercially  developed memory management systems.
+      It is in production use at CMU, a number of industrial organizations
+      and  research  laboratories,  and is a central component of the Mach
+      operating  system,  a  distributed  and  parallel  operating  system
+      developed  at  Carnegie  Mellon  University.    At  the time of this
+      writing, it runs  on  more  than  half  a  dozen  uniprocessors  and
+      multiprocessors  including  the  DEC VAX family of uniprocessors and
+      multiprocessors, the IBM RT PC, the SUN 3, the Encore MultiMax,  the
+      Sequent Balance 21000 and several experimental computers.
+
+      You  may  order  printed copies from the School of Computer Science,
+      Carnegie Mellon University by sending a message  to  mach@cs.cmu.edu
+      or by calling 412/268-8166.
+
+  21. Avadis  Tevanian,  Jr.  and  Richard  F.  Rashid.  Mach: A Basis for
+      Future UNIX Development. Technical Report CMU-CS-87-139,  School  of
+      Computer Science, Carnegie Mellon University, Pittsburgh, June 1987.
+      Computing  in  the future will be supported by distributed computing
+      environments. These environments will consist of  a  wide  range  of
+      hardware  architectures  in both the uniprocessor and multiprocessor
+      domain.  This  paper  discusses  Mach,  an  operating  system  under
+      development  at  Carnegie  Mellon University, that has been designed
+      with the intent to integrate  both  distributed  and  multiprocessor
+      functionality.  In addition, Mach provides the foundation upon which
+      future Unix development may take place in these new environments.
+
+      You may order printed copies from the School  of  Computer  Science,
+      Carnegie  Mellon  University by sending a message to mach@cs.cmu.edu
+      or by calling 412/268-8166
+
+  22. Avadis Tevanian, Jr., Richard  F.  Rashid,  David  B.  Golub,  David
+      L.  Black,  Eric  Cooper, and Michael W. Young. Mach Threads and the
+      Unix  Kernel:  The   Battle   for   Control.      Technical   Report
+      CMU-CS-87-149,   School   of   Computer   Science,  Carnegie  Mellon
+      University, August 1987.
+
+      This  paper  examines  a  kernel  implemented  lightweight   process
+      mechanism built for the Mach operating system.  The pros and cons of
+      such a mechanism are discussed along with the  problems  encountered
+      during its implementation.
+
+      You  may  order  printed copies from the School of Computer Science,
+      Carnegie Mellon University by sending a message  to  mach@cs.cmu.edu
+      or by calling 412/268-8166
+
+  23. Avadis  Tevanian,  Jr.,  Richard  F.  Rashid,  Michael  Young, David
+      B. Golub, Mary R. Thompson, William Bolosky, and Richard Sanzi.    A
+      Unix Interface for Shared Memory and Memory Mapped Files Under Mach.
+      Technical  Report,  School  of  Computer  Science,  Carnegie  Mellon
+      University, Pittsburgh, July 1987.
+
+      This  paper  describes  an approach to Unix shared memory and memory
+      mapped files currently in  use  at  CMU  under  the  Mach  Operating
+      System.    It  describes the rationale for Mach's memory sharing and
+      file mapping primitives as well as  their  impact  on  other  system
+      components and on overall performance.
+
+      You  may  order  printed copies from the School of Computer Science,
+      Carnegie Mellon University by sending a message  to  mach@cs.cmu.edu
+      or by calling 412/268-8166.
+
+  24. Mary   R.   Thompson.     Mach  Environment  Manager.    July  1988.
+      Unpublished manuscript from School  of  Computer  Science,  Carnegie
+      Mellon University.
+
+      The  Environment  Manager  is  a  Mach  server which facilitates the
+      sharing of named  variables  between  tasks.  This  paper  discusses
+      types, primitives, and integration with the Unix environment.
+
+      Copies     are     available     on    host    mach.cs.cmu.edu    in
+      /usr/mach/public/doc/envmgr.ps through anonymous FTP. You  may  also
+      order  printed  copies from the School of Computer Science, Carnegie
+      Mellon University by calling 412/268-8166.
+
+  25. Linda R. Walmer and Mary R. Thompson. A Programmer's  Guide  to  the
+      Mach  System  Calls.    February  1988.  School of Computer Science,
+      Carnegie Mellon University.
+
+      This document is one of two tutorials designed to teach  basic  Mach
+      programming  skills. This manual explains the use of the Mach kernel
+      calls. The companion document to this one, A Programmer's  Guide  to
+      the  Mach  User Environment explains the use of higher level methods
+      for   implementing   multithreaded   programs    and    interprocess
+      communication.    Before  writing programs that use the system calls
+      directly, the user should be aware that the methods outlined in  the
+      other document may be used to solve his problem more simply.
+
+      Copies  are  available through anonymous FTP on host mach.cs.cmu.edu
+      in /usr/mach/public/doc/machsys.ps.   You  may  also  order  printed
+      copies   from  the  School  of  Computer  Science,  Carnegie  Mellon
+      University by calling 412/268-8166.
+
+  26. Linda R. Walmer and Mary R. Thompson. A Programmer's  Guide  to  the
+      Mach  User Environment.  February 1988.  School of Computer Science,
+      Carnegie Mellon University.
+
+      This document is one of two tutorials designed to teach  basic  Mach
+      programming  skills.  This  manual  demonstrates  the  use  of the C
+      Threads library primitives in writing a  multithreaded  program  and
+      the  use  of  the  Mach Interface Generator (MIG) to generate remote
+      procedure calls for interprocess communication. The reader should be
+      familiar  with  the  basic  Mach  abstractions  of  ports, messages,
+      virtual memory, tasks and threads  which  the  introduction  to  the
+      companion  document,  A Programmer's Guide to the Mach System Calls,
+      explains.
+
+      Copies are available through anonymous FTP on  host  mach.cs.cmu.edu
+      in  /usr/mach/public/doc/machuses.ps.  You  may  also  order printed
+      copies  from  the  School  of  Computer  Science,  Carnegie   Mellon
+      University by calling 412/268- 8166
+
+  27. James  W.  Wendorf.    Operating  System/Application  Concurreny  in
+      Tightly Coupled  Multi-Processor  Systems.    Thesis  CMU-CS-88-117,
+      School  of  Computer  Science,  Carnegie Mellon University, December
+      1987
+
+      At the heart of the thesis are three detailed experimental  studies,
+      involving  the  three  major  forms  of  OS/application concurrency.
+      These   studies,   conducted   on   a   VAX-11/784   shared   memory
+      multiprocessor using modified versions of the Mach operating system,
+      explore the pratical issues  and  problems  involved  in  exploiting
+      OS/application concurrency, and demonstrate some feasible approaches
+      and solutions.  The first study involves a software specialized  IPC
+      processor   that   can   significantly   improve   the   performance
+      communication processes, by  exploiting  strong  concurrency.    The
+      second  study  looks  at  the  scheduling  of  OS  processing  on  a
+      multiprocessor system, and shoes how  performance  can  be  improved
+      through  policies that increase the amount of weak concurrency.  The
+      final study is an example of global management concurrency, in which
+      the   overhead   of   a   comples  real-time  scheduling  policy  is
+      significantly reduced by means of a software specialized processor.
+
+      The results of the experimental studies support our hypothesis  that
+      OS/application    concurrency    provides    significant   benefits,
+      independent of specialized hardware.
+
+      You may order printed copies from the School  of  Computer  Science,
+      Carnegie  Mellon  University by sending a message to mach@cs.cmu.edu
+      or by calling 412/268-8166.
+
+  28. Michael Young, Avadis Tevanian, Jr.,  Richard  Rashid,  David  Golub
+      Jeffrey  Eppinger,  Jonathan Chew, William Bolosky, David Black, and
+      Robert Baron.  The  Duality  of  Memory  and  Communication  in  the
+      Implementation  of  a  Multiprocessor  Operating  System.  Technical
+      Report CMU-CS-87-155, School of Computer  Science,  Carnegie  Mellon
+      University,  August  1987. Also in Proceedings of the 11th Symposium
+      on Operating Systems Principles, November, 1987.
+
+      An important component of the Mach  design  is  the  use  of  memory
+      objects  which  can  be  managed  either  by  the  kernel or by user
+      programs  through  a  message  interface.    This   feature   allows
+      applications  such  as transaction management systems to participate
+      in  decisions  regarding  secondary  storage  management  and   page
+      replacement.      This   paper   explores   the  goals,  design  and
+      implementation of Mach and its external memory management  facility.
+      The  relationship  between  memory  and  communication  in  Mach  is
+      examined as it relates to overall performance, applicability of Mach
+      to   new   multiprocessor   architectures,   and  the  structure  of
+      application programs.
+
+  29. Michael  Wayne  Young.    Exporting  a  User  Interface  to   Memory
+      Management  from  a Communication-Oriented Operating System.  Thesis
+      CMU-CS-89-202, November 1989.
+
+      This dissertation describes  the  Mach  external  memory  management
+      interface  and  implementation  in  detail.  The interface design is
+      based on communication: memory objects are  communication  channels,
+      on  which  the  operating system sends messages to read or write the
+      contents of pages of virtual memory.  The  implementation  addresses
+      the  modularity  and  security issues that arise from exporting this
+      interface to user-level programs.  Several systems applications that
+      have  been  constructed  using  the  Mach  interface  are described,
+      including  a  user-level  file  system,  a  transaction-based   data
+      management  system, and a network shared virtual memory service.  An
+      evaluation of the Mach  system  analyzes  the  cost  of  using  this
+      interface,  and  shows  how  it makes a fast path to the main memory
+      cache available to system applications.  Experiments also show  that
+      the   overall   performance  of  the  Mach  system  does  not  sufer
+      appreciably  under  normal  load,  and  that   this   system   still
+      outperforms commercially available operating systems under identical
+      benchmarks.  The conclusion is that an  external  memory  management
+      interface  is a useful, affordable component that should be provided
+      by future operating systems.
+
+             Available Papers from the 2nd Machnix Symposium, 1991
+
+   1. Joseph S. Barrera III. A Fast Mach Network IPC Implementation.
+
+      This paper decribes the implementation of network Mach IPC optimized
+      for  clusters  of  processors  connected  by a fast network, such as
+      workstations connected by an Ethernet or processors in a  non-shared
+      memory  multiprocessor.  This work contrasts with earlier work, such
+      as the netmsg server, which has emphasized  coneectivity  (by  using
+      robust   and   widely   available  protocols  such  as  TCP/IP)  and
+      configurability (with an entirely user-state implementation) at  the
+      expense of performance.
+
+      The  issues  addressed  by  this  work  are  support for low latency
+      delivery of small and large messages, support for port  capabilities
+      and  reference  counting,  and  integration with the exisiting local
+      Mach IPC implementation.  Low latency for  small  messages  requires
+      careful  buffer  and  control flow management; this work is compared
+      with other fast RPC work described in the literature.   Low  latency
+      for  large  messages,  particularly for faster networks, requires an
+      avoidence of copying, which can be achieved through  virtual  memory
+      support;  the  modifications  that  were  necessary  to  make Mach's
+      virtual memory support inexpensive enough  to  be  useful  for  this
+      purpose  is  described.    The  distributed  implementation  of port
+      capabilities,  port  reference  counts,  and   port   migration   is
+      discussed,  and  compared  with that in the netmsg server.  Finally,
+      performance data is presented to quantify the speedup achieved  with
+      the described implementation.
+
+      Copies  are  available through anonymous FTP on host mach.cs.cmu.edu
+      in /usr/mach/public/doc/Usenix.Mach2/ipc2.ps .  You may  also  order
+      printed  copies from the School of Computer Science, Carnegie Mellon
+      University by sending a message to  mach@cs.cmu.edu  or  by  calling
+      412/268-8166.
+
+   2. Richard  P. Draves.  Page Replacement and Reference Bit Emulation in
+      Mach.
+
+      A page-replacement algorithm guides the  operating  system  when  it
+      needs  to create more free pages by reclaiming pages that are filled
+      with data.  The Mach kernel approximates the familiar Least Recently
+      Used  (LRU)  algorithm  with  an algorithm known as FIFO with Second
+      Chance.  This Strategy uses  page-referenced  information  to  avoid
+      reclaiming  recently-  referenced  pages.   On hardware lacking such
+      support, the kernel must detect references in software.
+
+      This paper describes the Mach  kernel's  page-replacement  algorithm
+      and  considers  three  software techniques for detecting references.
+      It  shows  that  Mach  3.0's  reference   fault   technique   output
+      outperforms  Mach  2.5's  reactivation  fault  technique,  and  also
+      outperforms reference detection via a  software  TLB  miss  handler.
+      Based  on  performance  of  the Mach 3.0 implementation, we conclude
+      that hardware page-referenced information is not a prerequisite  for
+      a satifactory page-replacement algorithm.
+
+      Copies  are  available through anonymous FTP on host mach.cs.cmu.edu
+      in /usr/mach/public/doc/Usenix.Mach2/machnix.{dvi,ps}.  You may also
+      order  printed  copies from the School of Computer Science, Carnegie
+      Mellon University by sending a  message  to  mach@cs.cmu.edu  or  by
+      calling 412/268-8166.
+
+   3. Alessandro  Forin,  David  Golub,  Brian Bershad.  An I/O System for
+      Mach.
+
+      The Mach 3.0 I/O system represents  a  radical  departure  from  its
+      predecessor-Mach  2.5,  which relied on the BSD Unix model of device
+      management.  The I/O interface in Mach 3.0 supports  device  drivers
+      that  are largely device-independent, implemented at user-level, and
+      location-independent.      Our   approach   to   device   management
+      significantly  reduces  the  size  of the kernel's machine-dependent
+      code, enables us to reduce the length of the I/O path,  and  permits
+      us   transparently   manage  remote  devices  on  non-shared  memory
+      multiprocessor architectures such as  the  Hypercube.    This  paper
+      describes the structure and performance of Mach's I/O system.
+
+      Copies  are  available through anonymous FTP on host mach.cs.cmu.edu
+      in /usr/mach/pubic/doc/Usenix.Mach2/IO.{dvi/ps}.  You may also order
+      printed  copies from the School of Computer Science, Carnegie Mellon
+      University  by  sending  mail  to  mach@cs.cmu.edu  or  by   calling
+      412/268-8166.
+
+   4. David  B.  Golub,  Richard  P.  Draves.    Moving the Default Memory
+      Manager out of the Mach Kernel.
+
+      We have implemented a default memory manager for the Mach 3.0 kernel
+      that  resides  entirely  in  user space.  The default memory manager
+      uses a small set of kernel privileges to lock  itself  into  memory,
+      preventing  deadlocks  against  other  Mach  systems  services.   An
+      extension to the Mach boot sequence loads both the kernel  and  user
+      program  images at system startup time.  The resulting system allows
+      the default memory manager  to  be  built  and  run  in  a  standard
+      user-level environment, but still operates with the high reliability
+      required by the Mach kernel.
+
+      The default memory manager is bundled with another component of  the
+      Mach  3  system:    the  bootstrap service.  This service starts the
+      initial set of system servers that  make  up  a  complete  operating
+      system based on the Mach 3.0 kernel.  Since the real file system may
+      be one of these servers, the bootstrap service needs its own copy of
+      a subset of the file system.  This is shared with the default memory
+      manager. Placing these two components outside the kernel allows them
+      to be easily reconfigured with different file systems.
+
+      Copies  are  available through anonymous FTP on host mach.cs.cmu.edu
+      in /usr/mach/public/doc/Usenix.Mach2/default-pager.ps  .    You  may
+      also  order  printed  copies  from  the  School of Computer Science,
+      Carnegie Mellon University by sending a message  to  mach@cs.cmu.edu
+      or by calling 412/ 268-8166.
+
+   5. Daniel  P.  Julin,  Jonathan  J.  Chew,  J. Mark Stevenson, Carnegie
+      Mellon University.   Paulo  Guedes,  Paul  Neves*,  Paul  Roy,  Open
+      Software  Foundation.   Generalized Emulation Services for Mach 3.0:
+      Overview, Experiences and Current Status.
+
+      This paper reports on  an  ongoing  project  to  develop  a  general
+      understanding  of  the  problems encountered when building emulators
+      for various operating systems at the user-level on top of a Mach 3.0
+      micro-kernel,  and  to  propose  a  common  framework  to  construct
+      emulations for a wide range of target systems and environments.   It
+      presents  an  overview  and  discussion  of the major techniques and
+      experiments that characterize the design  of  the  proposed  system.
+      Some  of  the  relevant  aspects  include the combination of several
+      independnet servers to create a  complete  system,  generic  service
+      interfaces   relying  on  the  emulation  library  as  an  interface
+      translator,  the  use  of  objeect-oriented  technology  to   define
+      standard  interfaces  and  to  simplify the implementation of common
+      facilities, moving portions of the system state and processing  from
+      the   servers   into   a   smart   emulation   library,  and  a  few
+      general-purpose  facilities  that  simplify  the  generation  of   a
+      complete system.  A number if practical observations and experiences
+      are also presented, in the context of the development of a prototype
+      for the emulation of UNIX 4.3 BSD.
+
+      *Paul  Neves  is  currently with the Swiss Bank Corporation/O'Connor
+      Assoc. L.P., Chicago, IL
+
+      Copies are available through anonymous FTP on  host  mach.cs.cmu.edu
+      in  /usr/mach/public/doc/Usenix.Mach2/emulation.ps  .   You may also
+      order printed copies from the School of Computer  Science,  Carnegie
+      Mellon  University  by  sending  a  message to mach@cs.cmu.edu or by
+      calling 412/268-8166.
+
+   6. Gerald Malan, Richard Rashid, David Golub, Robert Baron.  DOS  as  a
+      Mach 3.0 Application.
+
+      We  have  implemented support for the DOS operating system on top of
+      the Mach 3.0 kernel.  This support included machine-dependent kernel
+      modifications  for the i386/i486 architecture to handle virtual 8086
+      mode, a multithreaded emulation of the IBM PC's VGA display and  I/O
+      devices,  direct  support  for  a number of common DOS funstions and
+      frequently  loaded  DOS  drivers,  and   code   to   integrate   DOS
+      functionality  with the existing 4.3 BSD Unix Server.  The resulting
+      systems allows  multiple  virtual  DOS  environments,  supports  DOS
+      versions  3.1  to 5.0, and is capable of running common DOS software
+      including performance sensitive PC entertainment  software  such  as
+      Wing Commander-a high speed space combat simulation system.
+
+      Many  lessons  were  learned  during  the  course of this work.  DOS
+      stresses a  number  of  Mach  features  infrequently  used  by  Unix
+      emulation.    The  timing  and  latency demands of DOS applications,
+      especially  those  with  animation  and  sound,   are   dramatically
+      different from those of typical Unix applications.  Because most DOS
+      programs interact intimately with the underlying  PC  hardware,  DOS
+      emulation expanded our knowledge about the behavior of Mach 3.0 when
+      asked to provide a virtual  machine  environment  rather  than  pure
+      client/server   support.      In   particular,   quirks  of  the  PC
+      architecture-such as support for the so-called  "high  memory  area"
+      above 0x1000000-had to be precisely emulated.
+
+      This  paper  describes  our  implementation,  its  capabilities  and
+      limitations, and the lessons learned about Mach in the course of our
+      development effort.
+
+      Copies  are  available  through  anonymous FTP on mach.cs.cmu.edu in
+      /usr/mach/public/doc/Usenix.Mach2/dospaper.{dvi,ps}.  You  may  also
+      order  copies  from  the School of Computer Science, Carnegie Mellon
+      University by sending a message to  mach@cs.cmu.edu  or  by  calling
+      412/268-8166.
+
+   7. Indira  Subramanian.    Managing  Discardable Pages with an External
+      Pager.
+
+      We have  designed  and  implemented  an  external  pager  that:  (1)
+      receives  information  regarding  discardability  of  pages from the
+      client such  as  a  garbage  collector  for  functional  programming
+      languages, (2) saves and restores only non-discardable pages and (3)
+      influences page-replacement by pre-flushing discardable pages.  In a
+      general  purpose operating system dirty pages are typically saved to
+      disk and then restored from disk even when the application  may  not
+      care  about  the  contents  of  those  pages.   For example, copying
+      garbage  collection  used  in   functional   programming   languages
+      generates  many  pages  that  are  dirty but discardable.  Using the
+      external pager to manage the  discardable  pages  we  observed  that
+      elapsed times for some applications decreased by as much as a factor
+      of 6.
+
+      Copies are available through anonymous  FTP  on  mach.cs.cmu.edu  in
+      /usr/mach/public/doc/Usenix.Mach2/discardable-pager.ps.     You  may
+      also order copies from the  School  of  Computer  Science,  Carnegie
+      Mellon  University  by  sending  a  message to mach@cs.cmu.edu or by
+      calling 412/ 268-8166.
+
+                      Available papers on Real-Time Mach
+
+   1. Richard F. Rashid, Hideyuki Tokuda.  Mach: A System  Sofware  Kernel
+      Proceedings  of the Symposium on Computational Technology for Flight
+      Vehicles, November 1990.
+
+      The  Mach  kernel  has  been  ported  to  a  large   collection   of
+      uniprocessor  and  multiprocessor  systems  and  have  been  used to
+      implement commercial operating system environments such as Unix in a
+      performance   competitive  way.    This  paper  describes  the  Mach
+      operating system, the way it was used implement both 4.3BSD Unix and
+      the   Macintosh  operating  system  and  the  implications  of  this
+      technology for real-time and secure programming environments.
+
+      You may order printed copies from the School  of  Computer  Science,
+      Carnegie  Mellon  University by sending mail to jfm@cs.cmu.edu or by
+      calling 412/268-7656.
+
+   2. Hideyuki Tokuda, Tatsuo Nakajima,  Prithvi  Rao.    Real-Time  Mach:
+      Towards  Predictable  Real-Time  Systems.  Proceedings of the USENIX
+      1990 Mach Workshop, October 1990.
+
+      Distributed real-time systems play a  very  important  role  in  our
+      modern  society.    They are used in aircraft control, communication
+      systems, military command and control  systems,  factory  automation
+      and  robotics.  However, satisfying the rigid timing requirements of
+      various real-time activities in distributed real-time often requires
+      ad hoc methods to tune the systems runtime behavior.
+
+      The  object  of  Real-Time Mach is to develop a real-time version of
+      the Mach kernel which provides users with a predictable and reliable
+      distributed  real-time  computing  environment.    In this paper, we
+      describe a real-time thread model,  real-time  synchronization,  and
+      the  ITDS  scheduler  in  Real-Time  Mach.    We  also  discuss  the
+      implementation issues, a real-time toolset, and the  current  status
+      of the system.
+
+      You  may  order  printed copies from the School of Computer Science,
+      Carnegie Mellon University by sending a message to jfm@cs.cmu.edu or
+      by calling 412/268-7656.
+
+   3. Hideyuki  Tokuda.  RT-Thread Model for Real-Time Mach.  Submitted to
+      RTSOSS May, .
+
+      Many traditional multitasking  real-time  executives  often  support
+      just  a  simple  multitasking  model  which  is almost equivalent to
+      supporting threads since only one physical address space is provided
+      among  tasks.    In  the  executives,  it  is often that the context
+      switching overhead is very small  compared  to  normal  time-sharing
+      operating  systems  like  UNIX.    However,  it  fails to explicitly
+      distinguish between real-time and non real-time threads and lacks to
+      specify  any  timing attributes for real-time threads.  For advanced
+      real-time  systems,  it  is  very  important  to  provide  a  proper
+      protection  domain,  like  a virtual address space, for processes or
+      tasks and to  support  real-time  threads  for  predictable  runtime
+      behaviors.
+
+      The  objective  of  our  thread  model is to provide predictable and
+      reliable distributed real-time computing environment.  In the model,
+      we   clearly   distinguish   between   a   real-time  thread  and  a
+      non-real-time thread.  A real-time thread  is  defined  with  timing
+      attributes  such as a worst case execution time, deadline or period,
+      and other scheduling policy related information.
+
+      In this position paper, we will introduce a  real-time  thread  (R-T
+      Thread) model which had been developed for Real-Time Mach.  We first
+      describe thread creation and termination primitives, synchronization
+      primitives,  and  integrated time-driven scheduler.  We also compare
+      the model with other related thread models.
+
+      You can obtain printed copies from the School of  Computer  Science,
+      Carnegie  Mellon  University by sending mail to jfm@cs.cmu.edu or by
+      calling 412/268-7656.
+
+         Mach documents published in 1990 and after. (Non CMU papers)
+
+
+   1. Mach/4.3BSD A Conservative Approach to parallelization Joseph Boykin
+      and Alan Langerman Computing Systems, Vol.3, No. 1, Winter 1990
+
+   2. Zone  Garbage  Collection  James  Van  Sciver  and Richard F. Rashid
+      Proceedings of the Usenix Mach Conference, October 1990
+
+   3. Extending the Mach External Pager Interface to Accomodate User-Level
+      Page  Replacement  Policies  Pylan  McNamee  and Katherine Armstrong
+      Proceedings of the Usenix Mach Conference, October 1990
+
+   4. Mach on a Virtually Addressed Cache Architecture  Chia  Chao,  Milon
+      Mackey,  and  Bart  Sears Proceedings of the Usenix Mach Conference,
+      October 1990
+
+   5. A Highly-Parallelized Mach-based Vnode Filesystem Alan Langerman  et
+      al.  Proceedings of Winter 1990 Usenix Conference, Jan. 1990
+
+   6. A   Persistent   Distributed  Architecture  Supported  by  the  Mach
+      Operating System Francis Vaughan et al.  Proceedings of  the  Usenix
+      Mach Conference, October 1990
+
+   7. A Trusted X Window System Server for Trusted Mach Jeremy Epstein and
+      Marvin Shugerman Proceedings of the Usenix Mach Conference,  October
+      1990
+
+   8. Building  a  Fault-Tolerant  System Based on Mach Rong Chen and Tony
+      P. Ng Proceedings of the Usenix Mach Conference, October 1990
+
+   9. Transparent Recovery of Mach Applications  Arthur  Goldberg  et  al.
+      Proceedings of the Usenix Mach Conference, October 1990
+
+  10. Fault-Tolerant Computing Based on Mach Ozalp Babaoglu Proceedings of
+      the Usenix Mach Conference, October 1990
+
+  11. Mach: A Case Study in Technology Transfer.  Richard  F.  Rashid  CMU
+      Computer  Science: A 25th Anniversary Commemorative Chapter 17, pgs.
+      411-421 ACM Press, Anthology Series,
+
+      This chapter describes history of the Mach operating system research
+      project and its effort to transfer the ideas imbedded in that system
+      from the research laboratory to industry.
+
+  12. The Mach Operating System.  Abraham Silberschatz, James L. Peterson,
+      Peter  B.  Galvin  Operating Systems Concepts, Third Edition Chapter
+      16, pgs. 597-628 Addison-Wesley Publishing Company
+
+      This is a new chapter on the Mach operating system.  This system  is
+      designed   to   incorporate   the   many   recent   innovations   in
+      operating-system research to produce a fully functional, technically
+      advanced operating system.  Unlike Unix, which was developed without
+      regard  for  multiprocessing,  Mach   incorporates   multiprocessing
+      support  throughout.    Its  multiprocessing  support  is  also very
+      flexible, ranging from shared memory  systems  to  systems  with  no
+      memory  shared  between  processors.    Mach  is  designed to run on
+      computer systems ranging from one to thousands of  processors.    In
+      addition,   Mach   is   easily   ported   to  many  varied  computer
+      architectures.  A key goal of Mach is to be a distributed  operating
+      system  capable  of functioning on heterogeneous hardware.  Although
+      there a many experimental operating systems  being  designed,  built
+      and  used,  Mach  is  able to satisfy the needs of the masses better
+      than they are because it is fully compatible with UNIX 4.3BSD.    As
+      such,  it  provides  a  unique  oppotunity  for  us  to  compare  to
+      functionally similar, but internally dissimilar, operating systems.
+
+The following documents were edited by  Keith  Loepere  of  the  Open  Software
+Foundation,  and  have  been distributed at various OSF/RI Mach workshops. Thus
+you may already have copies of them. They all doucment Mach  3.0,  but  in  the
+case  of the Kernel Principles manual and the Server Writer's Guide much of the
+information is applicable to Mach 2.5.  If you are interested in obtaining hard
+copies   of   the   documentation  please  contact  Susan  Crocker  via  e-mail
+<crocker@osf.org> or by phone at 617/621-7259.
+
+   1. Keith Loepere.  Mach 3 Kernel Principles.  Open Software  Foundation
+      document.  Documents  the  user visible architecture of the Mach 3.0
+      kernel. It is currently the best detailed introduction to the  basic
+      Mach  concepts:  tasks,  threads,  ports,  messages, memory objects,
+      virtual addess spaces, processors, hosts and devices.  (52 pages)
+
+      Copies  are  available  via  FTP   on   host   mach.cs.cmu.edu,   in
+      /usr/mach/public/doc/mach3/kernel_principles.ps
+
+   2. Keith  Loepere.  Mach  3 Kernel Interface.  Open Software Foundation
+      document.  Describes each of  the  Mach  3.0  kernel  primitives  in
+      isolation.    The  format is that of a man page per kernel call. All
+      introductory  material  is  in  "Mach  3  Kernel  Principles"  Total
+      document is 355 pages. Each ps file is about 100+ pages.
+
+      Copies   are   available   via   FTP  on  host  mach.cs.cmu.edu,  in
+      /usr/mach/public/doc/mach3/kernel_interface.{1,2,3}.ps
+
+   3. Keith Loepere.  Server Writer's Guide.    Open  Software  Foundation
+      document.   Documents the major user level tools for writers of Mach
+      servers:  MIG  and  CThreads.  Contains  descriptive  material   and
+      examples.  Similiar  to  the  Mach  2.5  documents,  "MIG - The MACH
+      Interface  Generator",  Draves,  et.al.  and  "C  Threads",  Cooper,
+      Draves, but updated to reflect the changes for Mach 3.0 (44 pages)
+
+      Copies   are   available   via   FTP  on  host  mach.cs.cmu.edu,  in
+      /usr/mach/public/doc/mach3/server_writer.ps
+
+   4. Keith Loepere. Server Writer's Interface.  Open Software  Foundation
+      document.    Describes each of the CThreads primitives in isolation.
+      Introductory material is all in the "Server Writer's  Guide".    (52
+      pages)
+
+      Copies   are   available   via   FTP  on  host  mach.cs.cmu.edu,  in
+      /usr/mach/public/doc/mach3/server_interface.ps

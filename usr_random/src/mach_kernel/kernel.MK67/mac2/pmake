@@ -1,0 +1,55 @@
+#!/bin/csh -f
+# 
+# MacMach Operating System
+# Copyright (c) 1992 Carnegie Mellon University
+# All Rights Reserved.
+#
+# MacMach was developed by CMU with support from Apple Computer, Inc.
+# Use of this software is constrained by the MacMach End-User license.
+#
+# HISTORY
+# $Log:	make.template,v $
+# Revision 2.3  91/05/14  15:31:06  mrt
+# 	Correcting copyright
+# 
+# Revision 2.2  91/02/05  17:05:33  mrt
+# 	Changed to new copyright
+# 	[91/01/28  14:48:03  mrt]
+# 
+# Revision 2.1  89/08/03  17:37:53  rwd
+# Created.
+# 
+# Revision 2.2  89/04/22  15:24:02  gm0w
+# 	Created from root Makefile.
+# 	[89/04/14            gm0w]
+# 
+
+if ( { \[ -z "" \] } ) then
+    set dirs=(`echo ..: | sed -e "s;:; ;"`)
+else
+    set dirs=(`echo ../ | sed -e "s;:; ;"`)
+endif
+unsetenv MAKEDIR MAKEPSD MAKECWD OBJECTDIR
+
+if ($#dirs == 1 && $?USE_SOURCE_DIR) then
+    setenv CPATH ":${dirs}"
+    unsetenv VPATH
+    set src="SOURCE_DIR=${dirs}"
+else
+    setenv CPATH ""
+    setenv VPATH ""
+    set c=""
+    foreach d ($dirs)
+        setenv CPATH "${CPATH}:${d}"
+        setenv VPATH "${VPATH}${c}${d}/conf"
+        set c=":"
+    end
+    set src=""
+endif
+
+set prog=$0
+set prog=$prog:t
+set makeargs=(-c)
+if ("$prog" == "pmake") set makeargs=""
+set newprog=(`wh $prog | fgrep -v -x "./$prog" | fgrep -v -x "$prog" | head -1`)
+exec $newprog $makeargs:q $src:q $*:q

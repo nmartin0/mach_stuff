@@ -1,0 +1,103 @@
+.\" HISTORY
+.\" $Log: top.1,v $
+# Revision 1.1  1996/03/01  14:51:30  sclawson
+# Changes to install man pages.
+#
+.\" Revision 1.1.1.1  1995/05/04  06:57:04  sclawson
+.\" New files.
+.\"
+.\" Revision 2.2  92/01/22  23:03:55  rpd
+.\" 	Copied.
+.\" 	[92/01/22            rpd]
+.\" 
+.TH TOP 1 
+.CM 3
+.SH NAME
+top \- display and update information about the top cpu processes
+.SH SYNOPSIS
+.B top
+[
+.B \-s<time>
+] [
+number
+]
+.SH DESCRIPTION
+.\" This defines appropriate quote strings for nroff and troff
+.ds lq \&"
+.ds rq \&"
+.if t .ds lq ``
+.if t .ds rq ''
+.I top
+displays the top 10 processes on the system and periodically
+updates this information.  It uses raw cpu percentage
+to determine the top processes.  The
+.IR curses (3)
+package is used to do semi-optimal screen updating.  If
+.I number
+is given, then the top
+.I number
+processes will be displayed instead of the default amount of 10.
+The
+.B \-s
+option sets the delay between screen updates to
+.I time
+seconds.  The default delay between updates is 15 seconds.
+.PP
+The top few lines of the display show general information about the state of
+the system, including the last process id assigned to a process, the three
+load averages, the current time, the number of existing processes, the number
+of processes in each state
+(sleeping, ABANDONED, running, starting, zombies, and stopped),
+and a percentage of time
+spent in each of the processor states (user, nice, system, and idle).
+.PP
+The remainder of the screen displays information about individual
+processes.  This display is similar in spirit to
+.IR ps (1)
+but it is not exactly the same.  PID is the process id, USERNAME is the name
+of the process's owner, PRI is the current priority of the process, NICE is
+the nice amount (in the range \-20 to 20), SIZE is the total size of the
+process (text, data, and stack), RES is the current amount of resident
+memory (both SIZE and RES are given in kilobytes), STATE is the current
+state (one of \*(lqsleep\*(rq, \*(lqWAIT\*(rq, \*(lqrun\*(rq,
+\*(lqidl\*(rq, \*(lqzomb\*(rq, or \*(lqstop\*(rq), TIME is
+the number of system and user
+cpu seconds that the process has used, %WCPU is the weighted cpu percentage
+(this is the same value that
+.IR ps (1)
+displays as CPU), %CPU is the raw percentage and is the field that is sorted
+to determine the order of the processes, and COMMAND is the name of the 
+command that the process is currently running (if the process is swapped
+out, this column is marked \*(lq<swapped>\*(rq).
+.SH NOTES
+The \*(lqABANDONED\*(rq state (known in the kernel as \*(lqSWAIT\*(rq) was
+abandoned, thus the name.  A process should never end up in this state.
+.SH AUTHOR
+William LeFebvre, Rice University graduate student
+.SH FILES
+.DT
+/dev/kmem		kernel memory
+.br
+/dev/mem		user memory
+.br
+/vmunix 		system image
+.SH BUGS
+The command name for swapped processes should be tracked down, but this
+would make the program run slower.
+.PP
+As with
+.IR ps (1),
+things can change while
+.I top
+is collecting information for an update.  The picture it gives is only a
+close approximation to reality.  This is especially prevalent when a process
+shown in the \*(lqrun\*(rq state is also shown as swapped.
+.SH "SEE ALSO"
+.IR ps (1), 
+.IR mem (4)
+.SH HISTORY
+.TP
+02-Dec-87  Daryl Clevenger (dlc) at Carnegie-Mellon University
+Changed usage format to indicate that the time argument must appear
+immediately after the `-s'.
+

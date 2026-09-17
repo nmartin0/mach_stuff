@@ -1,0 +1,7 @@
+EXTRA_PROGRAMS=ld
+
+# Build collect
+
+ld: collect2
+	rm -f ld
+	ln collect2 ld

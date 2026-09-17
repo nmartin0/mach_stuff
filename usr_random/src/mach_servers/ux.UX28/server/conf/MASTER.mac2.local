@@ -1,0 +1,20 @@
+# MacMach Operating System
+# Copyright (c) 1992 Carnegie Mellon University
+# All Rights Reserved.
+#
+# MacMach was developed by CMU with support from Apple Computer, Inc.
+# Use of this software is constrained by the MacMach End-User license.
+#
+######################################################################
+#
+#  Master Macintosh II configuration file (see the master machine independent
+#  configuration file for a description of the file format).
+#
+######################################################################
+# HISTORY
+# $Log:	MASTER.mac2.local,v $
+# Revision 2.2  90/08/30  10:59:48  bohman
+# 	Created.
+# 	[90/08/29  13:44:34  bohman]
+# 
+######################################################################

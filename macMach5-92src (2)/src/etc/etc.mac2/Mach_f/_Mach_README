@@ -1,0 +1,119 @@
+Mach Operating System
+Copyright (c) 1991,1990,1989 Carnegie Mellon University
+All Rights Reserved.
+
+Permission to use, copy, modify and distribute this software and its documentation is hereby granted, provided that both the copyright notice and this permission notice appear in all copies of the software, derivative works or modified versions, and any portions thereof, and that both notices appear in supporting documentation.
+
+CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+
+Carnegie Mellon requests users of this software to return to
+	Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+	School of Computer Science
+	Carnegie Mellon University
+	Pittsburgh PA 15213-3890
+any improvements or extensions that they make and grant Carnegie Mellon the rights to redistribute these changes.
+
+Apple, Macintosh are trademarks of Apple Computer, Inc.
+
+MACH CONTROL PANEL USER DOCUMENTATION
+
+The Mach control panel is used to set the booting parameters for the Mach Operating System.  This document describes how to use the Mach control panel to install and boot the Mach Operating System on the Apple Macintosh.
+
+The startup sequence, from power-on to "login:" prompt is:
+	1) The Macintosh ROM code does some hardware checks.
+	2) The ROM code loads the Macintosh System from the disk.
+	3) The Macintosh System loads and executes INIT resources.
+	4) The Macintosh System loads and executes the Mach INIT.
+	5) The Mach INIT loads and executes the Mach kernel.
+	6) The Mach kernel loads and executes the Unix Server.
+	7) The Unix Server runs /etc/init.
+	8) /etc/init runs /bin/login.
+
+The Mach control panel allows the user to enable or disable the execution of the Mach INIT.  The user can specify where the Mach kernel and Unix Server are to be loaded from.
+
+The Mach control panel looks like this:
+
+Ê
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The check-box controls the execution of the Mach INIT.
+
+The Time Offset is a pop-up menu selection.  The internal time standard used by Mach is GMT.  The Macintosh uses local time.  The Mach control panel allows the user to select the appropriate time offset between local time and GMT.  For example, Eastern Standard Time is GMT +5 hours.
+
+The Mach control panel allows the user to specify both a Primary and Alternate boot source.  A boot source consists of root and load devices and a kernel file name.  When the Mach INIT is executed, the user can select the Alternate boot source by pressing a single button, see below.
+
+A root device is where the Unix Server will be found.  It is specified by selecting a Unix device from a pop-up menu.  For example, if the Unix Server is on the disk with SCSI address 5, select "/dev/sd5a".
+
+A load device is where the Mach kernel will be found.  It can be a Unix device like the root device, or it can be on the Macintosh "System Volume".
+
+A kernel file is the name of the file containing the Mach kernel on the specified load device.  Note that file names on the Macintosh "System Volume" are specified differently from Unix files.
+
+Normally, the Mach kernel resides in the Unix file "/mach_kernel".  The Unix Server is usually found in the same Unix file system as the Mach kernel.  Alternately, the Mach kernel can be loaded from the data fork of a Macintosh file.  It is also possible that a Mach kernel can contain an internal "ramdisk" file system which can contain a Unix Server.
+
+For installation and maintenance purposes, a Mach kernel with a ramdisk is distributed in the file "Mach Kernel".  On the ramdisk is a Unix Server and a set of installation utilities.  This is usually set up as the Alternate boot source as follows:
+Alternate Root Device: 	/dev/ramdisk0a
+Alternate Load Device: 	System Volume
+Alternate Kernel:						:Mach Kernel:
+
+When the Mach INIT is executed, a dialog is presented that allows the user to make some last-minute choices.  It looks like:
+
+Ê
+
+
+
+
+
+
+
+
+
+
+The Cancel button aborts the Mach INIT execution.  Pressing the Escape key is a shortcut for Cancel.
+
+The Pause button turns off the countdown timer.  If the countdown time reaches zero, the "default" boot source will be selected.  Pressing the Return or Enter key is a shortcut to selecting the "default" boot source.
+
+The two large buttons represent the Primary and Alternate boot sources.  Click on either button to immediatly use that boot source.  The outlined button is the "default".
+
+The Single User check box is a flag that tells the Unix Server to come up in single user or multiuser mode.
+
+If the Debug check box is checked, a debug trap will be done just before the jump into the Mach kernel.
+
+Note that the Mach INIT checks if the specified Primary and Alternate boot sources actually exist.  If a boot source does not exist, its button will be dimmed.  If neither boot source exists then Cancel will be the "default" selection.
+
+MACH HARDWARE REQUIREMENTS
+
+The Macintosh version of the Mach Operating System requires a 68030 or 68020/68851 processor with at least 8 megabytes of RAM.
+
+The SCSI disk should be partitioned to include an "Apple Scratch" partition to be used for paging and an "Apple Free" partition that will be used for the Unix file system.
+
+The "Apple Scratch" partition should be at least 10 megabytes.  Mach will search all connected SCSI disks for a paging partition.
+
+The "Apple Free" partition will be changed to "Mach_UNIX_BSD4.3" by the /etc/mac2part utility during system installation.  A SCSI disk can have only one Unix file system.  A minimal Mach system takes up about 60 megabytes.  A complete Mach system requires 90 megabytes.  The Mach / Unix sources take up 150 megabytes.
+
+Mach has been verified to operate on the following Apple Macintosh computers: Macintosh II, Macintosh IIx, Macintosh IIcx, Macintosh IIci, Macintosh IIfx and Macintosh SE/30
+
+Mach uses the Macintosh device drivers and thus *should* work with any Macintosh display and ethernet products.
+
+INSTALLING MACH
+
+Place a copy of the Mach control panel in the System Folder.  Set up the proper disk partitions.  Use the Mach control panel to enable Mach startup.  Set the Time Offset and Primary boot source.  Restart.
+
+Since the Primary boot source as not been installed yet, its button will be dimmed.  The Alternate boot source button should be outlined.  Let the timer count to zero.  The "Startup in 0 seconds." should be replace by a progress bar indicating that the Mach kernel is being loaded.  The Unix Server will load and the installation utility will take over.
+
+Mach can be installed from another disk (CD-ROM) or over the network via FTP.  Type DISK or FTP followed by Return.  The details of DISK or FTP installation are discussed elsewhere.

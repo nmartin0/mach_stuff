@@ -1,0 +1,44 @@
+# MacMach Operating System
+# Copyright (c) 1992 Carnegie Mellon University
+# All Rights Reserved.
+#
+# MacMach was developed by CMU with support from Apple Computer, Inc.
+# Use of this software is constrained by the MacMach End-User license.
+#  
+######################################################################
+#
+#  Master Macintosh II configuration file (see the master machine independent
+#  configuration file for a description of the file format).
+#
+######################################################################
+# HISTORY
+# $Log:	MASTER.mac2,v $
+# Revision 2.2  91/09/12  16:35:46  bohman
+# 	Created.
+# 	[91/09/11  16:56:07  bohman]
+# 
+######################################################################
+#
+#  CPU TYPE
+#	mac2 = Macintosh II{,x,cx,ci,fx} or SE/30
+#
+######################################################################
+#
+#  Standard configurations
+#
+# MACMACH_DEBUG = [ macserver small fixpri mdebug ipc_debug vm_debug ldebug assert lineno ipc_compat mac2_pager mode24 ]
+# MACMACH = [ macserver small fixpri mdebug ipc_compat mac2_pager mode24 small_terminal ]
+#
+######################################################################
+#
+
+conftype	"mac2"
+platform	"mac2"
+
+config		mach_kernel	swap generic
+
+options		MACH_MACHINE_ROUTINES				# <macserver>
+options		MAC2_PAGER	# mac2 pager			# <mac2_pager>
+options		MACSERVER	# macintosh emulator server	# <macserver>
+options		SMALL_TERMINAL	# small terminal display	# <small_terminal>
+options		MODE24		# 24-bit mode compatibility	# <mode24>

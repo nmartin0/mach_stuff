@@ -1,0 +1,95 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS 
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie the
+.\" rights to redistribute these changes.
+.\"
+.\" HISTORY
+.\" $Log: swapon.1,v $
+# Revision 1.1  1996/03/01  14:51:27  sclawson
+# Changes to install man pages.
+#
+.\" Revision 1.1.1.1  1995/05/04  06:57:07  sclawson
+.\" New files.
+.\"
+.\" Revision 2.2  92/02/25  10:51:33  danner
+.\" 	Created.
+.\" 	[92/02/17            af]
+.\" 
+.TH MS 1 6/18/90
+.CM 4
+.SH NAME
+swapon \- control paging files
+.SH SYNOPSIS
+\fBswapon\fP [\fB-v\fP] [\fB-add\fP|\fB-remove\fP] filename
+.SH DESCRIPTION
+\fIswapon(1)\fR asks the default pager to add/remove paging space
+.PP
+Filenames must be specified in the kernel's syntax /dev/<device>/filepath,
+symbolic links are allowed and can use the same syntax to cross
+device and partition boundaries.  When removing a paging file it is
+mandatory to use the same identical string that was used when adding
+the file.
+.PP
+\fIswapon\fP interprets the following options:
+.TP 8
+.B \-add \fIfilename\fR
+Informs the default pager that the file \fIfilename\fR is available
+for paging. The file must be an existing, local file in a file system
+of a type known to the default pager (currently only UFS).  Furthermore,
+the default pager will only use disk blocks that are actually allocated 
+to the given file, e.g. no holes.  Use \fIcat(1)\fR, for instance, to
+create a file of the desired size.
+.TP 8
+.B \-remove \fIfilename\fR
+Informs the default pager that the disk blocks allocated to the file
+\fIfilename\fR should no longer be used for paging purposes.  The default
+pager will try to relocate any object that is currently paged to such
+file, and if this succeeds remove the disk blocks from its list of available
+paging space.
+.TP 8
+.B \-v
+Might display more information, e.g. in case of failures.
+.SH EXAMPLES
+.TP 8
+To extend an existing paging file:
+.nf
+.ft B
+ms -dp
+dd if=/dev/rrz0e of=/temporary bs=100k count=100
+swapon -v -add /dev/rz0a/temporary
+swapon -v -remove /dev/rz0e/paging_file
+rm /usr0/paging_file
+dd if=/dev/rrz0e of=/usr0/paging_file bs=100k count=1000
+swapon -add /dev/rz0e/paging_file
+swapon -remove /dev/rz0a/temporary
+.PP
+.fi
+.ft R
+The first command (which assumes that \fIsnames\fP and \fImachid\fP
+are running) displays how much temporary space we need for relocating
+the existing paging objects, say this is 10 Megabytes.  The second 
+command creates a temporary paging file to relocate those objects to.
+The third command enables the file for paging.
+The fifth and sixth commands enlarge the old paging file.
+.SH "SEE ALSO"
+machid(1), snames(1), ms(1), vminfo(1)

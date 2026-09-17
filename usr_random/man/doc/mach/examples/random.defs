@@ -1,0 +1,15 @@
+subsystem random 500;
+
+#include <mach/std_types.defs>
+
+type string25	= (MSG_TYPE_STRING_C,8*25);
+
+import "random_types.h";
+
+routine get_random(
+		requestport 	server_port	: port_t;
+		out		num		: int);
+
+routine get_secret(
+		requestport	server_port	: port_t;
+		out		password	: string25);

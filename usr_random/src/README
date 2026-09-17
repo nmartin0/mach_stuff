@@ -1,0 +1,494 @@
+# THIS IS A COMPLETE LIST OF ALL SUBSYSTEMS THAT MAKE UP MACH3.0+BSD4.3
+
+# The MACH3.0+BSD4.3 system is covered under the following copyrights.
+# Mit copyright (X11)     -- free
+# OSF copyright (motif)   -- free - need to verify this again
+# GNU copyleft            -- free
+# CMU/MACH copyright      -- free
+# public-domain           -- free
+# Apple/MacMach copyright -- free, non-commercial, limited redistribution
+# BSD copyright           -- not free, BSD 4.3 / Mach 2.5
+
+# Things to do:
+# MAKEDEV does not do what its man page says it will do...
+# mach_init needs a man page
+# gas needs a man page
+# make needs a man page
+# accton needs a man page
+# bootp needs a man page
+# config needs a man page
+# fasthalt needs a man page
+# reboot needs a man page
+# sony needs a man page
+# tzone needs a man page
+# crt0 needs a man page
+# pcccpp needs a man page
+# ar11 needs a man page
+# bison needs a man page
+# checkeq needs a man page
+# hash_info needs a man page
+# ipc_perf needs a man page
+# cjpeg needs a man page
+# mig needs a man page
+# shar needs a man page
+# top needs a man page
+# xstrip needs a man page
+# getNAME needs a man page
+# libg needs a man page
+# libmachid needs a man page
+# libnetname needs a man page
+# libreadline needs a man page
+# libservice needs a man page
+# dbid needs a man page
+# bench needs a man page
+# btlgammon needs a man page
+# factor needs a man page
+# ppt needs a man page
+# primes needs a man page
+# wargames needs a man page
+# macintosh needs a man page
+# xlisp needs a man page
+# uemacs needs man page / help system
+# make battlestar create a new battlestar.log file
+# make canfield create a new cfscores file
+# make robots create a new robots_roll file
+# make sail create a new saillog file
+# make snake create a new snakerawscores file
+# make sure all Makefile's hide md
+# make sure all Makefiles do clean in the same way
+# GCC 2.1 needs makeinfo for documentation
+# verify libc manpages:
+# boot/Mach_f/* need copyright notices
+# mach_kernel/kernel/mac*/* need copyright notices
+# mach_servers/ux/server/mac2* need copyright notices
+# mach_servers/ux/emulator/mac2* need copyright notices
+# usr/lib/libmach/mac2/* need copyright notices
+# usr/lib/libmach_sa/mac2/* need copyright notices
+# usr/lib/libthreads/mac2/* need copyright notices
+# usr/bin/macintosh/* need copyright notices
+# X11/server/ddx/mac2/* need copyright notices
+# fill in the '?' blanks in this document
+
+
+# SUBSYSTEM               DESCRIPTION                                STATUS
+
+
+# The X11 code carries the Mit copyright.
+# There are a few public domain goodies in here too.
+X11                       Version R4 with CMU/ANDREW patches.         OK
+
+# This Xserver started out as the public-domain version for the Macintosh II.
+# Several files now carry the Apple/MacMach copyright.
+X11/server/ddx/mac2       Version R4                                  OK
+
+# The motif code carries the OSF copyright.
+motif                     Version 1.1.2 with CMU/ANDREW patches.      OK
+
+# The following items carry the CMU/MACH copyright.
+bin/mach3                 exit true if this is Mach 3.0               OK
+bin/md                    gather .d results of cc -MD                 OK
+bin/mkill                 kill a Mach task                            OK
+bin/mnice                 adjust priority of a Mach task              OK
+bin/ms                    display Mach task status                    OK
+etc/config                do kernel/server configuration              OK
+etc/machid                the machid server                           OK
+etc/mpolicy               change scheduling policies                  UNTESTED
+etc/snames                simple Mach name server                     OK
+etc/version               extract version string                      OK
+mach_servers/mach_init    mach startup                                OK
+bin/ps                    display process status                      OK
+usr/bin/massign           assign to processor set                     UNTESTED
+usr/bin/mcreate           create tasks, threads and processor sets    UNTESTED
+usr/bin/mig               Mach Interface Generator                    OK
+usr/bin/pinfo             display port name space status              UNTESTED
+usr/bin/wh                where is it...                              UNTESTED
+usr/bin/zprint            display kernel zone status                  UNTESTED
+usr/lib/libcmucs          CMU/CS goodies                              OK
+usr/lib/libmach           Mach Interface Library                      OK
+usr/lib/libmachid         machid library                              OK
+usr/lib/libmach_sa        Stand-alone Mach Library                    OK
+usr/lib/libnetname        netname library                             OK
+usr/lib/libservice        service library                             OK
+usr/lib/libthreads        threads library                             OK
+usr/ucb/vmstat            display virtual memory status               OK
+usr/bin/vminfo            display task address space status           UNTESTED
+usr/bin/vmread            read task address space                     UNTESTED
+usr/bin/vmsearch          search task address space for word          UNTESTED
+usr/bin/xptest            test external pager                         UNTESTED
+usr/bin/xstrip            strip away things from the kernel           OK
+
+# The "ld", "make" and "w" carry both the BSD and CMU/MACH copyrights.
+bin/ld                    Program loader                              OK
+bin/make                  Program builder                             OK
+usr/ucb/w                 System status                               OK
+
+# The Micro Kernel carries the CMU/MACH copyright.
+# The Macintosh-specific components carry the Apple/MacMach copyright.
+# The ramdisk driver used by MacMach carries the CMU/MACH copyright.
+# The generic disk driver used by MacMach carries the CMU/MACH copyright.
+mach_kernel/kernel.mk67   Mach Micro Kernel, version MK67             OK
+
+# The CMU Unix Server carries both the BSD and CMU/MACH copyright.
+# The Macintosh-specific components carry the Apple/MacMach copyright.
+# The generic disk driver carries the CMU/MACH copyright.
+mach_servers/ux.28        CMU Unix Server, version UX28               OK
+
+# The following items carry the CMU/MACH copyright.
+bin/machterm              generic bit-mapped terminal emulator        OK
+usr/lib/libmachterm       generic bit-mapped terminal emulator        OK
+etc/newsys                system installer                            UNTESTED
+lib/crt0/mach.M68000      C startup routine                           OK
+lib/libc/mach.M68000      C library                                   OK
+usr/bin/shar              shell archive builder                       OK
+usr/lib/libsolicit        simple solicitiation library                OK
+usr/bin/fixit             file fixing utility                         OK
+usr/games/bench           generic benchmark program                   UNTESTED
+
+# The following items carry the Apple/MacMach copyright.
+# Mach_f, the Macintosh Mach control panel also carries the BSD copyright.
+# adb.mac2 also carries the BSD copyright.
+bin/adb/adb.mac2          Assembly level debugger                     NOTPORTED
+etc/mac2part              MacMach disk partition utility              OK
+boot/mac2/Mach_f          MacMach Control Panel                       UNTESTED
+etc/sony                  Sony floppy disk utility                    UNTESTED
+usr/bin/macintosh         MacMach System 7 Emulator                   UNTESTED
+
+# The following items carry the GNU copyleft.
+bin/gas                   Assembler, version 1.38                     OK
+usr/bin/bison             Parser Generator, version 1.14              OK
+usr/bin/emacs             Emacs version 18.57                         OK
+usr/bin/gcc               "C" compiler version 2.1                    OK
+usr/bin/gdb               Debugger, version 3.98                      NOTPORTED
+usr/lib/libreadline       text input library                          OK
+
+# These items are public-domain.
+usr/bin/sc                Spread Sheat                                OK
+usr/bin/archie            Access ARCHIE database.                     OK
+usr/bin/jpeg              Process JPEG images.                        OK
+usr/bin/kermit            Kermit 5A (174) ALPHA                       OK
+usr/bin/less              Like more, only less.                       OK
+usr/bin/patch             Software Patcher                            OK
+usr/bin/uemacs            Micro-Emacs, version 3.10                   OK
+usr/bin/xlisp             Xlisp, version 2.1                          OK
+
+# These items are from the BSD4.3 Tahoe relese. All carry the BSD copyright.
+bin/ar                    ?                                           OK
+bin/awk                   ?                                           OK
+bin/cat                   ?                                           OK
+bin/chmod                 ?                                           OK
+bin/chown                 ?                                           OK
+bin/cmp                   ?                                           OK
+bin/cp                    ?                                           OK
+bin/cpio                  ?                                           OK
+bin/csh                   ?                                           OK
+bin/date                  ?                                           OK
+bin/dd                    ?                                           OK
+bin/df                    ?                                           OK
+bin/diff                  ?                                           OK
+bin/du                    ?                                           OK
+bin/echo                  ?                                           OK
+bin/ed                    ?                                           OK
+bin/expr                  ?                                           OK
+bin/false                 ?                                           OK
+bin/grep                  ?                                           OK
+bin/hostid                ?                                           OK
+bin/hostname              ?                                           OK
+bin/kill                  ?                                           OK
+bin/ln                    ?                                           OK
+bin/login                 ?                                           OK
+bin/ls                    ?                                           OK
+bin/machine               ?                                           OK
+bin/mkdir                 ?                                           OK
+bin/mt                    ?                                           UNTESTED
+bin/mv                    ?                                           OK
+bin/nice                  ?                                           OK
+bin/nm                    ?                                           OK
+bin/od                    ?                                           OK
+bin/pagesize              ?                                           OK
+bin/passwd                ?                                           OK
+bin/pr                    ?                                           UNTESTED
+bin/pwd                   ?                                           OK
+bin/rcp                   ?                                           UNTESTED
+bin/rm                    ?                                           OK
+bin/rmdir                 ?                                           OK
+bin/sed                   ?                                           OK
+bin/sh                    ?                                           OK
+bin/size                  ?                                           OK
+bin/strip                 ?                                           OK
+bin/stty                  ?                                           OK
+bin/su                    ?                                           OK
+bin/sync                  ?                                           OK
+bin/tar                   ?                                           OK
+bin/tee                   ?                                           OK
+bin/test                  ?                                           OK
+bin/time                  ?                                           OK
+bin/tp                    ?                                           UNTESTED
+bin/true                  ?                                           OK
+bin/wall                  ?                                           OK
+bin/who                   ?                                           OK
+bin/write                 ?                                           UNTESTED
+etc/ac                    ?                                           OK
+etc/accton                ?                                           OK
+etc/badsect               ?                                           UNTESTED
+etc/bootp                 ?                                           NOTPORTED
+etc/bootpd                ?                                           NOTPORTED
+etc/chroot                ?                                           OK
+etc/clri                  ?                                           OK
+etc/comsat                ?                                           UNTESTED
+etc/cron                  ?                                           OK
+etc/dcheck                ?                                           UNTESTED
+etc/disklabel             ?                                           OK
+etc/diskpart              ?                                           UNTESTED
+etc/dmesg                 ?                                           UNTESTED
+etc/dump                  ?                                           UNTESTED
+etc/dumpfs                ?                                           UNTESTED
+etc/edquota               ?                                           UNTESTED
+etc/fastboot              ?                                           OK
+etc/fasthalt              ?                                           OK
+etc/fingerd               ?                                           UNTESTED
+etc/fsck                  ?                                           OK
+etc/fsdb                  ?                                           UNTESTED
+etc/fstat                 ?                                           UNTESTED
+etc/ftpd                  ?                                           OK
+etc/gettable              ?                                           UNTESTED
+etc/getty                 ?                                           OK
+etc/halt                  ?                                           OK
+etc/htable                ?                                           UNTESTED
+etc/icheck                ?                                           UNTESTED
+etc/ifconfig              ?                                           OK
+etc/inetd                 ?                                           OK
+etc/init                  ?                                           OK
+etc/kgmon                 ?                                           UNTESTED
+etc/makedev               ?                                           OK
+etc/mkhosts               ?                                           UNTESTED
+etc/mklost+found          ?                                           OK
+etc/mknod                 ?                                           OK
+etc/mkpasswd              ?                                           OK
+etc/mkproto               ?                                           UNTESTED
+etc/mount                 ?                                           OK
+etc/named                 ?                                           UNTESTED
+etc/ncheck                ?                                           UNTESTED
+etc/newfs                 ?                                           OK
+etc/ping                  ?                                           OK
+etc/pstat                 ?                                           UNTESTED
+etc/quot                  ?                                           UNTESTED
+etc/quotacheck            ?                                           UNTESTED
+etc/quotaon               ?                                           UNTESTED
+etc/rc                    ?                                              
+etc/reboot                ?                                           OK
+etc/renice                ?                                           UNTESTED
+etc/repquota              ?                                           UNTESTED
+etc/restore               ?                                           UNTESTED
+etc/rexecd                ?                                           UNTESTED
+etc/rlogind               ?                                           UNTESTED
+etc/rmt                   ?                                           UNTESTED
+etc/route                 ?                                           OK
+etc/routed                ?                                           UNTESTED
+etc/rshd                  ?                                           UNTESTED
+etc/rwhod                 ?                                           UNTESTED
+etc/sa                    ?                                           OK
+etc/savecore              ?                                           UNTESTED
+etc/shutdown              ?                                           OK
+etc/slattach              ?                                           UNTESTED
+etc/stacks                ?                                           UNTESTED
+etc/syslogd               ?                                           OK
+etc/talkd                 ?                                           UNTESTED
+etc/telnetd               ?                                           OK
+etc/termcap               ?                                           OK
+etc/tftpd                 ?                                           UNTESTED
+etc/timed                 ?                                           UNTESTED
+etc/tunefs                ?                                           UNTESTED
+etc/tzone                 ?                                           OK
+etc/update                ?                                           UNTESTED
+etc/vipw                  ?                                           UNTESTED
+etc/XNSrouted             ?                                           UNTESTED
+lib/crt0                  C startup routine                           OK
+lib/libc                  C library                                   OK
+usr/bin/ar11              ?                                           UNTESTED
+usr/bin/at                execute commands at later time              OK
+usr/bin/basename          ?                                           OK
+usr/bin/bc                ?                                           UNTESTED
+usr/bin/cal               ?                                           UNTESTED
+usr/bin/calendar          ?                                           UNTESTED
+usr/bin/cb                ?                                           UNTESTED
+usr/bin/checkeq           ?                                           UNTESTED
+usr/bin/col               ?                                           UNTESTED
+usr/bin/comm              ?                                           OK
+usr/bin/crypt             ?                                           OK
+usr/bin/dc                ?                                           UNTESTED
+usr/bin/deroff            ?                                           UNTESTED
+usr/bin/diction           ?                                           UNTESTED
+usr/bin/diff3             ?                                           UNTESTED
+usr/bin/efl               ?                                           UNTESTED
+usr/bin/eqn               ?                                           UNTESTED
+usr/bin/file              ?                                           OK
+usr/bin/find              ?                                           OK
+usr/bin/graph             ?                                           UNTESTED
+usr/bin/hash_info         ?                                           UNTESTED
+usr/bin/install           ?                                           OK
+usr/bin/ipc_perf          ?                                           UNTESTED
+usr/bin/ipc_test          ?                                           UNTESTED
+usr/bin/join              ?                                           UNTESTED
+usr/bin/learn             ?                                           UNTESTED
+usr/bin/lex               ?                                           OK
+usr/bin/lint              ?                                           UNTESTED
+usr/bin/look              ?                                           UNTESTED
+usr/bin/lorder            ?                                           OK
+usr/bin/m4                ?                                           UNTESTED
+usr/bin/mesg              ?                                           UNTESTED
+usr/bin/mkdep             ?                                           OK
+usr/bin/nohup             ?                                           UNTESTED
+usr/bin/plot              ?                                           UNTESTED
+usr/bin/prof              ?                                           UNTESTED
+usr/bin/ptx               ?                                           UNTESTED
+usr/bin/ranlib            ?                                           OK
+usr/bin/rcs               ?                                           UNTESTED
+usr/bin/refer             ?                                           UNTESTED
+usr/bin/rev               ?                                           UNTESTED
+usr/bin/roff              ?                                           UNTESTED
+usr/bin/sleep             ?                                           OK
+usr/bin/sort              ?                                           OK
+usr/bin/spell             ?                                           UNTESTED
+usr/bin/spline            ?                                           UNTESTED
+usr/bin/split             ?                                           UNTESTED
+usr/bin/struct            ?                                           UNTESTED
+usr/bin/sum               ?                                           OK
+usr/bin/sup               ?                                           OK
+usr/bin/tabs              ?                                           UNTESTED
+usr/bin/tac               ?                                           UNTESTED
+usr/bin/tbl               ?                                           UNTESTED
+usr/bin/tc                ?                                           UNTESTED
+usr/bin/thstate           ?                                           UNTESTED
+usr/bin/tip               ?                                           UNTESTED
+usr/bin/tk                ?                                           UNTESTED
+usr/bin/top               ?                                           UNTESTED
+usr/bin/touch             ?                                           UNTESTED
+usr/bin/tr                ?                                           UNTESTED
+usr/bin/tsort             ?                                           OK
+usr/bin/tty               ?                                           OK
+usr/bin/uniq              ?                                           UNTESTED
+usr/bin/units             ?                                           UNTESTED
+usr/bin/uucp              ?                                           UNTESTED
+usr/bin/xsend             ?                                           UNTESTED
+usr/bin/yacc              ?                                           OK
+usr/games/advent          ?                                           UNTESTED
+usr/games/arithmetic      ?                                           UNTESTED
+usr/games/atc             ?                                           UNTESTED
+usr/games/atc/games       ?                                           UNTESTED
+usr/games/backgammon      ?                                           UNTESTED
+usr/games/banner          ?                                           UNTESTED
+usr/games/battlestar      ?                                           UNTESTED
+usr/games/bcd             ?                                           UNTESTED
+usr/games/boggle          ?                                           UNTESTED
+usr/games/btlgammon       ?                                           UNTESTED
+usr/games/canfield        ?                                           UNTESTED
+usr/games/cribbage        ?                                           UNTESTED
+usr/games/dm              ?                                           UNTESTED
+usr/games/factor          ?                                           UNTESTED
+usr/games/fish            ?                                           UNTESTED
+usr/games/fortune         ?                                           UNTESTED
+usr/games/hangman         ?                                           UNTESTED
+usr/games/hunt            ?                                           UNTESTED
+usr/games/jivval          ?                                           UNTESTED
+usr/games/mille           ?                                           UNTESTED
+usr/games/monop           ?                                           UNTESTED
+usr/games/number          ?                                           UNTESTED
+usr/games/ppt             ?                                           UNTESTED
+usr/games/primes          ?                                           UNTESTED
+usr/games/quiz            ?                                           UNTESTED
+usr/games/rain            ?                                           UNTESTED
+usr/games/robots          ?                                           UNTESTED
+usr/games/rogue           ?                                           UNTESTED
+usr/games/sail            ?                                           UNTESTED
+usr/games/snake           ?                                           UNTESTED
+usr/games/trek            ?                                           UNTESTED
+usr/games/wargames        ?                                           UNTESTED
+usr/games/worm            ?                                           UNTESTED
+usr/games/worms           ?                                           UNTESTED
+usr/games/wump            ?                                           UNTESTED
+usr/lib/getNAME           ?                                           UNTESTED
+usr/lib/learn             ?                                           UNTESTED
+usr/lib/lib2648           ?                                           UNTESTED
+usr/lib/libcurses         ?                                           OK
+usr/lib/libdbm            ?                                           OK
+usr/lib/libg              ?                                           OK
+usr/lib/libln             ?                                           OK
+usr/lib/libm              ?                                           OK
+usr/lib/libmp             ?                                           UNTESTED
+usr/lib/libplot           ?                                           UNTESTED
+usr/lib/libtermcap        ?                                           OK
+usr/lib/liby              ?                                           OK
+usr/lib/lpr               ?                                           UNTESTED
+usr/lib/makekey           ?                                           UNTESTED
+usr/lib/man               ?                                           UNTESTED
+usr/lib/me                ?                                           UNTESTED
+usr/lib/sendmail          ?                                           UNTESTED
+usr/ucb/apply             ?                                           UNTESTED
+usr/ucb/biff              ?                                           UNTESTED
+usr/ucb/checknr           ?                                           UNTESTED
+usr/ucb/clear             ?                                           UNTESTED
+usr/ucb/colcrt            ?                                           UNTESTED
+usr/ucb/colrm             ?                                           UNTESTED
+usr/ucb/compress          ?                                           OK
+usr/ucb/ctags             ?                                           UNTESTED
+usr/ucb/dsh               ?                                           UNTESTED
+usr/ucb/error             ?                                           UNTESTED
+usr/ucb/ex                ?                                           OK
+usr/ucb/expand            ?                                           UNTESTED
+usr/ucb/finger            ?                                           OK
+usr/ucb/fold              ?                                           UNTESTED
+usr/ucb/from              ?                                           UNTESTED
+usr/ucb/ftp               ?                                           OK
+usr/ucb/gcore             ?                                           UNTESTED
+usr/ucb/gprof             ?                                           UNTESTED
+usr/ucb/groups            ?                                           UNTESTED
+usr/ucb/head              ?                                           UNTESTED
+usr/ucb/indent            ?                                           UNTESTED
+usr/ucb/last              ?                                           UNTESTED
+usr/ucb/lastcomm          ?                                           UNTESTED
+usr/ucb/leave             ?                                           UNTESTED
+usr/ucb/lock              ?                                           UNTESTED
+usr/ucb/logger            ?                                           UNTESTED
+usr/ucb/Mail              ?                                           UNTESTED
+usr/ucb/man               ?                                           OK
+usr/ucb/mkstr             ?                                           UNTESTED
+usr/ucb/more              ?                                           OK
+usr/ucb/msgs              ?                                           UNTESTED
+usr/ucb/netstat           ?                                           OK
+usr/ucb/printenv          ?                                           UNTESTED
+usr/ucb/quota             ?                                           UNTESTED
+usr/ucb/rdist             ?                                           UNTESTED
+usr/ucb/rlogin            ?                                           UNTESTED
+usr/ucb/rsh               ?                                           UNTESTED
+usr/ucb/ruptime           ?                                           UNTESTED
+usr/ucb/rwho              ?                                           UNTESTED
+usr/ucb/sccs              ?                                           UNTESTED
+usr/ucb/script            ?                                           UNTESTED
+usr/ucb/sendbug           ?                                           UNTESTED
+usr/ucb/soelim            ?                                           UNTESTED
+usr/ucb/strings           ?                                           OK
+usr/ucb/symorder          ?                                           UNTESTED
+usr/ucb/sysline           ?                                           UNTESTED
+usr/ucb/systat            ?                                           UNTESTED
+usr/ucb/tail              ?                                           OK
+usr/ucb/talk              ?                                           UNTESTED
+usr/ucb/tcopy             ?                                           UNTESTED
+usr/ucb/telnet            ?                                           OK
+usr/ucb/tftp              ?                                           UNTESTED
+usr/ucb/tn3270            ?                                           UNTESTED
+usr/ucb/tset              ?                                           UNTESTED
+usr/ucb/ul                ?                                           UNTESTED
+usr/ucb/unifdef           ?                                           UNTESTED
+usr/ucb/users             ?                                           UNTESTED
+usr/ucb/vacation          ?                                           UNTESTED
+usr/ucb/vgrind            ?                                           UNTESTED
+usr/ucb/vlp               ?                                           UNTESTED
+usr/ucb/wc                ?                                           UNTESTED
+usr/ucb/what              ?                                           UNTESTED
+usr/ucb/whereis           ?                                           UNTESTED
+usr/ucb/which             ?                                           UNTESTED
+usr/ucb/whoami            ?                                           UNTESTED
+usr/ucb/whois             ?                                           UNTESTED
+usr/ucb/window            ?                                           OK
+usr/ucb/xstr              ?                                           UNTESTED
+usr/ucb/yes               ?                                           UNTESTED

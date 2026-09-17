@@ -1,0 +1,545 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1993-1988 Carnegie Mellon University
+ * All Rights Reserved.
+ * 
+ * Permission to use, copy, modify and distribute this software and its
+ * documentation is hereby granted, provided that both the copyright
+ * notice and this permission notice appear in all copies of the
+ * software, derivative works or modified versions, and any portions
+ * thereof, and that both notices appear in supporting documentation.
+ * 
+ * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+ * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+ * 
+ * Carnegie Mellon requests users of this software to return to
+ * 
+ *  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+ *  School of Computer Science
+ *  Carnegie Mellon University
+ *  Pittsburgh PA 15213-3890
+ * 
+ * any improvements or extensions that they make and grant Carnegie Mellon
+ * the rights to redistribute these changes.
+ */
+/*
+ * HISTORY
+ * $Log:	task.c,v $
+ * Revision 2.27  93/11/17  17:28:56  dbg
+ * 	Rewrote task_terminate to iterate once down the list of threads
+ * 	in the task.  Removed the call to thread_block() in the thread
+ * 	termination loop and replaced with logic added earlier
+ * 	(21-Jun-88) but lost in a later merge:
+ * 
+ * 	> Loop in task_terminate to terminate threads was incorrect; if
+ * 	> another component of the system had a reference to the thread,
+ * 	> the thread would remain in the thread_list for the task, and the
+ * 	> loop would never terminate.  Rewrote it to run down the list
+ * 	> like task_hold: take a reference to each thread, and release
+ * 	> the reference on the next iteration of the loop.
+ * 
+ * 	When the current thread is in the task being terminated,
+ * 	task_terminate uses thread_terminate to prepare the current
+ * 	thread for termination, but not actually terminate it.
+ * 	[93/08/26            dbg]
+ * 
+ * 	Changed termination protocol to simultaneously clear 'active'
+ * 	and remove task port association.
+ * 	[93/07/12            dbg]
+ * 
+ * 	Added separate task_ref_lock to simplify interactions between
+ * 	task locks and processor set locks.
+ * 	[93/06/10            dbg]
+ * 
+ * 	Break up thread lock, to simplify interactions between thread
+ * 	lock and processor set lock and to reduce the amount of code
+ * 	that runs with interrupts blocked.  There are now three locks:
+ * 	. thread_ref_lock	locks the reference count
+ * 	. thread_sched_lock	locks fields involved with scheduling
+ * 				state machine
+ * 	. thread_lock		locks everything else.
+ * 	[93/05/26            dbg]
+ * 
+ * 	Removed priority field.  New threads are set to the
+ * 	processor set's default policy (timesharing or background)
+ * 	and can be changed after creation.
+ * 
+ * 	Converted time_values to time_specs, internally.  task_info still
+ * 	returns time_values.
+ * 	[93/05/21            dbg]
+ * 
+ * Revision 2.26  93/08/10  15:12:10  mrt
+ * 	Conditionalized atm hooks.
+ * 	[93/07/30            cmaeda]
+ * 	Included network interface hooks.
+ * 	[93/06/09  15:43:04  jcb]
+ * 
+ * Revision 2.25  93/08/03  12:31:22  mrt
+ * 	[93/07/30  10:30:30  bershad]
+ * 
+ * 	Change way in which kernel tasks share the same kernel map to avoid
+ * 	fault on current thread reference during bootstrap.
+ * 	[93/07/30  10:24:25  bershad]
+ * 
+ * Revision 2.24  93/05/15  18:47:52  mrt
+ * 	machparam.h -> machspl.h
+ * 
+ * Revision 2.23  93/01/24  13:19:56  danner
+ * 	We must explicitly set "new_thread->pc_sample.buffer = 0;" so
+ * 	that we don't think we have a sampling buffer.
+ * 	[93/01/13            rvb]
+ * 
+ * Revision 2.22  93/01/21  12:22:15  danner
+ * 	fast tas changes.
+ * 	[93/01/20            bershad]
+ * 
+ * Revision 2.21  93/01/14  17:36:41  danner
+ * 	Added ANSI function prototypes.
+ * 	[92/12/29            dbg]
+ * 
+ * 	Proper spl typing. 64bit cleanup.
+ * 	[92/12/01            af]
+ * 
+ * 	Fixed pset locking.  Pset lock must be taken before task or
+ * 	thread lock.
+ * 	[92/10/28            dbg]
+ * 
+ * Revision 2.20  92/08/03  17:39:45  jfriedl
+ * 	removed silly prototypes
+ * 	[92/08/02            jfriedl]
+ * 
+ * Revision 2.19  92/07/20  13:32:53  cmaeda
+ * 	Added fast tas support:
+ * 		Added task_set_ras_pc.
+ * 		Inherit ras addresses when forking.
+ * 	[92/05/11  14:36:17  cmaeda]
+ * 
+ * Revision 2.18  92/05/21  17:16:22  jfriedl
+ * 	tried prototypes.
+ * 	[92/05/20            jfriedl]
+ * 
+ * Revision 2.17  92/04/01  10:54:11  rpd
+ * 	Initialize kernel_task to TASK_NULL to support ddb use before the
+ * 	 bss is zeroed. Remove duplicate include of machine/machparam.h.
+ * 	Update copyright.
+ * 	[92/03/21            danner]
+ * 
+ * Revision 2.16  91/12/11  08:42:30  jsb
+ * 	Fixed assert_wait/thread_wakeup rendezvous in task_assign.
+ * 	[91/11/26            rpd]
+ * 
+ * Revision 2.15  91/11/15  14:11:59  rpd
+ * 	NORMA_TASK: initialize new child_node field in task upon creation.
+ * 	[91/09/23  09:20:23  jsb]
+ * 
+ * Revision 2.14  91/06/25  10:29:32  rpd
+ * 	Updated convert_thread_to_port usage.
+ * 	[91/05/27            rpd]
+ * 
+ * Revision 2.13  91/06/17  15:47:19  jsb
+ * 	Added norma_task hooks. See norma/kern_task.c for code.
+ * 	[91/06/17  10:53:30  jsb]
+ * 
+ * Revision 2.12  91/05/14  16:48:05  mrt
+ * 	Correcting copyright
+ * 
+ * Revision 2.11  91/03/16  14:52:24  rpd
+ * 	Can't use thread_dowait on the current thread now.
+ * 	[91/01/20            rpd]
+ * 
+ * Revision 2.10  91/02/05  17:29:55  mrt
+ * 	Changed to new Mach copyright
+ * 	[91/02/01  16:19:00  mrt]
+ * 
+ * Revision 2.9  91/01/08  15:17:44  rpd
+ * 	Added consider_task_collect, task_collect_scan.
+ * 	[91/01/03            rpd]
+ * 	Added continuation argument to thread_block.
+ * 	[90/12/08            rpd]
+ * 
+ * Revision 2.8  90/10/25  14:45:26  rwd
+ * 	From OSF: Add thread_block() to loop that forcibly terminates
+ * 	threads in task_terminate() to fix livelock.  Also hold
+ * 	reference to thread when calling thread_force_terminate().
+ * 	[90/10/19            rpd]
+ * 
+ * Revision 2.7  90/06/19  22:59:41  rpd
+ * 	Fixed task_info to return the correct base_priority.
+ * 	[90/06/18            rpd]
+ * 
+ * Revision 2.6  90/06/02  14:56:40  rpd
+ * 	Moved trap versions of kernel calls to kern/ipc_mig.c.
+ * 	[90/05/31            rpd]
+ * 
+ * 	Removed references to kernel_vm_space, keep_wired_memory.
+ * 	[90/04/29            rpd]
+ * 	Converted to new IPC and scheduling technology.
+ * 	[90/03/26  22:22:19  rpd]
+ * 
+ * Revision 2.5  90/05/29  18:36:51  rwd
+ * 	Added trap versions of task routines from rfr.
+ * 	[90/04/20            rwd]
+ * 	Add TASK_THREAD_TIMES_INFO flavor to task_info, to get times for
+ * 	all live threads.
+ * 	[90/04/03            dbg]
+ * 
+ * 	Use kmem_alloc_wired instead of vm_allocate in task_threads.
+ * 	[90/03/28            dbg]
+ * 
+ * Revision 2.4  90/05/03  15:46:58  dbg
+ * 	Add TASK_THREAD_TIMES_INFO flavor to task_info, to get times for
+ * 	all live threads.
+ * 	[90/04/03            dbg]
+ * 
+ * 	Use kmem_alloc_wired instead of vm_allocate in task_threads.
+ * 	[90/03/28            dbg]
+ * 
+ * Revision 2.3  90/01/11  11:44:17  dbg
+ * 	Removed task_halt (unused).  De-linted.
+ * 	[89/12/12            dbg]
+ * 
+ * Revision 2.2  89/09/08  11:26:37  dbg
+ * 	Initialize keep_wired_memory in task_create.
+ * 	[89/07/17            dbg]
+ * 
+ * 19-May-89  David Golub (dbg) at Carnegie-Mellon University
+ *	Changed task_info to check for kernel_task, not first_task.
+ *
+ * 19-Oct-88  David Golub (dbg) at Carnegie-Mellon University
+ *	Moved all syscall_emulation routine calls here.  Removed
+ *	all non-MACH data structures.  Added routine to create
+ *	new tasks running in the kernel.  Changed kernel_task
+ *	creation to create it as a normal task.
+ *
+ * Revision 2.6  88/10/11  10:21:38  rpd
+ * 	Changed includes to the new style.
+ * 	Rewrote task_threads; the old version could return
+ * 	an inconsistent picture of the task.
+ * 	[88/10/05  10:28:13  rpd]
+ * 
+ * Revision 2.5  88/08/06  18:25:53  rpd
+ * Changed to use ipc_task_lock/ipc_task_unlock macros.
+ * Eliminated use of kern/mach_ipc_defs.h.
+ * Enable kernel_task for IPC access.  (See hack in task_by_unix_pid to
+ * allow a user to get the kernel_task's port.)
+ * Made kernel_task's ref_count > 0, so that task_reference/task_deallocate
+ * works on it.  (Previously the task_deallocate would try to destroy it.)
+ * 
+ * Revision 2.4  88/07/20  16:40:17  rpd
+ * Removed task_ports (replaced by port_names).
+ * Didn't leave xxx form, because it wasn't implemented.
+ * 
+ * Revision 2.3  88/07/17  17:55:52  mwyoung
+ * Split up uses of task.kernel_only field.  Condensed history.
+ * 
+ * Revision 2.2.1.1  88/06/28  20:46:20  mwyoung
+ * Split up uses of task.kernel_only field.  Condensed history.
+ * 
+ * 21-Jun-88  Michael Young (mwyoung) at Carnegie-Mellon University.
+ *	Split up uses of task.kernel_only field.
+ *
+ * 21-Jun-88  David Golub (dbg) at Carnegie-Mellon University
+ *	Loop in task_terminate to terminate threads was incorrect; if
+ *	another component of the system had a reference to the thread,
+ *	the thread would remain in the thread_list for the task, and the
+ *	loop would never terminate.  Rewrote it to run down the list
+ *	like task_hold.  Thread_create terminates new thread if
+ *	task_terminate occurs simultaneously.
+ *
+ * 27-Jan-88  Douglas Orr (dorr) at Carnegie-Mellon University
+ *	Init user space library structures.
+ *
+ * 21-Jan-88  David Golub (dbg) at Carnegie-Mellon University
+ *	Task_create no longer returns the data port.  Task_status and
+ *	task_set_notify are obsolete (use task_{get,set}_special_port).
+ *
+ * 21-Jan-88  Karl Hauth (hauth) at Carnegie-Mellon University
+ *	task_info(kernel_task, ...) now looks explicitly in the
+ *	kernel_map, so it actually returns useful numbers.
+ *
+ * 17-Jan-88  David Golub (dbg) at Carnegie-Mellon University
+ *	Added new task interfaces: task_suspend, task_resume,
+ *	task_info, task_get_special_port, task_set_special_port.
+ *	Old interfaces remain (temporarily) for binary
+ *	compatibility, prefixed with 'xxx_'.
+ *
+ * 29-Dec-87  David Golub (dbg) at Carnegie-Mellon University
+ *	Delinted.
+ *
+ * 23-Dec-87  David Golub (dbg) at Carnegie-Mellon University
+ *	Added task_halt to halt all threads in a task.
+ *
+ * 15-Dec-87  David Golub (dbg) at Carnegie-Mellon University
+ *	Check for null task pointer in task_reference and
+ *	task_deallocate.
+ *
+ *  9-Dec-87  David Golub (dbg) at Carnegie-Mellon University
+ *	Removed extra thread reference from task_terminate for new thread
+ *	termination code.
+ *
+ *  8-Dec-87  David Black (dlb) at Carnegie-Mellon University
+ *	Added call to ipc_task_disable.
+ *
+ *  3-Dec-87  David Black (dlb) at Carnegie-Mellon University
+ *	Implemented better task termination base on task active field:
+ *		1.  task_terminate sets active field to false.
+ *		2.  All but the most simple task operations check the
+ *			active field and abort if it is false.
+ *		3.  task_{hold, dowait, release} now return kern_return_t's.
+ *		4.  task_dowait has a second parameter to ignore active
+ *			field if called from task_terminate.
+ *	Task terminate acquires extra reference to current thread before
+ *	terminating it (see thread_terminate()).
+ *
+ * 19-Nov-87  Avadis Tevanian (avie) at Carnegie-Mellon University
+ *	Eliminated TT conditionals.
+ *
+ * 13-Oct-87  David Black (dlb) at Carnegie-Mellon University
+ *	Use counts for suspend and resume primitives.
+ *
+ * 13-Oct-87  David Golub (dbg) at Carnegie-Mellon University
+ *	Added port reference counting to task_set_notify.
+ *
+ *  5-Oct-87  David Golub (dbg) at Carnegie-Mellon University
+ *	Completely replaced old scheduling state machine.
+ *
+ * 14-Sep-87  Michael Young (mwyoung) at Carnegie-Mellon University
+ *	De-linted.
+ *
+ * 25-Aug-87  Robert Baron (rvb) at Carnegie-Mellon University
+ *	Must initialize the kernel_task->lock (at least on the Sequent)
+ *
+ *  6-Aug-87  David Golub (dbg) at Carnegie-Mellon University
+ *	Moved ipc_task_terminate to task_terminate, to shut down other
+ *	threads that are manipulating the task via its task_port.
+ *	Changed task_terminate to terminate all threads in the task.
+ *
+ * 29-Jul-87  David Golub (dbg) at Carnegie-Mellon University
+ *	Fix task_suspend not to hold the task if the task has been
+ *	resumed.  Change task_hold/task_wait so that if the current
+ *	thread is in the task, it is not held until after all of the
+ *	other threads in the task have stopped.  Make task_terminate be
+ *	able to terminate the current task.
+ *
+ *  9-Jul-87  Karl Hauth (hauth) at Carnegie-Mellon University
+ *	Modified task_statistics to reflect changes in the structure.
+ *
+ * 10-Jun-87  Karl Hauth (hauth) at Carnegie-Mellon University
+ *	Added code to fill in the task_statistics structure with
+ *	zeros and to make mig happier by returning something.
+ *
+ *  1-Jun-87  Avadis Tevanian (avie) at Carnegie-Mellon University
+ *	Added task_statistics stub.
+ *
+ * 27-Apr-87  Michael Young (mwyoung) at Carnegie-Mellon University
+ *	Move ipc_task_init into task_create; it *should* return
+ *	the data port (with a reference) at some point.
+ *
+ * 20-Apr-87  David Black (dlb) at Carnegie-Mellon University
+ *	Fixed task_suspend to ignore multiple suspends.
+ *	Fixed task_dowait to work if current thread is in the affected task.
+ *
+ * 24-Feb-87  Avadis Tevanian (avie) at Carnegie-Mellon University
+ *	Rewrote task_suspend/task_hold and added task_wait for new user
+ *	synchronization paradigm.
+ *
+ * 10-Feb-87  Michael Young (mwyoung) at Carnegie-Mellon University
+ *	Add task.kernel_only initialization.
+ *
+ * 31-Jan-87  Avadis Tevanian (avie) at Carnegie-Mellon University
+ *	Merged in my changes for real thread implementation.
+ *
+ *  7-Nov-86  Michael Young (mwyoung) at Carnegie-Mellon University
+ *	Fixed up stubs for eventual task calls.
+ *
+ * 30-Sep-86  Avadis Tevanian (avie) at Carnegie-Mellon University
+ *	Make floating u-area work, add all_task list management.
+ *
+ * 26-Sep-86  Michael Young (mwyoung) at Carnegie-Mellon University
+ *	Added argument to ipc_task_init to get parent.
+ *
+ *  1-Aug-86  Michael Young (mwyoung) at Carnegie-Mellon University
+ *	Added initialization for Mach IPC.
+ *
+ * 20-Jul-86  Michael Young (mwyoung) at Carnegie-Mellon University
+ *	Added kernel_task.
+ */
+/*
+ *	File:	kern/task.c
+ *	Author:	Avadis Tevanian, Jr., Michael Wayne Young, David Golub,
+ *		David Black
+ *
+ *	Task management primitives implementation.
+ */
+
+#include <fast_tas.h>
+#include <mach_host.h>
+#include <mach_pcsample.h>
+#include <net_atm.h>
+#include <norma_task.h>
+
+#include <mach/machine/vm_types.h>
+#include <mach/vm_param.h>
+#include <mach/task_info.h>
+#include <mach/task_special_ports.h>
+#include <ipc/ipc_space.h>
+#include <kern/mach_param.h>
+#include <kern/task.h>
+#include <kern/thread.h>
+#include <kern/zalloc.h>
+#include <kern/kalloc.h>
+#include <kern/memory.h>
+#include <kern/processor.h>
+#include <kern/sched.h>		/* for sched_tick */
+#include <kern/sched_prim.h>	/* for thread_wakeup */
+#include <kern/ipc_tt.h>
+#include <kern/syscall_emulation.h>
+#include <sched_policy/standard.h>
+#include <vm/vm_kern.h>		/* for kernel_map, ipc_kernel_map */
+#include <machine/machspl.h>	/* for splsched */
+
+#if	NET_ATM
+#include <chips/nw_mk.h>
+#endif
+
+#if	NORMA_TASK
+#define	task_create	task_create_local
+#endif	/* NORMA_TASK */
+
+task_t	kernel_task = TASK_NULL;
+zone_t	task_zone;
+
+
+void task_init(void)
+{
+	task_zone = zinit(
+			sizeof(struct task),
+			TASK_MAX * sizeof(struct task),
+			TASK_CHUNK * sizeof(struct task),
+			FALSE, "tasks");
+
+	eml_init();
+
+	/*
+	 * Create the kernel task as the first task.
+	 * Task_create must assign to kernel_task as a side effect,
+	 * for other initialization. (:-()
+	 */
+	(void) task_create(TASK_NULL, FALSE, &kernel_task);
+}
+
+/*
+ * Create a task running in the kernel address space.  It may
+ * have its own map of size mem_size (if 0, it uses the kernel map),
+ * and may have ipc privileges.
+ */
+task_t	kernel_task_create(
+	task_t		parent_task,
+	vm_size_t	map_size)
+{
+	task_t		new_task;
+	vm_offset_t	min, max;
+
+	/*
+	 * Create the task.
+	 */
+	(void) task_create(parent_task, FALSE, &new_task);
+
+	/*
+	 * Task_create creates the task with a user-space map.
+	 * Remove the map and replace it with the kernel map
+	 * or a submap of the kernel map.
+	 */
+	vm_map_deallocate(new_task->map);
+	if (map_size == 0)
+	    new_task->map = kernel_map;
+	else
+	    new_task->map = kmem_suballoc(kernel_map, &min, &max,
+					  map_size, FALSE);
+
+	return new_task;
+}
+
+kern_return_t task_create(
+	task_t		parent_task,
+	boolean_t	inherit_memory,
+	task_t		*child_task)		/* OUT */
+{
+	register task_t	new_task;
+	register processor_set_t	pset;
+
+	new_task = (task_t) zalloc(task_zone);
+	if (new_task == TASK_NULL) {
+		panic("task_create: no memory for task structure");
+	}
+
+	/* one ref for just being alive; one for our caller */
+	new_task->ref_count = 2;
+
+	if (child_task == &kernel_task)  {
+		new_task->map = kernel_map; 
+	} else if (inherit_memory) {
+		new_task->map = vm_map_fork(parent_task->map);
+	} else {
+		new_task->map = vm_map_create(pmap_create(0),
+					round_page(VM_MIN_ADDRESS),
+					trunc_page(VM_MAX_ADDRESS), TRUE);
+	}
+
+	simple_lock_init(&new_task->lock);
+	simple_lock_init(&new_task->ref_lock);
+	queue_init(&new_task->thread_list);
+	new_task->suspend_count = 0;
+	new_task->active = TRUE;
+	new_task->user_stop_count = 0;
+	new_task->thread_count = 0;
+
+	eml_task_reference(new_task, parent_task);
+
+	ipc_task_init(new_task, parent_task);
+
+#if	NET_ATM
+	new_task->nw_ep_owned = 0;
+#endif
+
+	new_task->total_user_time.seconds = 0;
+	new_task->total_user_time.nanoseconds = 0;
+	new_task->total_system_time.seconds = 0;
+	new_task->total_system_time.nanoseconds = 0;
+
+	if (parent_task != TASK_NULL) {
+		task_lock(parent_task);
+		task_inherit_default_policy(parent_task, new_task);
+		pset = parent_task->processor_set;
+		if (pset == PROCESSOR_SET_NULL || !pset->active)
+			pset = &default_pset;
+		pset_reference(pset);
+		task_unlock(parent_task);
+	}
+	else {
+		task_inherit_default_policy(TASK_NULL, new_task);
+		pset = &default_pset;
+		pset_reference(pset);
+	}
+	pset_lock(pset);
+	pset_add_task(pset, new_task);
+	pset_unlock(pset);
+
+	new_task->may_assign = TRUE;
+	new_task->assign_wait = FALSE;
+
+#if	MACH_PCSAMPLE
+	new_task->pc_sample.buffer = 0;
+	new_task->pc_sample.seqno = 0;
+	new_task->pc_sample.sampletypes = 0;
+#endif
+
+#if	FAST_TAS
+    {
+	int i;
+
+	for (i = 0; i < TASK_FAST_TAS_NRAS; i++)  {
+	    if (inherit_memory) {
+		new_task->fast_tas_base[i] = parent_task->fast_tas_base[i];
+ 		new_task->f

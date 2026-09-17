@@ -1,0 +1,9 @@
+Booting MACH on a macintosh requires two things.
+  1) The Mach control panel.  Mach_f contains the MPW sources.
+  2) A kernel with a ramdisk.  "make ramdisk" builds one of these.
+  3) A bootable control panel and ramdisk kernel, Mach.Hqx
+
+The objects in /usr/src/boot/mac2 are:
+Mach.Hqx   -- Mach control panel binary with a ramdisk kernel
+Mach_f.Hqx -- sources to Mach control panel
+Mach_f     -- unpacked sources

@@ -1,0 +1,17 @@
+# MacMach Operating System
+# Copyright (c) 1992 Carnegie Mellon University
+# All Rights Reserved.
+#
+# MacMach was developed by CMU with support from Apple Computer, Inc.
+# Use of this software is constrained by the MacMach End-User license.
+
+# Machine-dependent files for mac2
+mac2/bsd_machdep.c	standard
+mac2/queue.c		standard
+mac2/conf.c		standard
+mac2/bdisk.c		standard
+mac2/sony.c		standard
+mac2/virt.S		standard
+mac2/setjmp.S		standard
+mac2/in_cksum.c		standard
+mac2/mac2_exception.c	standard

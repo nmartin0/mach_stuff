@@ -1,0 +1,130 @@
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990,1989 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie Mellon
+.\" the rights to redistribute these changes.
+.\"/
+.TH MACHTERM 8 "Apr 12, 1992"
+.UC 4
+.de us
+\\$1\l'|0\(ul'
+..
+.SH NAME
+machterm \- display server and terminal utility
+.SH SYNOPSIS
+.B machterm
+[ \-sh | \-csh ]
+.PP
+.B machterm
+\-status
+[ <text> ]
+.PP
+.B machterm
+\-invert
+.PP
+.B machterm
+\-cursor
+<cursor type>
+.PP
+.B machterm
+<display device>...
+.SH DESCRIPTION
+The
+.I machterm
+program is a simple display server and terminal utility.
+As a display server,
+.I machterm
+can handle multiple display devices and multiple virtual terminals
+on each device.
+As a utility program,
+.I machterm
+controls various terminal options, such as writing to the status
+line, switching to inverse video and selecting cursors.
+.SH OPERATION
+The
+.I machterm
+display server uses the machterm library to present text on the
+specified bit\-mapped displays.
+Pseudo terminals are used to run the /bin/login program.
+The terminal emulated by the machterm library supports a status
+line, inverse video and multiple cursor types.
+.PP
+On a virtual terminal, the ^] key is used to enter commands
+to the machterm server.  Use ^]\-? to display a list of the
+commands.
+.PP
+The
+.I machterm
+program provides user access to these parameters.
+The
+.I machterm
+program also provides the important function of setting up the
+.I TERM
+and
+.I TERMCAP
+environment variables for either /bin/sh or /bin/csh.
+.SH EXAMPLES
+.IP
+machterm -sh
+.PP
+This queries the current machterm terminal for its termcap
+specifications and generates code to setup the
+.I TERM
+and
+.I TERMCAP
+environment variables for /bin/sh.
+Note that if this is NOT run under a machterm terminal,
+it will have a non-zero exit code.
+.IP
+machterm -status "some text"
+.PP
+This write "some text" on the status line.
+.IP
+machterm -invert
+.PP
+This inverts the video display.
+.IP
+machterm -cursor close line
+.PP
+This changes the current cursor to be a close line.
+If a cursor type is not specified, then a list of valid
+cursor types is displayed.
+.IP
+machterm /dev/scn0 /dev/scn0 /dev/scn1
+.PP
+This runs two virtual terminals on display screen 0 and one
+virtual terminal on display screen 1.
+Note that the first virtual terminal on display screen 0 will
+attempt to take over as the system console.
+.SH DIAGNOSTICS
+The
+.I machterm
+program displays appropriate error messages.
+.SH "SEE ALSO"
+login(1),
+machterm(3),
+.SH BUGS
+None so far.
+.SH AUTHOR
+The
+.I machterm
+program was written by Zonnie L. Williamson at CMU, 1992.
+

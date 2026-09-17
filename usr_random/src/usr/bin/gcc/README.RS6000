@@ -1,0 +1,22 @@
+The current version of the assembler (/bin/as) for the RS/6000 has
+certain problems that prevent prevent the "-g" option in GCC from
+working.
+
+IBM has produced a fixed version of the assembler.  The replacement
+assembler is not a standard component of either AIX 3.1.5 or AIX 3.2,
+but is expected to become standard in a future distribution.
+
+If you have an RS/6000, you can get the fixed assembler either on
+diskette or via VNET ftp.  VNET distribution may be desirable if you
+have an IBM rep nearby with a networked VM machine.
+
+In either case, execute
+    lslpp -h bos.obj to determine your release level.  (Look on the
+ACTIVE line for something like 03.01.0005.0012.)  If you know your
+customer number, please have it available; if you do not, you will
+still be able to obtain the fixed assembler, but you will need to be
+insistent.  Then call IBM Support at 800-237-5511.  Ask for emergency
+shipment of the RS/6000 AIX fix for APAR IX22829.  They may ask you to
+verify that it's a fix for ".extern foo conflicts with defining foo";
+say yes.  You will receive a tar or tar.Z file containing an assembler
+plus installation instructions.

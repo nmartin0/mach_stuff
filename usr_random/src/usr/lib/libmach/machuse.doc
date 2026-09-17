@@ -1,0 +1,879 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               A PROGRAMMER'S GUIDE TO THE MACH USER ENVIRONMENT
+
+                                Linda R. Walmer
+                               Mary R. Thompson
+
+                        Department of Computer Science
+                          Carnegie-Mellon University
+                             Pittsburgh, PA 15213
+                                  Version of:
+                               16 November 1989
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   ABSTRACT
+
+This  document is one of two tutorials designed to teach basic Mach programming
+skills.  This manual demonstrates the use of the C Threads  library  primitives
+in writing a multi-threaded program and the use of the Mach Interface Generator
+(MIG) to generate remote procedure calls for interprocess communication.
+
+The reader should be familiar  with  the  basic  Mach  abstractions  of  ports,
+messages,  virtual memory, tasks and threads. The introduction to the companion
+document to this one, A Programmer's Guide to the Mach System  Calls,  explains
+these concepts.
+
+Comments, suggestions and additions to this document are wlecome.
+1. Introduction
+  This  document  is  one  of  two  tutorials  designed  to  teach  basic  Mach
+programming skills.  This manual demonstrates the use of the C Threads  library
+primitives  in  writing  a  multi-threaded  program  and  the  use  of the Mach
+Interface Generator (MIG) to generate remote procedure calls  for  interprocess
+communication.  It  also  includes  a final section on where at CMU to find the
+include files and libraries that comprise  the  Mach  environment  as  well  as
+procedures   for  obtaining  these  files  and  setting  up  the  correct  user
+environment.
+
+  The reader should be familiar with the  basic  Mach  abstractions  of  ports,
+messages,  virtual  memory, tasks and threads before reading this document. The
+introduction to the other tutorial document, A Programmer's Guide to  the  Mach
+System Calls, explains these concepts.
+
+2. C Threads, A Single Master Thread Spawning Concurrent Slaves
+  The  C  threads  package  is  a  runtime  library  that provides a C language
+interface to a number of low level, Mach primitives for manipulating threads of
+control.    The  constructs  provided  are:    forking  and joining of threads,
+protection of critical regions with mutex  variables,  and  synchronization  by
+means  of  condition  variables.  For  a  complete description of the C threads
+package see the  C  Threads  manual  by  Cooper  and  Draves.    It  is  highly
+recommended  that  a  programmer  doing  multi-threaded  applications use the C
+threads routines rather than the Mach system calls. Not only is the  C  threads
+package designed to provide a more natural set of primitives for multi-threaded
+applications, but the thread system call interface has  been  recently  revised
+and  may  not  be  completely stable.  Also, the C threads package is carefully
+optimized to produce the most efficient use of the system calls.
+
+  The program at the end of this section is an example of how  to  structure  a
+program with a single master thread which spawns a number of concurrent slaves.
+The master thread waits until all the slaves have finished to exit.   A  random
+number  generator is used to determine the "life" of the slave processes.  Once
+created the slave processes in this  example  simply  loop  calling  a  cthread
+function  making  the  processor available to other threads.  The random number
+generator determines the length of this loop.  In a more useful version of this
+program, each slave process would do something while looping.
+
+  In  order  for  the  master  thread  to determine when all of the slaves have
+exited, a count variable is needed to keep  track  of  the  number  of  current
+threads.    This  count  is  incremented  by the master with each creation of a
+slave.  Each slave decrements the count when it exits.   Because  two  or  more
+threads may be trying to access the count at the same time, a mutex called lock
+is used to provide exclusive access to count.  If any thread  wants  to  access
+the  count  variable,  it  should  first lock the mutex.  Consequently when the
+mutex is locked, any thread wanting the count  variable  must  wait  until  the
+mutex is unlocked.
+
+  Condition  variables are used to provide synchronization between threads, e.g
+one thread wishes to wait until another thread has  finished  doing  something.
+Every  condition  variable  is  associated with a mutex. The condition variable
+represents a boolean state of the shared data that the mutex protects.  In this
+example  after  all  of  the slave threads have been created, the master thread
+waits until the count variable is equal to zero.  A condition variable done  is
+used to represent the possibility that the count may equal zero.  Just before a
+slave thread exits, it signals the condition done since  it  may  be  the  last
+slave  executing.  The master thread loops waiting on the condition done.  Each
+time the master thread is signalled by a condition_signal call,  it  tests  the
+count for a value of zero.
+
+  cthread_init  is  the  first  function  called  in the example program.  This
+function initializes the C threads implementation and must be called before any
+of  the  other cthread functions. If a program is loaded with the /usr/mach/lib
+version of crt0, this call is no longer necessary as it has already  been  done
+by  crt0  (or gcrt0 or moncrt0).  The count which represents the current number
+of slaves is set to zero.  mutex_alloc is called to allocate a  mutex  assigned
+to  the  variable lock.  condition_alloc is used to allocate a condition object
+assigned to the variable done.  The last initialization call is to  the  random
+number generator.
+
+  After  initialization,  the  master thread loops creating the number of slave
+processes desired and incrementing count with each  creation.    mutex_lock  is
+called  at  the beginning of the loop.  This call results in either locking the
+variable lock, or blocking until lock is unlocked by some other  thread.    The
+return  of mutex_lock signals that the master can now change the variable count
+knowing that no other thread will be accessing this variable until  the  master
+unlocks  the mutex.  count is incremented, and a slave is created.  To create a
+slave, the master calls cthread_fork followed by cthread_detach.   cthread_fork
+creates  a  new  thread of control which executes concurrently with the master.
+cthread_fork takes as a parameter  a  function  which  the  new  thread  is  to
+execute.  Since the master does not intend to later rendez-vous with the slave,
+cthread_detach is called.  Once  the  master  has  incremented  the  count  and
+created  a  slave, mutex_unlock is called to give the other threads a chance to
+lock the mutex and consequently access the count variable.
+
+  Having created the desired number of slaves, the master thread stops  looping
+and waits for all of the slave threads to finish execution.  The variable count
+signals the number of slave processes still executing.  mutex_lock is called so
+the  master  may  safely access the count variable.  Now the master thread must
+wait on the condition done by calling condition_wait.   condition_wait  unlocks
+the  mutex  and  suspends  the  master,  letting other threads change the count
+variable.  When condition_wait returns, the mutex is automatically locked.  The
+master  resumes  and  checks  the  count to see if it is in fact equal to zero.
+Since there is no gaurantee that the condition will be true when the master  is
+resumed,  the condition_wait is called in a loop ending when the count is zero.
+Before exiting the master  calls  mutex_unlock.    cthread_exit  is  called  to
+terminate the master thread.
+
+  When  the  new slave was created via cthread_fork, it was given a function to
+execute and one parameter to pass to that function.  In our example, the  slave
+function  is given a random number as a parameter.  The slave loops this number
+of times calling a function cthread_yield, which yields the processor to  other
+threads.    When finished looping, the thread must decrement the count variable
+because it is about to exit.  In order to safely access the  count,  mutex_lock
+is  called.    Once  the  mutex lock is locked, the count is decremented.  Next
+condition_signal is called to indicate that the condition  represented  by  the
+condition variable done may be true.  The slave calls mutex_unlock and exits.
+
+
+
+2.1. Initializing the C Threads Package
+  This  initialization  function  must  be  called  before  any  other C Thread
+functions.  This call is now called automatically by crt0, but  multiple  calls
+to this routine are harmless.
+
+    cthread_init();
+
+
+
+
+2.2. Allocation of a Mutex Variable
+  mutex_alloc provides dynamic allocation of a mutex variable.
+
+    mutex_t lock;      /* mutual exclusion for count */
+
+    lock = mutex_alloc();
+
+
+
+
+2.3. Locking a Mutex Variable
+  mutex_lock  attempts  to  lock  the  given  mutex  variable.  If the mutex is
+already locked this call blocks until  the  mutex  is  unlocked.    If  several
+threads  attempt to lock the same mutex concurrently, one will succeed, and the
+others will block until the mutex is unlocked.  A deadlock will result  from  a
+thread attempting to lock a mutex it has already locked.
+
+    mutex_t lock;      /* mutual exclusion for count */
+
+    mutex_lock(lock);
+
+
+
+
+2.4. Unlocking a Mutex Variable
+  mutex_unlock unlocks the mutex giving other threads a chance to lock it.
+
+    mutex_t lock;      /* mutual exclusion for count */
+
+    mutex_unlock(lock);
+
+
+
+
+2.5. Allocation of a Condition Variable
+  condition_alloc provides dynamic allocation of a condition variable.
+
+    condition_t done;  /* signalled each time a slave finishes */
+
+    done = condition_alloc();
+
+
+
+
+2.6. Waiting on a Condition
+  This  function  unlocks  the  mutex  it  takes as a parameter, suspending the
+calling  thread  until  another  thread  calls  condition_signal  on  the  same
+condition variable.  The mutex is then locked and the thread resumes.  There is
+no guarantee that the condition will be true when the thread resumes, therefore
+condition_wait should always be used in the form below.
+
+    mutex_t lock;
+    condition_t done;
+
+    mutex_lock(lock);
+    ...
+    while (count != 0)
+            condition_wait(done, lock);
+    ...
+    mutex_unlock(lock);
+
+
+
+
+2.7. Signalling a Condition
+  condition_signal  is  called  when  one  thread  wishes  to indicate that the
+condition represented by the condition variable  may  now  be  true.    If  any
+threads  are waiting via condition_wait, at least one of them will be awakened.
+If no threads are waiting, nothing happens.
+
+    condition_t done;  /* signalled each time a slave finishes */
+
+    condition_signal(done);
+2.8. Forking a C Thread
+  This function takes two parameters: a function for the new thread to execute,
+and a parameter to this function.  cthread_fork creates a new thread of control
+in which the specified function is  executed  concurrently  with  the  caller's
+thread.    This is the sole means of creating new threads.  A parameter that is
+larger than a pointer  must  be  passed  by  reference.    Similarly,  multiple
+parameters  must  be  simulated  by passing a pointer to a structure containing
+several components.  The call to cthread_fork returns a thread identifier  that
+can  be  passed to cthread_join or cthread_detach.  Every thread must be either
+joined or detached exactly once.
+
+    /*  slave is a function that expects an integer parameter  */
+    /*  see Detaching a C Thread for description of chtread_detach  */
+
+    cthread_detach(cthread_fork(slave, random() % 1000));
+
+
+
+
+2.9. Detaching a C Thread
+  cthread_detach is used to indicate that a thread will never  be  joined.    A
+thread  may  be  detached  at  any time after it is forked, as long as no other
+attempt at joining or detaching has been made.  In the example  below,  at  the
+time  the  thread  was  forked,  it was known that it would never be joined and
+therefore it was detached.
+
+    /*  slave is a function that expects an integer parameter  */
+    /*  see Forking a C Thread for description of chtread_fork  */
+
+    cthread_detach(cthread_fork(slave, random() % 1000));
+
+
+
+
+2.10. Yielding the Processor to other Threads
+  This procedure is a hint to the scheduler, suggesting that this  would  be  a
+convenient  point  to  schedule another thread to run on the current processor.
+Calls to cthread_yield are unnecessary in  an  implementation  with  preemptive
+scheduling,  but  may  be  required  to  avoid  starvation in a coroutine based
+implementation.
+
+    int i, n;
+
+    /* n is set previously */
+
+    for (i = 0; i < n; i += 1)
+            cthread_yield();
+
+
+
+
+2.11. Exiting a C Thread
+  cthread_exit  causes  termination  of  the  calling  thread.    An   implicit
+cthread_exit  occurs  when  the  top  level  function of a thread returns.  The
+result parameter will be passed  to  the  thread  that  joins  the  caller,  or
+discarded if the caller is detached.
+
+    cthread_exit(0);
+2.12. Example V, masterslave.c
+/*
+ * This program is an example of a master thread spawning a number of
+ * concurrent slaves.  The master thread waits until all of the slaves have
+ * finished to exit.  Once created a slave process doesn't do much in this
+ * simple example except loop.  A count variable is used by the master and
+ * slave processes to keep track of the current number of slaves executing.
+ * A mutex is associated with this count variable, and a condition variable
+ * with the mutex.  This program is a simple demonstration of the use of
+ * mutex and condition variables.
+ */
+
+#include <stdio.h>
+#include <cthreads.h>
+
+int count;         /* number of slaves active */
+mutex_t lock;      /* mutual exclusion for count */
+condition_t done;  /* signalled each time a slave finishes */
+
+extern long random();
+
+
+
+
+init()
+{
+    cthread_init();
+    count = 0;
+    lock = mutex_alloc();
+    done = condition_alloc();
+    srandom(time((int *) 0));  /* initialize random number generator */
+}
+
+
+
+
+/*
+ * Each slave just counts up to its argument, yielding the processor on
+ * each iteration.  When it is finished, it decrements the global count
+ * and signals that it is done.
+ */
+slave(n)
+    int n;
+{
+    int i;
+
+    for (i = 0; i < n; i += 1)
+        cthread_yield();
+    mutex_lock(lock);
+    count -= 1;
+    printf("Slave finished %d cycles.\n", n);
+    condition_signal(done);
+    mutex_unlock(lock);
+}
+
+
+
+
+/*
+ * The master spawns a given number of slaves and then waits for them all to
+ * finish.
+ */
+master(nslaves)
+    int nslaves;
+{
+    int i;
+
+    for (i = 1; i <= nslaves; i += 1) {
+        mutex_lock(lock);
+        /*
+         * Fork a slave and detach it,
+         * since the master never joins it individually.
+         */
+        count += 1;
+        cthread_detach(cthread_fork(slave, random() % 1000));
+        mutex_unlock(lock);
+    }
+    mutex_lock(lock);
+    while (count != 0)
+        condition_wait(done, lock);
+    mutex_unlock(lock);
+    printf("All %d slaves have finished.\n", nslaves);
+    cthread_exit(0);
+}
+
+
+
+
+main()
+{
+    init();
+    master((int) random() % 16);  /* create up to 15 slaves */
+}
+3. MIG - The Mach Interface Generator
+  Much  multi-task communication takes the form of one or more tasks requesting
+services or responses from another task.  This in fact is a  description  of  a
+Mach server process.  Since the creation and reading of messages requires a lot
+of repetitious code, it should come as no great surpise that  Mach  provides  a
+compiler  to  produce a remote procedure call interface to IPC message passing.
+A complete description of MIG including an example of its use can be  found  in
+MIG - the Mach Interface Generator by Draves, Jones and Thompson.
+
+  A  brief  example of the use of MIG follows. The problem that is to be solved
+is to write a simple server that will return  either  a  random  integer  or  a
+random string. The user interface to this server is to consist of two calls:
+
+    ret_code = get_random(server_port,num)
+            port_t  server_port;
+            int     num;
+
+    ret_code = get_secret(server_port,password)
+            port_t  server_port;
+            string25 password;
+
+
+
+3.1. MIG Definition file
+  The  subsystem  implementor must first write a MIG definition file to specify
+the details of the procdure arguments  and  the  messages  to  be  used.    MIG
+understands  different  kinds  of  routines and many obscure options in the way
+messages are to be formatted, sent and received.  But for this simple  case  it
+is enough to define the name of the server, the types of the arguments that are
+being used, and the routines that are desired.  The  following  MIG  definition
+file will suffice to do this:
+subsystem random 500;
+
+type int        = MSG_TYPE_INTEGER_32;
+type port_t     = MSG_TYPE_PORT;
+type boolean_t  = MSG_TYPE_INTEGER_32;
+type string25   = (MSG_TYPE_STRING_C,8*25);
+
+import "random_types.h";
+
+routine get_random(
+                requestport     server_port     : port_t;
+                out             num             : int);
+
+routine get_secret(
+                requestport     server_port     : port_t;
+                inout           password        : string25);
+
+  The first line of the definition file states that the name of the subsytem is
+to be random and the messages that are created will start with the  message  id
+of  500.  This  interface  will  send  four  different  messages:  one  for the
+get_random function which will have a msg_id of  500;  one  for  the  reply  to
+get_random  which  will  have  a msg_id of 600; one for the function get_secret
+which will have a msg_id of 501; and one for its reply which will have a msg_id
+of  601.  The  msg_id  is  used  by the server to identify which message it has
+received.
+
+  The syntax of the type declaration is to define the C  type  name  first  and
+then  say  that  it is equal to an IPC type name.  The set of defined IPC types
+can be found in the MIG document or in the file <sys/message.h>. For string and
+unstructured types the number of bits in the type must follow the name.
+
+  The  import  statement  gives the name of a header file to be included in the
+generated code. This header file must define any non-standard C types  used  by
+the interface. In this case it consists of the following definition:
+
+    typedef char    string25[25];
+
+  The  routine  declarations  specify the name of the routine and the order and
+types of the arguments. The first argument is the port  to  which  the  message
+will  be  sent.  The specification in, out or inout may precede the name of any
+other parameter and specify in what direction the argument is to be passed. Any
+unspecified parameter, except the first one, is assumed to be an in parameter.
+
+  MIG  generates  three  C  files  from  the definition file. The file random.h
+defines the functions to be called by a client of  the  server  and  should  be
+#included  into  code  that  calls those functions. randomUser.c is the code to
+create and send the messages to the client and then wait to receive  the  reply
+message.  When  the  reply message is received, any out or inout parameters are
+taken out of the message and returned as function  parameters  to  the  caller.
+This  file  should be linked with the user of the server. randomServer.c is the
+server side of the message interface. It unpacks the request message,  calls  a
+function  provided  by  the  server implementor to execute the request and then
+creates the reply message.  The server implementor must write two more modules.
+One  is  the  main  program  of  the  server  which  receives  a message, calls
+randomServer to process the request, and then  sends  the  reply  message.  The
+other module must contain the functions that execute the requests.
+
+
+
+3.2. Server main program
+  In  this example the server waits on the special port name PORT_DEFAULT which
+indicates the set of all unrestricted ports belonging to  this  task.  In  this
+case  the  set consists of ServerPort and notify_port().  The thread reply port
+is not included in this set because it it  still  restricted.  When  ports  are
+created  they  are  restricted  by  default.  This  means they can only be used
+explicitly to receive messages on.
+
+  This server may get some EMERGENCY_MSGs from the kernel on its  notify_port()
+which  it wishes to ignore. A more complicated server might need to take action
+on some of the kernel's emergency messages.
+
+  Note that the function mach_errormsg is a library routine  that  returns  the
+string  associated  with  a  Mach  error  code.  This  function  is  defined in
+mach_error.h and is included in libmach.a.
+
+  The following code shows a typical main loop for a MIG server.
+/***************************************************
+ *   Main program for random server
+ **************************************************/
+#include <stdio.h>
+#include <mach.h>
+#include <mach_error.h>
+#include <mig_errors.h>
+#include <mach/message.h>
+#include <mach/notify.h>
+#include <servers/netname.h>
+
+extern boolean_t        random_server();
+
+/*********************************************************
+ * procedure random_run:
+ *   Waits for messages to server,
+ *   handles them, and replies to sender.
+ *********************************************************/
+void random_run ()
+{
+   typedef int space[1024]; /* Maximum message size */
+
+   typedef struct DumMsg
+        {
+           msg_header_t         head;
+           msg_type_t           retcodetype;
+           kern_return_t        return_code;
+           space                body;
+        } DumMsg;
+
+   kern_return_t        retcode;
+   msg_return_t         msgcode;
+   boolean_t            ok;
+   DumMsg               *pInMsg, *pRepMsg;
+
+   pInMsg = (DumMsg *)malloc(sizeof(DumMsg));
+   pRepMsg = (DumMsg *)malloc(sizeof(DumMsg));
+
+   while (TRUE)
+   {
+       pInMsg->head.msg_size = sizeof(DumMsg); /* bytes */
+       pInMsg->head.msg_local_port = PORT_DEFAULT;
+
+        /* wait to receive request from client */
+       msgcode = msg_receive(&pInMsg->head,MSG_OPTION_NONE,0);
+       if (msgcode != RCV_SUCCESS)
+           printf("error %s in Receive, message will be ignored.\n",
+                mach_error_string((kern_return_t)msgcode));
+       else
+       {   if (pInMsg->head.msg_type == MSG_TYPE_EMERGENCY)
+           {
+              if (pInMsg->head.msg_id == NOTIFY_PORT_DELETED)
+                  {  /* probably the death of a client's reply */}
+              else
+                printf("Unexpected emergency message received: id is %d\n",
+                        pInMsg->head.msg_id);
+           }
+          else  /* normal message */
+          {
+                /* call server interface module */
+              ok = random_server((msg_header_t *)pInMsg,
+                                   (msg_header_t *)pRepMsg);
+
+              if ((pRepMsg->return_code != MIG_NO_REPLY) &&
+                  (pInMsg->head.msg_remote_port != PORT_NULL))
+              {
+                  /* sending reply message to client */
+                pRepMsg->head.msg_local_port = pInMsg->head.msg_local_port;
+                pRepMsg->head.msg_remote_port = pInMsg->head.msg_remote_port;
+                msgcode = msg_send(&pRepMsg->head,MSG_OPTION_NONE,0);
+                if ((msgcode != SEND_SUCCESS) &&
+                    (msgcode != SEND_INVALID_PORT))
+                               /* Probably remote process death */
+                    printf("error %s at Send.\n",
+                                mach_error_string((kern_return_t)msgcode));
+              }
+          } /* normal message */
+       } /* of message handling */
+     }  /* of main loop */
+
+}
+
+
+main()
+{
+   port_t       ServerPort;
+   kern_return_t retcode;
+
+        /* add notification port to default port set */
+   retcode = port_unrestrict(task_self(),task_notify());
+        /* allocate a service port */
+   retcode = port_allocate(task_self(), &ServerPort);
+   if (retcode == KERN_SUCCESS)
+   {    /* add service port to default port set */
+      (void) port_unrestrict(task_self(),ServerPort);
+        /* check it in so users can find it */
+      retcode  = netname_check_in(name_server_port,"RandomServerPort",
+                PORT_NULL,ServerPort);
+   }
+   if (retcode != KERN_SUCCESS)
+        printf("netname_check_in of RandomServerPort failed with code %s\n",
+                        mach_error_string(retcode));
+   random_run ();
+   printf("(* !!!!! Random server exited - give it up !!!!! *)\n");
+   exit(2);
+}
+
+
+
+3.3. Server message dispatch code
+  The file randomServer.c contains the server side code that was  generated  by
+MIG.  It  exports the routine random_server that is called by the main program.
+It checks the message id to determine  what  message  was  received,  and  then
+unpacks  the  arguments  and  calls  the  appropriate  server  procedure.   The
+following fragment shows the control logic of the dispatch routine.
+boolean_t random_server(InHeadP, OutHeadP)
+        msg_header_t *InHeadP, *OutHeadP;
+{
+        register msg_header_t *InP = InHeadP;
+        register death_pill_t *OutP = (death_pill_t *) OutHeadP;
+
+        /* set up legal return message with failure code */
+
+        OutP->Head.msg_local_port = InP->msg_local_port;
+        OutP->Head.msg_remote_port = InP->msg_remote_port;
+        OutP->Head.msg_id = InP->msg_id + 100;
+        OutP->Head.msg_type = InP->msg_type;
+        OutP->Head.msg_size = sizeof *OutP;
+
+        OutP->RetCodeType.msg_type_name = MSG_TYPE_INTEGER_32;
+        OutP->RetCodeType.msg_type_size = 32;
+        OutP->RetCodeType.msg_type_number = 1;
+        OutP->RetCodeType.msg_type_inline = TRUE;
+        OutP->RetCodeType.msg_type_longform = FALSE;
+        OutP->RetCodeType.msg_type_deallocate = FALSE;
+
+        OutP->RetCode = MIG_BAD_ID;
+
+        if ((InP->msg_id > 501) || (InP->msg_id < 500))
+                return FALSE;
+         else {
+                static novalue (*(routines[]))() = {
+                        _Xget_random,
+                        _Xget_secret,
+                };
+
+                if (routines[InP->msg_id - 500])
+                        (routines[InP->msg_id - 500]) (InP, &OutP->Head);
+                 else
+                        return FALSE;
+        }
+        return TRUE;
+}
+  The two  internal  routines  that  do  most  of  the  message  unpacking  are
+_Xget_random  and _Xget_secret. These routines respectively call get_random and
+get_secret with the appropriate parameters. When those routines return, a reply
+message is created in the buffer that OutHeadP points to.
+
+  The following is the code for _Xget_random;
+/* Routine get_random */
+mig_internal novalue _Xget_random(InHeadP, OutHeadP)
+        msg_header_t *InHeadP, *OutHeadP;
+{
+        typedef struct {
+                msg_header_t Head;
+        } Request;
+
+        typedef struct {
+                msg_header_t Head;
+                msg_type_t RetCodeType;
+                kern_return_t RetCode;
+                msg_type_t numType;
+                int num;
+        } Reply;
+
+        register Request *InP = (Request *) InHeadP;
+        register Reply *OutP = (Reply *) OutHeadP;
+        extern kern_return_t get_random();
+
+#if     UseStaticMsgType
+        static msg_type_t numType = {
+                /* msg_type_name = */           MSG_TYPE_INTEGER_32,
+                /* msg_type_size = */           32,
+                /* msg_type_number = */         1,
+                /* msg_type_inline = */         TRUE,
+                /* msg_type_longform = */       FALSE,
+                /* msg_type_deallocate = */     FALSE,
+        };
+#endif  UseStaticMsgType
+
+#if     TypeCheck
+        if (InP->Head.msg_size != sizeof(Request))
+                { OutP->RetCode = MIG_BAD_ARGUMENTS; return; }
+#endif  TypeCheck
+
+        OutP->RetCode = get_random(InP->Head.msg_local_port,
+                                        &OutP->num);
+        if (OutP->RetCode != KERN_SUCCESS)
+                return;
+        OutP->Head.msg_simple = TRUE;
+        OutP->Head.msg_size = sizeof(Reply);
+
+#if     UseStaticMsgType
+        OutP->numType = numType;
+#else   UseStaticMsgType
+        OutP->numType.msg_type_name = MSG_TYPE_INTEGER_32;
+        OutP->numType.msg_type_size = 32;
+        OutP->numType.msg_type_number = 1;
+        OutP->numType.msg_type_inline = TRUE;
+        OutP->numType.msg_type_longform = FALSE;
+        OutP->numType.msg_type_deallocate = FALSE;
+#endif  UseStaticMsgType
+
+}
+
+
+
+3.4. Server procedures
+  Finally  the  subsystem  implementor must write the proceedures that actually
+perform the requested operations. For this server the following code will do.
+/* procedues of random_server */
+#include <mach.h>
+#include "random_types.h"
+
+long    random();
+
+
+kern_return_t get_random(serv_port,num)
+/* get_random returns a random number between 0 and 2**32 - 1 */
+    port_t      serv_port;
+    int         *num;
+{
+        *num = (int) random();
+        return(KERN_SUCCESS);
+}
+
+kern_return_t get_secret(serv_port,password)
+    port_t      serv_port;
+    string25    password;
+/* get_secret returns a random printable ascii string 25 chars long */
+{
+    int         i,j;
+    int         range = (int)'~' - (int)' ';
+
+        for (i=0;i<25; i++)
+        {
+                j = ((int)random()%range) + (int)' ';
+                password[i] = (char)j;
+        }
+        password[25] = '\0';
+        return(KERN_SUCCESS);
+}
+
+
+
+3.5. User side
+  The following code shows an example of how to use the server.
+/* This is an example of a program using the random server */
+#include <mach.h>
+#include <servers/netname.h>
+#include "random.h"
+#include <mach_error.h>
+#include <stdio.h>
+
+
+main()
+{
+    int         number;
+    string25    password;
+    port_t      serv_port;
+    kern_return_t retcode;
+
+        printf("Looking up port for random server\n");
+        retcode = netname_look_up(name_server_port,"","RandomServerPort",
+                        &serv_port);
+        if (retcode != KERN_SUCCESS)
+        {    mach_error("error in looking up port for random server",retcode);
+             printf("Random server may not be running\n");
+             exit();
+        }
+        printf("Calling get_random\n");
+        retcode = get_random(serv_port,&number);
+        if (retcode == KERN_SUCCESS)
+                printf("Result from get_random is %d\n",number);
+        else mach_error("Error from get_random is",retcode);
+        printf("Calling get_secret\n");
+        retcode = get_secret(serv_port,password);
+        if (retcode == KERN_SUCCESS)
+                printf("Result from get_secret is %s\n",password);
+        else mach_error("Error from get_secret is",retcode);
+}
+
+4. General Mach information
+  Structure of the Mach tree
+At CMU the Mach tree may either be used from /afs or  may  be  supped  to  your
+workstation.  If  you  wish to have a local copy supped to your workstation use
+the command.
+    modmisc + cs.misc.mach [-release beta|default] [-config minimal]
+
+  Directories of interest are:
+        /usr/mach/man : Mach manual pages
+        /usr/mach/bin : Mach system programs such as MiG
+        /usr/mach/doc : on line copies of Mach documents
+        /usr/mach/etc : Mach servers such as the environment manager
+        /usr/mach/include : Mach include files
+        /usr/mach/lib : Mach libraries such as libmach.a and libthreads.a
+
+
+  Where to find examples and manuals
+The Mach sources are kept in /afs/cs/project/mach/src.  There  is  subdirectory
+examples  in  /usr/mach/doc that contains the example programs that are used in
+the two tutorial documents.
+
+  Hard copies of the Mach manuals and documents can be found in WeH 7114.    To
+print  a copy yourself from the /usr/mach/doc/ directory, use the .ps files for
+the laser writers. See the lpr UNIX manual entry on how to print .ps files.
+
+  Setting up search paths
+To compile or load a Mach program your paths must be set to look in the  proper
+place   for   Mach   include   files   and   libraries.      By  typing  source
+/usr/mach/lib/machpaths the appropriate Mach directories will be added to  your
+existing paths.
+
+  Mach libraries
+The  Mach  library,  -lmach,  must be loaded with most of the examples given in
+this tutorial.  Any program using  Mach  kernel  interface  functions  must  be
+loaded with libmach and the /usr/cs/lib version of crt0.  For example, assuming
+that /usr/mach/lib and /usr/cs/lib are on your LPATH:
+        cp /../wb1/usr/mach/src/examples/simp_ipc.c .
+        cc -o simp_ipc simp_ipc.c -lmach
+
+
+  Two threads libraries exist: libthreads.a  and  libco_threads.a.    The  'co'
+(co-routine version of this library does not actually use Mach threads; it uses
+coroutines.  This library does not provide  real  parallelism,  a  single  UNIX
+process  is  running.    The  other  threads  library,  libthreads.a, uses Mach
+threads.
+
+  Mach include files
+When writing a program that uses Mach facilities some of the following  include
+files may be needed:
+        mach.h : needed for all Mach programs
+        mach/message.h : if any message structures are used
+        mach_error.h : if mach_error() is used
+        servers/env_mgr.h : if environment manager server is used
+        servers/netname.h : if netname server is used
+        cthreads.h : if C threads package is used
+
+
+  Mach information/questions
+A  Mach  bboard  exists  to  keep  the  user  community  up to date on new Mach
+releases.  This bboard is called 'mach'.  See UNIX bboard manual entry.
+
+  If you have questions relating to the use of  any  Mach  facilities,  or  any
+comments  on  this  tutorial,  send mail to machlib.  Comments on this tutorial
+will be greatly appreciated.
+                               Table of Contents
+1. Introduction                                                               1
+2. C Threads, A Single Master Thread Spawning Concurrent Slaves               1
+     2.1. Initializing the C Threads Package                                  1
+     2.2. Allocation of a Mutex Variable                                      1
+     2.3. Locking a Mutex Variable                                            1
+     2.4. Unlocking a Mutex Variable                                          1
+     2.5. Allocation of a Condition Variable                                  1
+     2.6. Waiting on a Condition                                              1
+     2.7. Signalling a Condition                                              1
+     2.8. Forking a C Thread                                                  2
+     2.9. Detaching a C Thread                                                2
+     2.10. Yielding the Processor to other Threads                            2
+     2.11. Exiting a C Thread                                                 2
+     2.12. Example V, masterslave.c                                           3
+3. MIG - The Mach Interface Generator                                         4
+     3.1. MIG Definition file                                                 4
+     3.2. Server main program                                                 4
+     3.3. Server message dispatch code                                        5
+     3.4. Server procedures                                                   6
+     3.5. User side                                                           6
+4. General Mach information                                                   6

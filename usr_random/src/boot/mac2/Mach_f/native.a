@@ -1,0 +1,29 @@
+; MacMach Operating System
+; Copyright (C) 1992 Carnegie Mellon University
+; All Rights Reserved.
+;
+; MacMach was developed by CMU with support from Apple Computer, Inc.
+; Use of this software is constrained by the MacMach End-User license.
+
+; This code checks to see if the Macmach user mode emulator is running.
+; It tests this by trying to do a MACH system call (swtch)
+ 
+		EXPORT	NATIVE
+NATIVE	PROC
+		MOVE.L	$80,-(SP)
+		LEA		NATT,A0
+		MOVE.L	A0,$80
+		PEA		-60
+		TRAP	#0
+		MOVE.L	(SP)+,$80
+		CLR.L	D0
+		RTS
+
+NATT	LEA		12(SP),SP
+		MOVE.L	(SP)+,$80
+		MOVEQ	#1,D0
+		RTS
+		ENDP
+		
+		END
+

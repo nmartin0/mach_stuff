@@ -1,0 +1,79 @@
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990,1989 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie Mellon
+.\" the rights to redistribute these changes.
+.\"/
+.TH MAC2PART 8 "Apr 12, 1992"
+.UC 4
+.de us
+\\$1\l'|0\(ul'
+..
+.SH NAME
+mac2part \- create Mach partitions on Macintosh disks
+.SH SYNOPSIS
+.B /etc/mac2part
+[ \-v ]
+\-mach
+<disk>
+[ <name> ]
+.PP
+.B /etc/mac2part
+[ \-v ]
+\-free
+<disk>
+.PP
+.B /etc/mac2part
+[ \-v ]
+\-lock
+<disk>
+.PP
+.B /etc/mac2part
+[ \-v ]
+\-unlock
+<disk>
+.PP
+.B /etc/mac2part
+[ \-v ]
+\-flush_driver
+<disk>
+.PP
+.B /etc/mac2part
+[ \-v ]
+\-display
+<disk>
+.SH DESCRIPTION
+The
+.I mac2part
+program is used to create Mach partitions on Macintosh disks.
+.SH OPERATION
+.SH EXAMPLES
+.SH DIAGNOSTICS
+.SH FILES
+.SH "SEE ALSO"
+newsys(8),
+.SH BUGS
+None so far.
+.SH AUTHOR
+The
+.I mac2part
+program was written by Zonnie L. Williamson at CMU, 1992.
+

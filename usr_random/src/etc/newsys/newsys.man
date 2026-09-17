@@ -1,0 +1,184 @@
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990,1989 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie Mellon
+.\" the rights to redistribute these changes.
+.\"/
+.TH NEWSYS 8 "Apr 12, 1992"
+.UC 4
+.de us
+\\$1\l'|0\(ul'
+..
+.SH NAME
+newsys \- install new systems, update existing systems
+.SH SYNOPSIS
+.B /etc/newsys
+[ \-n ]
+<dest>
+<name>
+<source>
+<module>...
+.SH DESCRIPTION
+The
+.I newsys
+program is used to install new systems or to update existing systems.
+The <dest> specifies the file system that the system is to be
+installed on.
+The <name> specifies the host name and network parameters.
+The <source> specifies where the system is to be installed from.
+The <module> specify the general components that are to make up
+the system.
+If any of the needed parameters are not specified on the command line,
+they will be solicited interactively.
+If \-n is specified, the generated commands will be listed only and no
+action will be taken.
+.PP
+The <dest> implies the update or install operation.
+Systems are UPDATED to a specified directory or INSTALLED to an unmounted disk.
+.IP
+<directory name>
+.ns
+.IP
+<disk device>
+.PP
+A <directory name must begin with a "/".
+A <disk device> looks like "/dev/...".
+Note that
+.I newsys
+automatically generates an /etc/fstab file when installing to an unmounted
+disk.
+It is assumed that the new system will occupy the "a" and "g" partitions
+of the disk.  The <disk device> must specify the "a" partition.
+The <disk device> must be a 'block' device.
+.PP
+The <name> of the destination system defines its hostname, network address
+and gateway address.
+.IP
+<hostname>:<network address>:<gateway address>
+.PP
+Use "0" to indicate that there is no gateway or that there is no external
+network at all.  The internal "loopback" network is always active with the
+address "127.0.0.1".
+.PP
+The <source> parameter can specify one of three things.  First, systems
+can be installed from a currently mounted file system.  Second, they can
+be installed from an unmounted disk.  Third, systems can be installed
+from network ftp servers.
+.IP
+<directory name>
+.IP
+<disk device>:<directory name>
+.IP
+<server>:<source>:<user>:<password>
+.PP
+A <directory name> must begin with a "/".
+A <disk device> looks like "/dev/...".
+When installing from an unmounted disk, the file system on the
+disk must be on the single partition specified by the <disk device>.
+An installation <disk device> is usually the "c" partition.
+The <disk device> must be a 'block' device.
+The <server> can be either a network name or address.
+The <source> is the source directory on the ftp server.
+The ":<password>" is optional.  If it is not specified,
+.I newsys
+will solicit it from the user.
+.PP
+The <module> specify various sets of files that make up the installed
+system.  These are specified by name.  A given system may be divided up in
+various ways.  In general, the following modules are always available:
+.IP
+SMALL -- this is the smallest 'usable' system
+.IP
+FULL -- this is a fully operation system
+.IP
+SOURCE -- these are the sources for the system
+.PP
+The <module> need not be specified when updating an existing system.
+Note that modules can only be added, never removed.
+During an update, the
+.I newsys
+program does NOT remove any files that are not being replaced.
+.SH OPERATION
+The
+.I newsys
+program works by first producing a list of file names and checksums that
+will make up the destination system.  Then the destination file system
+is compared to the list using the 'fixit' program.  A list of missing or
+otherwise invalid files is composed.  These files are then copied to the
+destination file system.
+.PP
+Before
+.I newsys
+does anything, the current parameters are displayed for user verification.
+.PP
+When
+.I newsys
+installs a system, default versions of all configuration files are
+automatically generated and installed.
+During an update, configuration files are never modified.  New versions
+of the default files may be found in the /etc/newconfig directory.
+Use the /etc/newconfig/Makefile to install individual configuration files.
+.SH EXAMPLES
+.IP
+newsys /dev/disk0a fred:none:none /dev/disk3c:/ full source
+.PP
+This installs a full system with sources from disk3c to disk0a.  The
+new system's name is "fred".  It has no external network access.
+.IP
+newsys /dev/disk0a ralph:128.1.2.3:128.3.2.1 ftp.server small
+.PP
+This installs a small system, no sources, from the ftp server "ftp.server"
+to disk0a.  The new system's name is "ralph".
+Its network address is "128.1.2.3".
+Its gateway address is "128.3.2.1".
+.IP
+newsys
+.PP
+This installs or updates a system.
+All parameters are interactively solicited from the user.
+.IP
+newsys /
+.PP
+This updates the current system.
+.SH DIAGNOSTICS
+When the
+.I newsys
+program encounters an error, it usually stops whatever it is doing.  In the
+case of installing from an ftp server, if the network connection goes bad,
+.I newsys
+will keep on trying.  Don't worry, it will terminate someday...
+.SH FILES
+/etc/newconfig/.fixit
+/etc/newconfig/.modules
+/etc/newconfig/.name
+/etc/newconfig/.hostname
+/etc/newconfig/fstab
+.SH "SEE ALSO"
+fixit(1),
+cpio(1),
+ftp(1),
+make(1)
+.SH BUGS
+There are better ways to do this.
+.SH AUTHOR
+The
+.I newsys
+program was written by Zonnie L. Williamson at CMU, 1992.

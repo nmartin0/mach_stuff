@@ -1,0 +1,44 @@
+Support for CRDS machines was contributed by Gary E. Miller
+(Gary_Edmunds_Miller@cup.portal.com)
+
+This file describes the implementation notes of the GNU C Compiler for
+the Motorola 68000 on the Charles River Dat Systems Universe 32 running
+the UNOS operating system.
+
+This release still depends on the CRDS supplied assembler.
+The CRDS assembler has no provision for assembling debug information
+so the -g option is broken.
+
+The UNOS assembler is named "casm" instead of "as".
+For some strange reason linking "/bin/casm" to "/bin/as" changes the
+behavior of casm for the worse.  To allow GCC to function either
+change all references to "as" in gcc.c to "casm", or create the
+following shell script named /bin/as:
+	#!/bin/sh
+	casm $*
+
+The default UNOS library is named "libunos.a" instead of "libc.a".  To allow
+GCC to function either change all references to "-lc" in gcc.c to "-lunos" or
+link "/lib/libunos.a" to "/lib/libc.a".
+
+UNOS uses memory segmentation instead of demand paging so you will need 
+a LOT of RAM. 5 Mb is just barely enough to get by on if no other tasks
+are running.  if CC1 is too large to link on your machine try putting
+the object files in a library and linking from that library.
+
+alloca() expects that the C compiler pops the stack after every function
+call.  The Green Hills C compiler version 1.8.0 supplied with UNSO does not.
+This behavior causes some programs (GNU make) to crash, and others to merely
+grow unbounded (GCC).  To avoid this problem do not use -O in stage1/stage2,
+and set CFLAGS=-Wx,-X23 to force Green Hills to pop the stack more often.
+After stage2 builds properly then use GCC with the builtin_alloca to compile
+an optimized version of GCC as stagees 3 and 4.
+
+The file cccp.c has been modified so that the GNU cpp checks the
+default UNOS location /include for include files as well as all the 
+standard places.
+
+Before compiling be sure config/crds.h is linked to tm.h, and
+config/xm-crds.h is linked to config.h.
+
+

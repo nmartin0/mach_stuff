@@ -1,0 +1,23 @@
+/Makefile/1.1.1.1/Sun Oct 25 06:26:09 1998//
+/in_hacks.c/1.1.1.1/Sun Oct 25 06:26:10 1998//
+/insque.h/1.1.1.1/Sun Oct 25 06:26:10 1998//
+/sb.c/1.1.1.1/Sun Oct 25 06:26:12 1998//
+/sb.h/1.1.1.1/Sun Oct 25 06:26:12 1998//
+/tcp_debug.c/1.1.1.1/Sun Oct 25 06:26:13 1998//
+/tcp_debug.h/1.1.1.1/Sun Oct 25 06:26:13 1998//
+/tcp_fsm.h/1.1.1.1/Sun Oct 25 06:26:14 1998//
+/tcp_hdr.c/1.1.1.1/Sun Oct 25 06:26:15 1998//
+/tcp_input.c/1.1.1.1/Sun Oct 25 06:26:22 1998//
+/tcp_internal.h/1.1.1.1/Sun Oct 25 06:26:24 1998//
+/tcp_output.c/1.1.1.1/Sun Oct 25 06:26:26 1998//
+/tcp_port.c/1.1.1.1/Sun Oct 25 06:26:27 1998//
+/tcp_port.h/1.1.1.1/Sun Oct 25 06:26:27 1998//
+/tcp_seq.h/1.1.1.1/Sun Oct 25 06:26:27 1998//
+/tcp_subr.c/1.1.1.1/Sun Oct 25 06:26:29 1998//
+/tcp_timer.c/1.1.1.1/Sun Oct 25 06:26:31 1998//
+/tcp_timer.h/1.1.1.1/Sun Oct 25 06:26:32 1998//
+/tcp_usrreq.c/1.1.1.1/Sun Oct 25 06:26:33 1998//
+/tcp_var.h/1.1.1.1/Sun Oct 25 06:26:35 1998//
+/tcp_x.c/1.1.1.1/Sun Oct 25 06:26:41 1998//
+/tcpip.h/1.1.1.1/Sun Oct 25 06:26:41 1998//
+D

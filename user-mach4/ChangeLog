@@ -1,0 +1,28 @@
+Fri Mar  1 07:42:45 1996  steve clawson  <sclawson@fast.cs.utah.edu>
+
+	* Makerules.man: new file.  Some disgusting rules for installing
+	man pages.  Mostly stolen from bsd.man.mk.
+
+	* Updated all Makefile.in's to set the MAN variable for the
+	manpages that they need to install.
+
+	* Changed manpages from .man extension to .{mansection}. 
+	(ie. machid.man -> machid.1)
+
+	* Makerules: Added -fno-unroll-loops to CFLAGS, since we still use
+	-O2.  This is because gcc on the x86 dosen't do loop unrolling
+	correctly.
+
+	* Makerules.{man,lib}: Include Makerules.man, and have installman
+	as part of their install rule.
+
+Fri Aug 11 16:47:02 1995  Stephen Clawson  <sclawson@doughnut.cs.utah.edu>
+
+	* etc/mach_init/Makefile.in: added -static option to LDFLAGS.  
+
+	* lib/libcmucs/i386/table.s: commented out table stuff after the
+	ret on the SYSCALL.  gas pukes on it otherwise.
+	
+
+
+

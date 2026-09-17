@@ -1,0 +1,69 @@
+The following two patches were suggested for mips-tfile.c.
+They arrived too late to be considered for installation.
+But it's possible that they actually are needed.
+If you have trouble with mips-tfile, please try these patches.
+
+
+Mon Mar 23 15:10:10 1992  Brendan Kehoe  (brendan@cs.widener.edu)
+
+	* mips-tfile.c (parse_begin, parse_bend): Look in the external
+	  symbols table for labels; also refer to each as an external
+	  symbol, not as a normal symbol.
+
+--- mips-tfile.c.~4~	Mon Mar 23 14:46:08 1992
++++ mips-tfile.c	Mon Mar 23 15:08:58 1992
+@@ -2813,7 +2813,7 @@
+ 
+   hash_ptr = hash_string (start,
+ 			  end_p1 - start,
+-			  &orig_str_hash[0],
++			  &ext_str_hash[0],
+ 			  (symint_t *)0);
+ 
+   if (hash_ptr == (shash_t *)0)
+@@ -2830,7 +2830,7 @@
+ 
+   (void) add_local_symbol ((const char *)0, (const char *)0,
+ 			   st_Block, sc_Text,
+-			   (symint_t)hash_ptr->sym_ptr->value - cur_oproc_begin->value,
++			   (symint_t)hash_ptr->esym_ptr->asym.value - cur_oproc_begin->value,
+ 			   (symint_t)0);
+ }
+ 
+@@ -2863,7 +2863,7 @@
+ 
+   hash_ptr = hash_string (start,
+ 			  end_p1 - start,
+-			  &orig_str_hash[0],
++			  &ext_str_hash[0],
+ 			  (symint_t *)0);
+ 
+   if (hash_ptr == (shash_t *)0)
+@@ -2880,7 +2880,7 @@
+ 
+   (void) add_local_symbol ((const char *)0, (const char *)0,
+ 			   st_End, sc_Text,
+-			   (symint_t)hash_ptr->sym_ptr->value - cur_oproc_begin->value,
++			   (symint_t)hash_ptr->esym_ptr->asym.value - cur_oproc_begin->value,
+ 			   (symint_t)0);
+ }
+ 
+
+Mon Mar 23 15:10:10 1992  Brendan Kehoe  (brendan@cs.widener.edu)
+
+	* mips-tfile.c (copy_object): It doesn't make sense to enter
+	  static variables into the original symbol table, since the
+	  same name may show up a number of times.
+
+--
+--- mips-tfile.c.~4~	Mon Mar 23 15:08:58 1992
++++ mips-tfile.c	Mon Mar 23 16:23:44 1992
+@@ -4581,7 +4581,6 @@
+ 	      break;
+ 
+ 	    case st_Global:
+-	    case st_Static:
+ 	    case st_Label:
+ 	    case st_Proc:
+ 	    case st_StaticProc:
+

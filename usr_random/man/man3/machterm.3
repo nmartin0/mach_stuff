@@ -1,0 +1,90 @@
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990,1989 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie Mellon
+.\" the rights to redistribute these changes.
+.\"/
+.TH MACHTERM 3  "April 15 1992"
+.UC 4
+.SH NAME
+machterm_setup, small_machterm_setup, machterm_buffer,
+machterm
+.SH SYNOPSIS
+.B cc [ flags ] files
+.B \-lmachterm
+[ libraries ]
+.PP
+.B typedef char machterm_context_t[128];
+.PP
+.B machterm_setup(
+machterm_context_t machterm_context,
+int display_buffer,
+int display_height,
+int display_disth,
+int display_rowsize,
+char *font_bits,
+char *bold_bits,
+int font_height,
+int font_width,
+int initial_cursor,
+int white_on_black,
+void (*ungetc)(char, char*),
+char *ungetc_argument,
+void (*bell)(void))
+)
+.PP
+.B small_machterm_setup(
+machterm_context_t machterm_context,
+int display_buffer,
+int display_height,
+int display_disth,
+int display_rowsize,
+char *font_bits,
+char *bold_bits,
+int font_height,
+int font_width,
+int initial_cursor,
+int white_on_black,
+void (*ungetc)(char, char*),
+char *ungetc_argument,
+void (*bell)(void))
+)
+.PP
+.B machterm_buffer(
+machterm_context_t *machterm_context,
+char *display_buffer,
+int display_rowsize
+)
+.PP
+.B machterm(
+machterm_context_t *machterm_context,
+char c
+)
+.B
+.fi
+.SH DESCRIPTION
+These functions implement a terminal emulator for a bit\-mapped display.
+.SH SEE
+/usr/man/doc/machterm.doc for full documentation.
+.SH AUTHOR
+The
+.I machterm
+library was written by Zonnie L. Williamson at CMU, 1992.

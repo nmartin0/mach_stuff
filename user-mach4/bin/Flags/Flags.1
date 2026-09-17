@@ -1,0 +1,39 @@
+.\"
+.\" $Id: Flags.1,v 1.1 1996/03/01 14:49:41 sclawson Exp $
+.\"
+.\" HISTORY
+.\" $Log: Flags.1,v $
+# Revision 1.1  1996/03/01  14:49:41  sclawson
+# Changes to install man pages.
+#
+.\" Revision 1.1.1.1  1995/05/04  06:57:06  sclawson
+.\" New files.
+.\"
+.\" Revision 2.2  93/04/14  11:25:09  mrt
+.\" 	Created a while back, documented now the loader support from
+.\" 	Jeffrey Heller.
+.\" 	[92/12/01            af]
+.\" 
+.\"
+.TH I_FLAGS 1 9/9/92
+.CM 1
+.SH NAME
+Flags \- generate compiler options as needed by CS make
+.SH SYNOPSIS
+Flags I PATH_name
+Flags L PATH_name
+.SH DESCRIPTION
+"Flags" is a cover for compilers that do not have the CMU CS frontend,
+nor can or want to use the CMU cpp. Is is invoked in a compilation rule like
+.I cc `Flags I MAKECPP CPATH`
+to sort the same effects as using the CMU cpp as far as searching for
+includes goes.
+
+The CMU linker also searches its objects along the predefined LPATH search
+list.  You can sort the same effect with a command line like
+.I cc `Flags L LPATH`
+.PP
+.SH FILES
+Makefile, makefile
+.SH "SEE ALSO"
+cc(1), cpp(1), ld(1)

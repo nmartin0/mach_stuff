@@ -1,0 +1,13 @@
+wheel:*:0:root,guest,macmach
+daemon:*:1:daemon
+kmem:*:2:root
+bin:*:3:root
+tty:*:4:root
+operator:*:5:root,guest,macmach
+news:*:6:
+staff:*:10:root
+source:*:11:root,macmach
+binary:*:12:root,macmach
+macmach:*:15:root,macmach
+other:*:20:root
+guest:*:31:root

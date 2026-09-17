@@ -1,0 +1,64 @@
+# MacMach Operating System
+# Copyright (c) 1992 Carnegie Mellon University
+# All Rights Reserved.
+#
+# MacMach was developed by CMU with support from Apple Computer, Inc.
+# Use of this software is constrained by the MacMach End-User license.
+#
+######################################################################
+# HISTORY
+# $Log:	files.mac2,v $
+# Revision 2.2  91/09/12  16:36:40  bohman
+# 	Created.
+# 	[91/09/11  17:02:41  bohman]
+# 
+######################################################################
+
+#
+# General MD files
+# 
+mac2/conf.c		standard
+mac2os/os_interface.S	standard
+mac2/machdep.c		standard
+mac2/ivect.c		standard
+mac2/clock.c		standard
+mac2/slots.c		standard
+mac2/pcb.c		standard
+mac2/pmap.c		standard
+mac2/act.c		standard
+mac2/softint.c		standard
+mac2/trap.c		standard
+mac2/exec.c		standard
+mac2/setroot.c		standard
+mac2/pager_support.c	optional mac2_pager
+
+#
+# Device drivers
+#
+mac2dev/adb.c		standard
+mac2dev/video.c		standard
+mac2dev/console.c	standard
+mac2dev/sony.c		standard
+mac2dev/sony_done.S	optional mode24
+mac2dev/disk.c		standard
+mac2dev/macdisk.c	standard
+mac2dev/scsi.c		standard
+mac2dev/thread_io.c	standard
+mac2dev/thread_io_done.S	standard
+mac2dev/serial.c	standard
+mac2dev/serial_done.S	optional mode24
+mac2dev/ramdisk.c	standard
+
+#
+# Network interfaces
+#
+mac2if/if_en.c		standard
+mac2if/if_enproto.S	standard
+
+#
+# Macintosh emulator bootstrap
+#
+mac2/macobjects.c	optional macserver
+mac2/macobjects_kern.c	optional macserver
+./default_pager_object_create.c	optional mac2_pager
+./macServer.c		optional macserver

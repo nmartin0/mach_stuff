@@ -1,0 +1,7 @@
+-*- Text -*-
+
+The original source of this code is the cmk1.1 distribution from the
+Open Software Foundation, as distributed with MkLinux DR3.
+
+Mark Kettenis <kettenis@gnu.org> merged some of the changes that were
+made by the GNU project back in.

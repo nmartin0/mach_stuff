@@ -1,0 +1,110 @@
+# Mach Operating System
+# Copyright (c) 1992 Carnegie Mellon University
+# All Rights Reserved.
+# 
+# Permission to use, copy, modify and distribute this software and its
+# documentation is hereby granted, provided that both the copyright
+# notice and this permission notice appear in all copies of the
+# software, derivative works or modified versions, and any portions
+# thereof, and that both notices appear in supporting documentation.
+# 
+# CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+# CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+# ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+# 
+# Carnegie Mellon requests users of this software to return to
+# 
+#  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+#  School of Computer Science
+#  Carnegie Mellon University
+#  Pittsburgh PA 15213-3890
+# 
+# any improvements or extensions that they make and grant Carnegie Mellon 
+# the rights to redistribute these changes.
+
+# Makefile for MACH3.0+BSD4.3 /etc/newconfig.
+
+# This will install initial versions of configuration files.  It will not
+# write over any existing configuration file.
+# The special files in /dev are also created/updated.
+
+DEV=	MAKEDEV
+
+USRLIB=	crontab
+
+ROOT=	.cshrc .hostname .login .profile
+
+ETC=	disktab fstab ftpusers gettytab group hosts inetd.conf networks \
+	passwd protocols rc rc.local rc.network remote .rhosts services \
+	syslog.conf ttys
+
+GAMES=	dm.config
+
+compile:
+	@echo "Use \"make install\" to install configuration files."
+
+install: ${DEV} ${USRLIB} ${ROOT} ${ETC}
+	@echo "Installing default configuration files."
+	-@for i in ${DEV}; do \
+	  if [ -f ${INSTALL_TREE}/dev/$$i ]; then \
+	    echo "${INSTALL_TREE}/dev/$$i already exists" ;\
+	    echo "chown bin.bin ${INSTALL_TREE}/dev/$$i" ;\
+	    chown bin.bin ${INSTALL_TREE}/dev/$$i ;\
+	    echo "chmod 444 ${INSTALL_TREE}/dev/$$i" ;\
+	    chmod 444 ${INSTALL_TREE}/dev/$$i ;\
+	  else \
+	    install -v -c -m 444 -o bin -g bin $$i ${INSTALL_TREE}/dev ;\
+	  fi ;\
+	done
+	-@for i in ${USRLIB}; do \
+	  if [ -f ${INSTALL_TREE}/usr/lib/$$i ]; then \
+	    echo "${INSTALL_TREE}/usr/lib/$$i already exists" ;\
+	    echo "chown bin.bin ${INSTALL_TREE}/usr/lib/$$i" ;\
+	    chown bin.bin ${INSTALL_TREE}/usr/lib/$$i ;\
+	    echo "chmod 444 ${INSTALL_TREE}/usr/lib/$$i" ;\
+	    chmod 444 ${INSTALL_TREE}/usr/lib/$$i ;\
+	  else \
+	    install -v -c -m 444 -o bin -g bin $$i ${INSTALL_TREE}/usr/lib ;\
+	  fi ;\
+	done
+	-@for i in ${ROOT}; do \
+	  if [ -f ${INSTALL_TREE}/$$i ]; then \
+	    echo "${INSTALL_TREE}/$$i already exists" ;\
+	    echo "chown root.bin ${INSTALL_TREE}/$$i" ;\
+	    chown root.bin ${INSTALL_TREE}/$$i ;\
+	    echo "chmod 444 ${INSTALL_TREE}/$$i" ;\
+	    chmod 444 ${INSTALL_TREE}/$$i ;\
+	  else \
+	    install -v -c -m 444 -o root -g bin $$i ${INSTALL_TREE}/ ;\
+	  fi ;\
+	done
+	-@for i in ${ETC}; do \
+	  if [ -f ${INSTALL_TREE}/etc/$$i ]; then \
+	    echo "${INSTALL_TREE}/etc/$$i already exists" ;\
+	    echo "chown bin.bin ${INSTALL_TREE}/etc/$$i" ;\
+	    chown bin.bin ${INSTALL_TREE}/etc/$$i ;\
+	    echo "chmod 444 ${INSTALL_TREE}/etc/$$i" ;\
+	    chmod 444 ${INSTALL_TREE}/etc/$$i ;\
+	  else \
+	    install -c -m 444 -o bin -g bin $$i ${INSTALL_TREE}/etc ;\
+	  fi ;\
+	done
+	-@for i in ${GAMES}; do \
+	  if [ -f ${INSTALL_TREE}/games/$$i ]; then \
+	    echo "${INSTALL_TREE}/games/$$i already exists" ;\
+	    echo "chown bin.bin ${INSTALL_TREE}/games/$$i" ;\
+	    chown bin.bin ${INSTALL_TREE}/games/$$i ;\
+	    echo "chmod 444 ${INSTALL_TREE}/games/$$i" ;\
+	    chmod 444 ${INSTALL_TREE}/games/$$i ;\
+	  else \
+	    install -c -m 444 -o bin -g bin $$i ${INSTALL_TREE}/games ;\
+	  fi ;\
+	done
+	@echo "Creating device files."
+	sh ${INSTALL_TREE}/dev/MAKEDEV ${INSTALL_TREE}/dev
+
+includes:
+
+manpages:
+
+clean:

@@ -1,0 +1,58 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS 
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie the
+.\" rights to redistribute these changes.
+.\"
+.\" HISTORY
+.\" $Log: envmgr.1,v $
+# Revision 1.1  1996/03/01  14:49:46  sclawson
+# Changes to install man pages.
+#
+.\" Revision 1.1.1.1  1995/05/04  06:56:47  sclawson
+.\" New files.
+.\"
+.\" Revision 2.2  92/04/01  19:09:15  rpd
+.\" 	Created.
+.\" 	[92/04/01  18:53:05  rpd]
+.\" 
+.TH  ENVMGR  1 2/21/92
+.CM 4
+.SH NAME
+envmgr \- Environment Manager
+.SH SYNOPSIS
+\fBenvmgr\fP [\fB-d\fP] [\fB-N hashtablesize\fP]
+.SH DESCRIPTION
+\fIenvmgr(1)\fR implements the environment service.
+.PP
+\fIenvmgr\fR interprets the following options:
+.TP 8
+.B \-d
+Turns on debugging.  \fIenvmgr\fR will print informative messages
+to stderr whenever something happens.
+.TP 8
+.B \-N hashtablesize
+Sets the size of the hash table where ports are kept (internal). The default
+is 500 which should be enough.
+.SH "SEE ALSO"
+.I "MACH Environment Manager,"
+Mary Thompson, Carnegie Mellon University, 1989

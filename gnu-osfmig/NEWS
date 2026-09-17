@@ -1,0 +1,10 @@
+-*- mode: outline -*- Time-stamp: "2003-08-25 20:13:52 jemarch"
+
+
+* New in gnu-osfmig 0.01
+
+** Exist as a separate package, out of the osfmk sources and building framework.
+
+** All ODE stuff dissapears
+
+** [autoconf]igurable

@@ -1,0 +1,757 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1993,1992 Carnegie Mellon University
+ * All Rights Reserved.
+ * 
+ * Permission to use, copy, modify and distribute this software and its
+ * documentation is hereby granted, provided that both the copyright
+ * notice and this permission notice appear in all copies of the
+ * software, derivative works or modified versions, and any portions
+ * thereof, and that both notices appear in supporting documentation.
+ * 
+ * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+ * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+ * 
+ * Carnegie Mellon requests users of this software to return to
+ * 
+ *  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+ *  School of Computer Science
+ *  Carnegie Mellon University
+ *  Pittsburgh PA 15213-3890
+ * 
+ * any improvements or extensions that they make and grant Carnegie Mellon
+ * the rights to redistribute these changes.
+ */
+/*
+ * HISTORY
+ * $Log:	dtop_hdw.c,v $
+ * Revision 2.10  93/11/17  16:11:05  dbg
+ * 	Import kern/time_out.h for 'hz'.
+ * 	[93/06/10            dbg]
+ * 
+ * Revision 2.9  93/05/15  19:39:04  mrt
+ * 	machparam.h -> machspl.h
+ * 
+ * Revision 2.8  93/05/10  20:07:34  rvb
+ * 	Fixed types.
+ * 	[93/05/06  09:59:47  af]
+ * 
+ * Revision 2.7  93/03/26  17:58:31  mrt
+ * 	Rid of dev_t.
+ * 	[93/03/19            af]
+ * 
+ * Revision 2.6  93/02/01  09:55:33  danner
+ * 	Made all printfs conditional
+ * 	[93/01/25            danner]
+ * 
+ * Revision 2.5  93/01/14  17:15:48  danner
+ * 	Prototyped handler.
+ * 	[93/01/14            danner]
+ * 
+ * 	Now that we know how to be heard on the bus, added bell
+ * 	and .. leds. From jtp@hut.fi.
+ * 	[92/12/14            af]
+ * 	Proper spl typing.
+ * 	[92/11/30            af]
+ * 
+ * Revision 2.4  92/05/22  15:47:43  jfriedl
+ * 	Poll every 16usecs, as per specs.
+ * 	[92/05/20  22:41:35  af]
+ * 
+ * Revision 2.2.1.1  92/05/04  11:19:55  af
+ * 	Fixed interrupt routine & spls.
+ * 	Since t_addr is now used to check for presence of
+ * 	a given line, make sure it is non-zero.
+ * 	[92/05/04            af]
+ * 
+ * Revision 2.2  92/03/02  18:32:29  rpd
+ * 	Created, from DEC specs.
+ * 	[92/01/19            af]
+ * 
+ */
+/*
+ *	File: dtop_hdw.c
+ * 	Author: Alessandro Forin, Carnegie Mellon University
+ *	Date:	1/92
+ *
+ *	Hardware-level operations for the Desktop serial line
+ *	bus (i2c aka ACCESS).
+ */
+
+#include <dtop.h>
+#if	NDTOP > 0
+#include <bm.h>
+#include <platforms.h>
+
+#include <machine/machspl.h>		/* spl definitions */
+#include <mach/std_types.h>
+#include <kern/kern_io.h>
+#include <kern/time_out.h>		/* hz */
+#include <device/io_req.h>
+#include <device/tty.h>
+
+#include <chips/busses.h>
+#include <chips/serial_defs.h>
+#include <chips/screen_defs.h>
+#include <chips/lk201.h>
+#include <mips/PMAX/tc.h>
+
+#include <chips/dtop.h>
+
+#define	DTOP_MAX_POLL	0x7fff		/* about half a sec */
+
+#ifdef	MAXINE
+
+typedef volatile unsigned int	*data_reg_t;	/* uC  */
+#define	DTOP_GET_BYTE(data)	(((*(data)) >> 8) & 0xff)
+#define	DTOP_PUT_BYTE(data,c)	{ *(data) = (c) << 8; }
+
+typedef volatile unsigned int	*poll_reg_t;	/* SIR */
+#define	DTOP_RX_AVAIL(poll)	(*(poll) & 1)
+#define	DTOP_TX_AVAIL(poll)	(*(poll) & 2)
+
+#else
+
+define how to get/put DTOP packets on this box
+
+#endif
+
+/*
+ * Driver status
+ */
+
+struct dtop_softc {
+	data_reg_t	data;
+	poll_reg_t	poll;
+	char		polling_mode;
+	char		probed_once;
+	short		bad_pkts;
+
+	struct dtop_ds {
+		int		(*handler)(dtop_device_t,
+					   dtop_message_t, 
+					   int, 
+					   unsigned char);
+		dtop_device	status;
+	} device[(DTOP_ADDR_DEFAULT - DTOP_ADDR_FIRST) >> 1];
+
+#	define	DTOP_DEVICE_NO(address)	(((address)-DTOP_ADDR_FIRST)>>1)
+
+} dtop_softc_data[NDTOP];
+
+typedef struct dtop_softc *dtop_softc_t;
+
+dtop_softc_t	dtop_softc[NDTOP];
+
+/*
+ * Definition of the driver for the auto-configuration program.
+ */
+
+boolean_t
+dtop_probe(
+	vm_offset_t		addr,
+	struct bus_device	*ui);
+
+static void
+dtop_attach(
+	struct bus_device	*ui);
+
+vm_offset_t	dtop_std[NDTOP] = { 0 };
+struct	bus_device *dtop_info[NDTOP];
+struct	bus_driver dtop_driver = 
+        { dtop_probe, 0, dtop_attach, 0, dtop_std, "dtop", dtop_info,};
+
+
+int dtop_print_debug = 0;
+
+void dtop_param(
+	struct tty	*tp,
+	int		line);	/* forward */
+
+void
+dtop_start(
+	struct tty *tp);
+
+void dtop_putc(
+	int	unit,
+	int	line,
+	int	c);
+
+int  dtop_getc(
+	int		unit,
+	int		line,
+	boolean_t	wait,
+	boolean_t	raw);
+
+void dtop_pollc(
+	int		unit,
+	boolean_t	on);
+
+int dtop_mctl(
+	int	dev,
+	int	bits,
+	int	how);
+
+void dtop_softCAR(
+	int	unit,
+	int	line,
+	int	on);
+
+void dtop_ring_bell(
+	int	unit);
+
+void dtop_leds(
+	int	unit,
+	unsigned int mask);
+
+int dtop_get_packet(
+	dtop_softc_t	dtop,
+	dtop_message_t	pkt);
+
+/*
+ * Adapt/Probe/Attach functions
+ */
+
+void
+set_dtop_address(
+	int		dtopunit,
+	data_reg_t	poll_reg)
+{
+
+	dtop_std[dtopunit] = (vm_offset_t)poll_reg;
+
+	/* Do this here */
+	console_probe		= dtop_probe;
+	console_param		= dtop_param;
+	console_start		= dtop_start;
+	console_putc		= dtop_putc;
+	console_getc		= dtop_getc;
+	console_pollc		= dtop_pollc;
+	console_mctl		= dtop_mctl;
+	console_softCAR		= dtop_softCAR;
+
+}
+
+boolean_t
+dtop_probe(
+	vm_offset_t		addr,
+	struct bus_device	*ui)
+{
+	int		dtopunit = ui->unit, i;
+	dtop_softc_t    dtop;
+
+	dtop = &dtop_softc_data[dtopunit];
+	dtop_softc[dtopunit] = dtop;
+
+	dtop->poll = (poll_reg_t)dtop_std[dtopunit];
+	dtop->data = (data_reg_t) addr;
+
+	for (i = 0; i < DTOP_MAX_DEVICES; i++)
+		dtop->device[i].handler = dtop_null_device_handler;
+
+	/* a lot more needed here, fornow: */
+	dtop->device[DTOP_DEVICE_NO(0x6a)].handler = dtop_locator_handler;
+	dtop->device[DTOP_DEVICE_NO(0x6a)].status.locator.type =
+		DEV_MOUSE;
+	dtop->device[DTOP_DEVICE_NO(0x6a)].status.locator.relative =
+		1;
+	dtop->device[DTOP_DEVICE_NO(0x6a)].status.locator.button_code[0] =
+		KEY_LEFT_BUTTON;
+	dtop->device[DTOP_DEVICE_NO(0x6a)].status.locator.button_code[1] =
+		KEY_RIGHT_BUTTON;
+	dtop->device[DTOP_DEVICE_NO(0x6a)].status.locator.button_code[2] =
+		KEY_MIDDLE_BUTTON;
+	dtop->device[DTOP_DEVICE_NO(0x6a)].status.locator.n_coords =
+		2;
+
+	dtop->device[DTOP_DEVICE_NO(0x6c)].handler = dtop_keyboard_handler;
+	dtop->device[DTOP_DEVICE_NO(0x6c)].status.keyboard.poll_frequency =
+		(hz * 5) / 100; /* x0.01 secs */
+	dtop->device[DTOP_DEVICE_NO(0x6c)].status.keyboard.bell_volume =
+		DTOP_CLICK_VOLUME_MAX;
+
+	return TRUE;
+}
+
+static void
+dtop_attach(
+	struct bus_device	*ui)
+{
+	int	i;
+
+	/* Initialize all the console ttys */
+	for (i = 0; i < 4; i++)
+		ttychars(console_tty[i]);
+	/* Mark keyboard and mouse present */
+	for (i = 0; i < 2; i++)
+		console_tty[i]->t_addr = (char*)1;
+}
+
+/*
+ * Polled I/O (debugger)
+ */
+void dtop_pollc(
+	int		unit,
+	boolean_t	on)
+{
+	dtop_softc_t	dtop;
+
+	dtop = dtop_softc[unit];
+	if (on) {
+		dtop->polling_mode++;
+#if	NBM > 0
+		screen_on_off(unit, TRUE);
+#endif	/* NBM > 0 */
+	} else
+		dtop->polling_mode--;
+}
+
+/*
+ * Interrupt routine
+ */
+void dtop_intr(
+	int		unit,
+	spl_t		spllevel,
+	boolean_t	recvd)
+{
+
+	if (recvd) {
+		dtop_message	msg;
+		int		devno;
+		dtop_softc_t	dtop;
+
+		ssaver_bump(unit);
+
+#ifdef	mips
+		splx(spllevel);
+#endif
+
+		dtop = dtop_softc[unit];
+		if (dtop_get_packet(dtop, &msg) < 0) {
+		  if (dtop_print_debug)
+		    printf("%s", "dtop: overrun (or stray)\n");
+		  return;
+		}
+
+		devno = DTOP_DEVICE_NO(msg.src_address);
+		if (devno < 0 || devno > 15) return;	/* sanity */
+
+		(void) (*dtop->device[devno].handler)
+				(&dtop->device[devno].status, &msg,
+				 DTOP_EVENT_RECEIVE_PACKET, 0);
+
+	} else {
+		/* fornow xmit is not intr based */
+		(*tc_enable_interrupt)( dtop_info[unit]->adaptor, FALSE, TRUE);
+	}
+}
+
+void
+dtop_start(
+	struct tty *tp)
+{
+	/* no, we do not need a char out first */
+}
+
+#if	TEST
+dtop_w_test(n, a,b,c,d,e,f,g,h)
+{
+	int *p = (int*)0xbc2a0000;
+
+	if (n <= 0) return;
+
+	a <<= 8; *p = a;
+	if (--n == 0) goto out;
+	delay(20);
+	b <<= 8; *p = b;
+	if (--n == 0) goto out;
+	delay(20);
+	c <<= 8; *p = c;
+	if (--n == 0) goto out;
+	delay(20);
+	d <<= 8; *p = d;
+	if (--n == 0) goto out;
+	delay(20);
+	e <<= 8; *p = e;
+	if (--n == 0) goto out;
+	delay(20);
+	f <<= 8; *p = f;
+	if (--n == 0) goto out;
+	delay(20);
+	g <<= 8; *p = g;
+	if (--n == 0) goto out;
+	delay(20);
+	h <<= 8; *p = h;
+out:
+	delay(10000);
+	{
+		int buf[100];
+
+		delay(20);
+		a = *p;
+		buf[0] = a;
+		c = 1;
+		for (n = 0; n < 100; n++) {
+			delay(20);
+			b = *p;
+			if (b != a) {
+				buf[c++] = b;
+				b = a;
+			}
+		}
+		for (n = 0; n < c; n++)
+			db_printf("%x ", ((buf[n])>>8)&0xff);
+	}
+	return c;
+}
+#endif
+
+/*
+ * Take a packet off dtop interface
+ * A packet MUST be there, this is not checked for.
+ */
+#define	DTOP_ESC_CHAR		0xf8
+int dtop_escape(int c)
+{
+	/* I donno much about this stuff.. */
+	switch (c) {
+	case 0xe8:	return 0xf8;
+	case 0xe9:	return 0xf9;
+	case 0xea:	return 0xfa;
+	case 0xeb:	return 0xfb;
+	default:	/* printf("{esc %x}", c); */
+			return c;
+	}
+}
+
+int dtop_get_packet(
+	dtop_softc_t	dtop,
+	dtop_message_t	pkt)
+{
+	register poll_reg_t	poll;
+	register data_reg_t	data;
+	register int		max, i, len;
+	register unsigned char	c;
+
+	poll = dtop->poll;
+	data = dtop->data;
+
+	/*
+	 * The interface does not handle us the first byte,
+	 * which is our address and cannot ever be anything
+	 * else but 0x50.  This is a good thing, it makes
+	 * the average packet exactly one word long, too.
+	 */
+	pkt->src_address = DTOP_GET_BYTE(data);
+
+	for (max = 0; (max < DTOP_MAX_POLL) && !DTOP_RX_AVAIL(poll); max++)
+		delay(16);
+	if (max == DTOP_MAX_POLL) goto bad;
+	pkt->code.bits = DTOP_GET_BYTE(data);
+
+	/*
+	 * Now get data and checksum
+	 */
+	len = pkt->code.val.len + 1;
+	c = 0;
+	for (i = 0; i < len; i++) {
+
+again:		for (max = 0; (max < DTOP_MAX_POLL) && !DTOP_RX_AVAIL(poll); max++)
+			delay(16);
+		if (max == DTOP_MAX_POLL) goto bad;
+		if (c == DTOP_ESC_CHAR) {
+			c = dtop_escape(DTOP_GET_BYTE(data) & 0xff);
+		} else {
+			c = DTOP_GET_BYTE(data);
+			if (c == DTOP_ESC_CHAR)
+				goto again;
+		}
+
+		pkt->body[i] = c;
+	}
+	return len;
+bad:
+	dtop->bad_pkts++;
+	return -1;
+}
+
+/* Conversely... */
+boolean_t
+dtop_put_packet(
+	dtop_softc_t	dtop,
+	dtop_message_t	pkt)
+{
+	register int i, max;
+	register unsigned char *cp;
+	register spl_t	spl;
+	register unsigned char c;
+	
+	spl = spltty();
+	pkt->src_address = pkt->dest_address;
+	i = 0;
+	cp = (unsigned char *)&pkt->src_address;
+	while (i < pkt->code.val.len + 2) {
+		for (max = 0; max < DTOP_MAX_POLL && !DTOP_TX_AVAIL(dtop->poll);
+		     max++);
+		if (max == DTOP_MAX_POLL)
+			goto bad;
+		DTOP_PUT_BYTE(dtop->data, *cp);
+		cp++;
+		i++;
+	}
+	for (max = 0; (max < DTOP_MAX_POLL) && !DTOP_RX_AVAIL(dtop->poll); max++)
+		delay(16);
+	if (max == DTOP_MAX_POLL)
+		goto bad;
+	c = DTOP_GET_BYTE(dtop->data);
+	if (c == DTOP_ESC_CHAR) {
+		for (max = 0; (max < DTOP_MAX_POLL)
+		     && !DTOP_RX_AVAIL(dtop->poll); max++)
+			delay(16);
+		if (max == DTOP_MAX_POLL)
+			goto bad;
+		c = DTOP_GET_BYTE(dtop->data);
+	}
+	splx(spl);
+	switch (c) {
+	case 0xfb:		/* XMT, ok */
+		break;
+	default:
+		return FALSE;
+	}
+	return TRUE;
+ bad:
+	splx(spl);
+	return FALSE;
+}
+
+
+/*
+ * Get a char from a specific DTOP line
+ * [this is only used for console&screen purposes]
+ */
+int
+dtop_getc(
+	int		unit,
+	int		line,
+	boolean_t	wait,
+	boolean_t	raw)
+{
+	register int c;
+	dtop_softc_t	dtop;
+
+	dtop = dtop_softc[unit];
+again:
+	c = -1;
+
+	/*
+	 * Try rconsole first
+	 */
+	if (rcline && line == SCREEN_LINE_KEYBOARD) {
+		c = scc_getc( 0, rcline, FALSE, raw);
+		if (c != -1) return c;
+	}
+
+	/*
+	 * Now check keyboard
+	 */
+	if (DTOP_RX_AVAIL(dtop->poll)) {
+
+		dtop_message	msg;
+		struct dtop_ds	*ds;
+
+		if (dtop_get_packet(dtop, &msg) >= 0) {
+
+		    ds = &dtop->device[DTOP_DEVICE_NO(msg.src_address)];
+		    if (ds->handler == dtop_keyboard_handler) {
+
+			c = dtop_keyboard_handler(
+					&ds->status, &msg,
+					DTOP_EVENT_RECEIVE_PACKET, -1);
+
+			if (c > 0) return c;
+
+			c = -1;
+		    }
+		}
+	}
+
+	if (wait && (c == -1)) {
+		delay(100);
+		goto again;
+	}
+
+	return c;
+}
+
+/*
+ * Put a char on a specific DTOP line
+ */
+void
+dtop_putc(
+	int	unit,
+	int	line,
+	int	c)
+{
+	if (rcline && line == rcline) {
+		scc_putc(0, rcline, c);
+	}
+/*	dprintf("%c", c); */
+}
+
+void dtop_param(
+	struct tty	*tp,
+	int		line)
+{
+	if (tp->t_ispeed == 0)
+		ttymodem(tp, 0);
+	else
+		/* called too early to invoke ttymodem, sigh */
+		tp->t_state |= TS_CARR_ON;
+}
+ 
+/*
+ * Modem control functions, we don't need 'em
+ */
+int dtop_mctl(
+	int dev,
+	int bits,
+	int how)
+{
+	return 0;
+}
+
+void dtop_softCAR(
+	int	unit,
+	int	line,
+	int	on)
+{
+}
+
+/* Some keyboard specific stuff, probably belongs elsewhere */
+
+boolean_t
+dtop_kbd_probe(
+	int	unit)
+{
+	if (dtop_std[unit]) {
+		lk201_probe(unit);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+io_return_t 
+dtop_set_status(
+	int		unit,
+	int		flavor,
+	dev_status_t	status,
+	natural_t	status_count)
+{
+	dtop_device_t dev;
+
+	dev = &dtop_softc[unit]->device[DTOP_DEVICE_NO(0x6c)].status;
+
+	switch (flavor) {
+	case LK201_SEND_CMD: {
+		register lk201_cmd_t	*cmd = (lk201_cmd_t *)status;
+		unsigned int		cnt;
+		
+		if ((status_count < (sizeof(*cmd)/sizeof(int))) ||
+		    ((cnt = cmd->len) > 2))
+			return D_INVALID_SIZE;
+		switch (cmd->command) {
+		case LK_CMD_ENB_BELL:
+			cmd->params[0] ^= 0x7;
+			if (dtop_print_debug)
+				printf("LK_CMD_ENB_BELL %d\n", cmd->params[0]);
+			dev->keyboard.bell_volume = cmd->params[0] & 0x7;
+			break;
+		case LK_CMD_DIS_BELL:
+			dev->keyboard.bell_volume = 0;
+			break;
+		case LK_CMD_BELL:
+			dtop_ring_bell(unit);
+			break;
+		case LK_CMD_LEDS_ON:
+			cmd->params[0] &= ~0x80;
+			if (dtop_print_debug)
+				printf("LK_CMD_LEDS_ON %d %x\n",
+				       cmd->params[0], cmd->params[0]);
+			dev->keyboard.led_status |= cmd->params[0];
+			dtop_leds(unit, dev->keyboard.led_status);
+			break;
+		case LK_CMD_LEDS_OFF:
+			cmd->params[0] &= ~0x80;
+			dev->keyboard.led_status &= ~cmd->params[0];
+			dtop_leds(unit, dev->keyboard.led_status);
+			break;
+		case LK_CMD_ENB_KEYCLK:
+		case LK_CMD_DIS_KEYCLK:
+		case LK_CMD_SOUND_CLK:
+		case LK_CMD_DIS_CTLCLK:
+		case LK_CMD_ENB_CTLCLK:
+			break;
+		default:
+			break;
+		}
+		break;
+	}
+	default:
+		break;
+	}
+	return lk201_set_status(unit, flavor, status, status_count);
+}
+
+void dtop_kbd_reset(
+	int	unit)
+{
+	lk201_reset(unit);
+}
+
+#define DTOP_BITS(p, len)	(((p) << 7) | (len))
+
+void dtop_ring_bell(
+	int	unit)
+{
+	dtop_message msg;
+	dtop_device_t dev;
+	int vol;
+
+	dev = &dtop_softc[unit]->device[DTOP_DEVICE_NO(0x6c)].status;
+	vol = dev->keyboard.bell_volume;
+
+	if (dtop_print_debug)
+		printf("dtop_ring_bell: %d\n", vol);
+	msg.dest_address = DTOP_ADDR_KBD;
+	msg.code.bits = DTOP_BITS(1, 2);
+	msg.body[0] = DTOP_KMSG_BELL;
+	msg.body[1] = vol;
+	if (!dtop_put_packet(dtop_softc[unit], &msg)) {
+	  if (dtop_print_debug)
+	    printf("dtop_ring_bell: dtop_put_packet failed\n");
+	}
+}
+
+void dtop_leds(
+	int	unit,
+	unsigned int mask)
+{
+	dtop_message msg;
+
+	if (dtop_print_debug)
+		printf("dtop_leds %x\n", mask);
+	msg.dest_address = DTOP_ADDR_KBD;
+	msg.code.bits = DTOP_BITS(1, 2);
+	msg.body[0] = DTOP_KMSG_LED;
+	msg.body[1] = mask;
+	if (!dtop_put_packet(dtop_softc[unit], &msg)) {
+	  if (dtop_print_debug)
+	    printf("dtop_leds: dtop_put_packet failed\n");
+	}
+}
+
+
+
+#endif	/* NDTOP > 0 */

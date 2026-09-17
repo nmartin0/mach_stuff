@@ -1,0 +1,10 @@
+wheel:*:0:root
+daemon:*:1:daemon,root
+kmem:*:2:root
+bin:*:3:root
+tty:*:4:root
+operator:*:5:root
+news:*:6:root
+staff:*:10:root
+other:*:20:root
+guest:*:31:root

@@ -1,0 +1,2960 @@
+* Check for offset of 0 in directory records.
+
+* Root points to subdirectory; subdirectory doesn't point to root.
+Add blocks as indicated by directory entry for extended attribute
+record length.Validator is a simple test program for checking High Sierra or ISO 9660 CD-ROM disks.
+
+This program was written using Symantec's Think C.  You will notice that the program uses Think C’s standard i/o window, and hence is not very Mac-like; this was done to help portability to other operating systems.  
+
+If you are trying to test a CD that will not mount on the Macintosh, you can do the following:
+1) Start the program without any CD in the drive.
+2) when you get the first prompt ("Do you want help?"), insert the CD in the drive.  This will bypass the normal Macintosh mounting mechanism.
+
+Validator keeps a copy of all of the messages it writes to the screen in a file it creates in the directory from which it is run.  The file is named “Validation Results.”  It’s a plain text file, readable by any word processor or editor.   (The default creator is that of MPW, the Macintosh Programmer's Workshop.  To read this file into another program,  start the program first, and then open this file from that program.)  This file will be created the first time you run the program, and will be appended to thereafter.
+
+This program uses direct calls to the driver, bypassing the file system.  By default, Validator tries to open the driver ".AppleCD".  If you want to test a different media than CD-ROM, you can use ResEdit to change the name of the driver.  This name is stored as "STR " resource #256.
+
+For further information, you should consult the appropriate standards.  The formats supported are:
+
+For High Sierra:  "May 28, 1986 Working Paper for Information Processing—Volume and File Structure of Compact Read Only Optical Discs for Information Interchange", available from NIST, Administration 101, Library E-106, Gaithersburg, MD 20899
+
+For ISO 9660: "ISO 9660—Volume and File Structure of CD-ROM for Information Interchange", available from the International Organization for Standardization, Geneva Switzerland.
+
+Please report any bugs or errors in the validation of your CDs.#include "Types.r"
+
+type 'VALD' as 'STR ';
+
+resource  'VALD' (0)
+{
+	"High Sierra/ISO 9660 tester 1.12 © 1988-9 Apple Computer, Inc."
+};
+
+resource  'BNDL' (128)
+{
+    'VALD',     0,
+    {
+    'ICN#', {0, 128};
+    'FREF', {0, 128}
+    }
+};
+
+resource  'FREF' (128)
+{
+    'APPL',
+    0,
+    ""
+};
+
+resource 'ICN#' (128) {
+	{	/* array: 2 elements */
+		/* [1] */
+		$"3000 0000 4800 00C0 0800 0120 107F 0020"
+		$"01D5 E040 16AA B040 0D55 5800 1AAA AC40"
+		$"3555 5600 2AAA AB00 557F 5500 6AC1 AB80"
+		$"D59C D5C0 AB3E 6AC0 D571 55C0 AB61 6AC0"
+		$"D561 55C0 AB22 6AC0 D59C D5C0 6AC1 ABC0"
+		$"557F 5580 2AAA AB80 3555 5700 1AAA AF30"
+		$"0D55 5E48 66AA BC08 93D5 F810 10FF E010"
+		$"203F 8000 2000 0010 0000 0000 20",
+		/* [2] */
+		$"3000 0000 4800 00C0 0800 0120 107F 0020"
+		$"01FF E040 17FF F040 0FFF F800 1FFF FC40"
+		$"3FFF FE00 3FFF FF00 7FFF FF00 7FFF FF80"
+		$"FFFF FFC0 FFFF FFC0 FFFF FFC0 FFFF FFC0"
+		$"FFFF FFC0 FFFF FFC0 FFFF FFC0 7FFF FFC0"
+		$"7FFF FF80 3FFF FF80 3FFF FF00 1FFF FF30"
+		$"0FFF FE48 67FF FC08 93FF F810 10FF E010"
+		$"203F 8000 2000 0010 0000 0000 20"
+	}
+};
+
+resource 'STR ' (256) {
+	".AppleCD"
+};
+#ifndef	_MacTypes_
+#include <MacTypes.h>
+#endif
+
+/* Protoypes grabbed from file
+** "HS.c"
+** 1988 Aug 1 (Mon) 07:26:53
+*/
+
+Boolean HSDumpPVD(short);		
+
+Boolean HSDumpSVD(short, short);		
+
+void HSDumpRoot(short);		
+
+/* Protoypes grabbed from file
+** "HSDirRcd.c"
+** 1988 Jul 30 (Sat) 07:50:13
+*/
+
+void HSDumpDirRcd(HSDirRcd *);		
+
+Boolean HSValidDirRcd(HSDirRcd *);		
+
+void HSReportDirRcdErr(HSDirRcd *);		
+
+/* Protoypes grabbed from file
+** "HSPathTable.c"
+** 1988 Jul 30 (Sat) 07:44:05
+*/
+
+void HSIncrementPathTablePtr(HSPathTablePtr *);		
+
+void HSCheckDirectory(short, long);		
+
+void HSCheckAllFiles(short);		
+
+void HSCheckSelfAndParent(short, HSDirRcd *, long);	
+
+/* Protoypes grabbed from file
+** "ISO.c"
+** 1988 Aug 1 (Mon) 07:28:20
+*/
+
+Boolean ISODumpPVD(short);		
+
+Boolean ISODumpSVD(short, short);
+
+void ISODumpRoot(short);		
+
+/* Protoypes grabbed from file
+** "ISODirRcd.c"
+** 1988 Jul 30 (Sat) 07:47:55
+*/
+
+void ISODumpDirRcd(ISODirRcd *);		
+
+Boolean ISOValidDirRcd(ISODirRcd *);		
+
+void ISOReportDirRcdErr(ISODirRcd *);		
+
+/* Protoypes grabbed from file
+** "ISOPathTable.c"
+** 1988 Jul 30 (Sat) 07:43:46
+*/
+
+void ISOIncrementPathTablePtr(ISOPathTablePtr *);		
+
+void ISOCheckDirectory(short, long);		
+
+void ISOCheckAllFiles(short);	
+
+void ISOCheckSelfAndParent(short, ISODirRcd *, long);	
+
+/* Protoypes grabbed from file
+** "main.c"
+** 1988 Aug 1 (Mon) 07:32:21
+*/
+
+void printOut(...);
+
+void Help(void);		
+
+Boolean IsItHighSierra(short);		
+
+void main(void);		
+
+#include "support.h"/* Protoypes grabbed from file
+** "support.c"
+** 1988 Aug 1 (Mon) 07:24:06
+*/
+
+void Pause(void);		
+
+Boolean YesOrNo(char *);		
+
+OSErr Open(StringPtr, short *);		
+
+OSErr Read(short, Ptr, long, long);		
+
+long NormalizeLong(long);		
+
+short NormalizeWord(short);		
+
+void PrintDate(char []);		
+
+#ifndef THINK_C
+/* not defined in stdio.h, but should be */
+extern void		printf(...);
+extern void		fprintf(FILE *, ...);
+extern char *	strncpy(char *, char *, short);
+extern short	strlen(char *);
+extern FILE 	*fopen(char *, char *);
+extern void		fclose(FILE *);
+extern char		fgetc(FILE *);
+extern void		fputc(char, FILE *);
+extern char		getch(void);
+extern char		toupper(char);
+extern void		scanf(char *, ...);
+extern void		*mlalloc(long);
+extern void		free(Ptr);
+extern void		Click_On(short);
+extern char		*ctime(unsigned long *);
+#endif#include <stdio.h>
+#include <ctype.h>
+#include <MacTypes.h>
+#include <FileMgr.h>
+
+#include "support.h"
+
+/************************************************************************
+ *
+ *  Function:		Pause
+ *
+ *  Purpose:		let the user digest what they've seen
+ *
+ *  Returns:		nothing
+ *
+ *  Side Effects:	may exit program suddenly
+ *
+ *  Description:	Ask the user to go on or quit.  If quit, ExitToShell()
+ *
+ ************************************************************************/
+void
+Pause()
+{
+	char	answer;
+	
+	answer = 'z';
+	printf("Type q to quit, or any other key to continue:");
+	answer = getchar();
+	if (answer == 'q' || answer == 'Q')
+		ExitToShell();
+	else
+		printf("\n\n");	
+}
+
+
+
+/************************************************************************
+ *
+ *  Function:		YesOrNo
+ *
+ *  Purpose:		ask a yes or no question and return an answer
+ *
+ *  Returns:		Boolean
+ *						true	user answered 'y' or 'Y'
+ *						false	user answered 'n' or 'N'
+ *
+ *  Side Effects:	none
+ *
+ *  Description:	ask the question passed in.  Get the answer until
+ *					it's either 'n' or 'y' (case insensitive.) Return
+ *					true if 'y', false if 'n'.
+ *
+ ************************************************************************/
+Boolean
+YesOrNo(prompt)
+char *prompt;
+{
+	short	answer;
+	
+	answer = 'z';
+	while (answer != 'y' && answer != 'Y' && answer != 'n' && answer != 'N')
+	{
+		printf(prompt);
+		answer = getchar();
+	}
+	printf("\n");
+	if (answer == 'n' || answer == 'N')
+		return false;
+	else
+		return true;
+}
+
+
+/************************************************************************
+ *
+ *  Function:		Open
+ *
+ *  Purpose:		Open the driver for i/o
+ *
+ *  Returns:		OSErr
+ *
+ *  Side Effects:	fills *RefNum with valid reference number for driver.
+ *
+ *  Description:	Issue Mac OS PBOpen call to open the driver.  We
+ *					can use the returned reference number to access the
+ *					driver for raw i/o.
+ *
+ ************************************************************************/
+OSErr
+Open(fn, RefNum)
+StringPtr	fn;
+short		*RefNum;
+{
+	OSErr			result;
+	ParamBlockRec	pb;
+	
+	pb.ioParam.ioNamePtr = fn;
+	pb.ioParam.ioCompletion = 0;
+	pb.ioParam.ioPermssn = fsRdPerm;
+	result = PBOpen(&pb, false);
+	*RefNum = pb.ioParam.ioRefNum;
+	
+	return result;
+}
+
+
+/************************************************************************
+ *
+ *  Function:	Read
+ *
+ *  Purpose:	read from the driver
+ *
+ *  Returns:	OSErr
+ *
+ *  Side Effects:	fills dest with contents for 'count' bytes.
+ *
+ *  Description:	do a call to the Mac CD driver to read a specified
+ *					number of bytes starting at 'offset'.  If you are
+ *					trying to port this to another machine, this is
+ *					the important routine.  Given an absolute offset
+ *					from the beginning of the disc, read "count"
+ *					bytes into "dest".
+ *
+ ************************************************************************/
+OSErr
+Read(refNum, dest, count, offset)
+short	refNum;
+Ptr		dest;
+long	count;
+long	offset;
+{
+	OSErr result;
+	ParamBlockRec	io;
+	
+	io.ioParam.ioCompletion = NULL;
+	io.ioParam.ioVRefNum = 1;
+	io.ioParam.ioRefNum = refNum;
+	io.ioParam.ioBuffer = dest;
+	io.ioParam.ioReqCount = count;
+	io.ioParam.ioPosMode = fsFromStart;
+	io.ioParam.ioPosOffset = offset;
+	result = PBRead(&io, false);
+	
+	if (result != noErr)
+		printf("PBRead failed. ioActCount = %d\n", io.ioParam.ioActCount);
+	
+	return result;
+}
+
+
+
+/************************************************************************
+ *
+ *  Function:	NormalizeLong
+ *
+ *  Purpose:	normalize a long number that's in most significant byte format
+ *
+ *  Returns:	long
+ *
+ *  Side Effects:	none
+ *
+ *  Description:
+ *				takes a long in msb format order and converts it
+ *				to lsb format order.  For example, the long value
+ *				0x12345678 becomes 0x78563412
+ *				0x78563412 becomes 0x12345678
+ *
+ ************************************************************************/
+long
+NormalizeLong(incoming)
+long	incoming;
+{
+	unsigned char	*byteArray;
+	long	result;
+	
+	byteArray = (unsigned char *) &incoming;
+	result = (long) byteArray[0] | 
+			 (long) byteArray[1] << 8 | 
+			 (long) byteArray[2] << 16 |
+			 (long) byteArray[3] << 24;
+	
+	return result;
+}
+
+/************************************************************************
+ *
+ *  Function:	NormalizeWord
+ *
+ *  Purpose:	normalize a word number that's in most significant byte format
+ *
+ *  Returns:	short
+ *
+ *  Side Effects:	none
+ *
+ *  Description:
+ *				takes a long in msb format order and converts it
+ *				to lsb format order.  For example, the long value
+ *				0x12345678 becomes 0x78563412
+ *				0x78563412 becomes 0x12345678
+ *
+ ************************************************************************/
+short
+NormalizeWord(incoming)
+short	incoming;
+{
+	unsigned char	*byteArray;
+	short	result;
+	
+	byteArray = (unsigned char *) &incoming;
+	result = (short) byteArray[0] | 
+			 (short) byteArray[1] << 8;
+	
+	return result;
+}
+/****************************************************************************/
+/*																			*/
+/*	File: 		HighSierra.h												*/
+/*																			*/
+/*	Prefix:		HS,CD														*/
+/*																			*/
+/*	Purpose:	Provide type and constant definitions relating to High		*/
+/*				Sierra format CDs.											*/
+/* 																			*/
+/*	Revision History:														*/
+/* 																			*/
+/****************************************************************************/
+/*	Copyright © Apple Computer, Inc. 1987									*/
+/****************************************************************************/
+
+
+/****************************************************************************/
+/*	Exported Constants														*/
+/****************************************************************************/
+
+#define	CDBLKSIZE	2048
+#define	HSVOLSTART	16		/* where we expect a Primary Volume Descriptor */
+
+#define StdVolType	1		/* Primary Volume Descriptor type */
+#define	VolEndType	255		/* Volume Descriptor Set Terminator type */ 
+
+#define CDSIGSIZE		6	/* 'CDROM' or 'CD001' plus length byte */
+#define UNTITLEDSIZE	9	/* 'Untitled' plus length byte */
+
+#define nameStr		128		/* resource: our name & version */
+#define	cdromStr	129		/* resource: 'CDROM' or 'CD001' */
+#define	driverStr	130		/* resource: '.AppleCD' */
+#define	untitledStr	131		/* resource: 'Untitled' */
+
+/*
+ * File Flags for Directory Records
+ */
+#define existenceBit	0x01
+#define directoryBit	0x02
+#define associatedBit	0x04
+#define recordBit		0x08
+#define protectionBit	0x10
+#define multiextentBit	0x80
+
+/* Finder flags, from Technical Note 40 */
+
+#define		fLockedBit		0x8000
+#define		fInvisibleBit	0x4000
+#define		fHasBundleBit	0x2000
+#define		fSystemBit		0x1000
+#define		fNoCopyBit		0x0800
+#define		fBusyBit		0x0400
+#define		fChangedBit		0x0200
+#define		fInitedBit		0x0100
+#define		fCachedBit		0x0080
+#define		fSharedBit		0x0040
+#define		fAlwaysBit		0x0020		/* always switch-launch */
+#define		fNeverBit		0x0010		/* never switch-launch */
+#define		fOwnApplBit		0x0002
+#define		fOnDesktopBit	0x0001
+
+/* These constants are used to compute Finder location on the fly */
+
+#define		fHOffset	64
+#define		fVOffset	64
+#define		fNumWide	6		/* six icons on default window */
+
+/****************************************************************************/
+/*	Exported Types															*/
+/****************************************************************************/
+
+/*
+ * in all the structures defined below, fields named f1, f2, etc. are the
+ * Intel byte-swapped equivalent of the field immediately following.  I don't
+ * bother defining these fields, since they are not used on the Macintosh.
+ */
+typedef unsigned char byte;
+
+
+/****************************************************************************/
+/*	High Sierra (May 26, 1986) Standard										*/
+/****************************************************************************/
+/* 
+ * Primary Volume Descriptor (PVD)
+ */
+typedef struct
+{
+	long	lsbVDLBN;
+	long	msbVDLBN;
+	byte	VDType;					/* Must be 1 for PVD */
+	char	VSStdId[5];				/* Must be "CDROM" */
+	byte	VSStdVersion;			/* Must be 1 */
+	byte	volumeFlags;			/* Must be 0 or 1 */
+	char	systemIdentifier[32];
+	char	volumeIdentifier[32];
+	char	Reserved2[8];			/* Must be 0's */
+	long	lsbVolumeSpaceSize;
+	long	msbVolumeSpaceSize;
+	char	Reserved3[32];			/* Must be 0's */
+	short	lsbVolumeSetSize;
+	short	msbVolumeSetSize;
+	short	lsbVolumeSetSequenceNumber;
+	short	msbVolumeSetSequenceNumber;
+	short	lsbLogicalBlockSize;
+	short	msbLogicalBlockSize;
+	long	lsbPathTableSize;
+	long	msbPathTableSize;
+	long	lsbPathTable1;			/* mandatory occurrence */
+	long	lsbPathTable2;			/* optional occurrence */
+	long	lsbPathTable3;			/* optional occurrence */
+	long	lsbPathTable4;			/* optional occurrence */
+	long	msbPathTable1;			/* mandatory occurrence */
+	long	msbPathTable2;			/* optional occurrence */
+	long	msbPathTable3;			/* optional occurrence */
+	long	msbPathTable4;			/* optional occurrence */
+	char	rootDirectoryRecord[34];
+	char	volumeSetIdentifier[128];
+	char	publisherIdentifier[128];
+	char	dataPreparerIdentifier[128];
+	char	applicationIdentifier[128];
+	char	copyrightFileIdentifier[32];
+	char	abstractFileIdentifier[32];
+	char	volumeCreation[16];
+	char	volumeModification[16];
+	char	volumeExpiration[16];
+	char	volumeEffective[16];
+	char	FileStructureStandardVersion;
+	char	Reserved4;				/* Must be 0's */
+	char	ApplicationUse[512];
+	char	FutureStandardization[680];
+} HSPVD, *HSPVDPtr;
+
+/*
+ * Path Table
+ */
+
+typedef char	dirIDArray[8];
+
+typedef struct
+{
+	long	dirLocation;	/* 1st logical block where directory is stored */
+	byte	XARlength;	/* Extended Attribute Record Length */
+	byte	len_di;			/* length of directory identifier */
+	short	parentDN;		/* parent directory number */
+	dirIDArray	dirID;		/* directory identifier: actual length is
+							 *	9 - [8+Len_di]; there is an extra blank
+							 *	byte if Len_di is odd.
+							 */
+} HSPathTable, *HSPathTablePtr;
+
+/*
+ * Directory Record
+ *	There exists one of these for each file in the directory.
+ *	
+ */
+typedef struct
+{
+	byte	len_dr;			/* directory record length */
+	byte	XARlength;	/* Extended Attribute Record Length */
+	long	lsbStart;
+	long	msbStart;			/* 1st logical block where file starts */
+	long	lsbDataLength;
+	long	msbDataLength;
+	byte	year;			/* since 1900 */
+	byte	month;
+	byte	day;
+	byte	hour;
+	byte	minute;
+	byte	second;
+	byte	fileFlags;
+	byte	reserved;		/* must be 0 */
+	byte	interleaveSize;
+	byte	interleaveSkip;
+	short	lsbVolSetSeqNum;
+	short	msbVolSetSeqNum;	/* which volume in volume set contains this file. */
+	byte	len_fi;			/* length of file identifier which follows */
+	char	fi[34];				/* file identifier: actual is 34-[33+Len_fi].
+								contains extra blank byte if Len_fi odd
+							*/
+} HSDirRcd, *HSDirRcdPtr;
+	
+
+/****************************************************************************/
+/*	ISO 9660 (pANS Z39.86 198x) standard format								*/
+/****************************************************************************/
+
+/* 
+ * Primary Volume Descriptor (PVD)
+ */
+typedef struct
+{
+	byte	VDType;					/* Must be 1 for PVD */
+	char	VSStdId[5];				/* Must be "CD001" */
+	byte	VSStdVersion;			/* Must be 1 */
+	byte	volumeFlags;			/* Must be 0 or 1 */
+	char	systemIdentifier[32];
+	char	volumeIdentifier[32];
+	char	Reserved2[8];			/* Must be 0's */
+	long	lsbVolumeSpaceSize;
+	long	msbVolumeSpaceSize;
+	char	Reserved3[32];			/* Must be 0's */
+	short	lsbVolumeSetSize;
+	short	msbVolumeSetSize;
+	short	lsbVolumeSetSequenceNumber;
+	short	msbVolumeSetSequenceNumber;
+	short	lsbLogicalBlockSize;
+	short	msbLogicalBlockSize;
+	long	lsbPathTableSize;
+	long	msbPathTableSize;
+	long	lsbPathTable1;			/* mandatory occurrence */
+	long	lsbPathTable2;			/* optional occurrence */
+	long	msbPathTable1;			/* mandatory occurrence */
+	long	msbPathTable2;			/* optional occurrence */
+	char	rootDirectoryRecord[34];
+	char	volumeSetIdentifier[128];
+	char	publisherIdentifer[128];
+	char	dataPreparerIdentifier[128];
+	char	applicationIdentifier[128];
+	char	copyrightFileIdentifier[37];
+	char	abstractFileIdentifier[37];
+	char	bibliographicFileIdentifier[37];
+	char	volumeCreation[17];
+	char	volumeModification[17];
+	char	volumeExpiration[17];
+	char	volumeEffective[17];
+	char	FileStructureStandardVersion;
+	char	Reserved4;				/* Must be 0's */
+	char	ApplicationUse[512];
+	char	FutureStandardization[653];
+} ISOPVD, *ISOPVDPtr;
+
+/*
+ * Path Table
+ */
+
+typedef struct
+{
+	byte	len_di;			/* length of directory identifier */
+	byte	XARlength;	/* Extended Attribute Record Length */
+	long	dirLocation;	/* 1st logical block where directory is stored */
+	short	parentDN;		/* parent directory number */
+	char	dirID[8];		/* directory identifier: actual length is
+							 *	9 - [8+Len_di]; there is an extra blank
+							 *	byte if Len_di is odd.
+							 */
+} ISOPathTable, *ISOPathTablePtr;
+
+/*
+ * Directory Record
+ *	There exists one of these for each file in the directory.
+ *	
+ */
+typedef struct
+{
+	byte	len_dr;			/* directory record length */
+	byte	XARlength;	/* Extended Attribute Record Length */
+	long	lsbStart;
+	long	msbStart;			/* 1st logical block where file starts */
+	long	lsbDataLength;
+	long	msbDataLength;
+	byte	year;			/* since 1900 */
+	byte	month;
+	byte	day;
+	byte	hour;
+	byte	minute;
+	byte	second;
+	byte	gmtOffset;
+	byte	fileFlags;
+	byte	interleaveSize;
+	byte	interleaveSkip;
+	short	lsbVolSetSeqNum;
+	short	msbVolSetSeqNum;	/* which volume in volume set contains this file. */
+	byte	len_fi;			/* length of file identifier which follows */
+	char	fi[34];				/* file identifier: actual is 34-[33+Len_fi].
+								contains extra blank byte if Len_fi odd
+							*/
+} ISODirRcd, *ISODirRcdPtr;
+	
+#include <stdio.h>
+#include <ctype.h>
+#include <FileMgr.h>
+
+#include "HighSierra.h"
+#include "Validator.h"
+
+/************************************************************************
+ *
+ *	© Copyright 1988 Apple Computer, Inc.  All rights reserved.
+ *
+ *  Program:		HS
+ *
+ *  Purpose:		High Sierra validation routines.
+ *
+ *  Description:	Checks various aspects of a High Sierra disc and
+ *					lets you know what's wrong with it.
+ *
+ *					Checks Primary volume descriptor and all secondary
+ *					volume descriptors that we find.
+ *
+ *  Revision History:
+ *	16 Jun 88	Original Version for the Macintosh by Brian Bechtel,
+ *				Apple Computer, Inc.
+ *	14 Jul 88	1.3 Validate first 2K of directory records in each 
+ *				directory shown in the path table.
+ *
+ ************************************************************************/
+
+extern	long	pathTableStart;
+extern	long	logicalBlockSize;
+
+extern	HSPVD	hsPVD;
+extern	ISOPVD	isoPVD;
+
+extern	char	buffer[CDBLKSIZE];
+	
+
+/************************************************************************
+ *
+ *  Function:		HSDumpPVD
+ *
+ *  Purpose:		display the contents of the Primary Volume Descriptor.
+ *
+ *  Returns:		void
+ *
+ *  Side Effects:	adds to the output file.
+ *
+ *  Description:	go through all the primary volume descriptor, showing
+ *					each field in all it's glory.  We don't bother showing
+ *					the extra blanks at the end of each string field.
+ *
+ ************************************************************************/
+Boolean
+HSDumpPVD(refNum)
+short	refNum;
+{
+	short	i;
+	OSErr	result;
+	
+	result = Read(refNum, (Ptr)&hsPVD, (long) sizeof(hsPVD), (long) 16 * CDBLKSIZE);
+	if (result != noErr)
+	{
+		printOut("Could not read Primary Volume Descriptor. error %d\n", result);
+		return false;
+	}
+
+	printOut("Dump of the Primary Volume Descriptor.\n\n");
+	printOut("The correct default is shown in square brackets.\n");
+	
+	printOut("Volume Descriptor Logical Block Number lsb : %8lx(hex) msb %8lx(hex)\n",
+		NormalizeLong(hsPVD.lsbVDLBN), hsPVD.msbVDLBN);
+	if (NormalizeLong(hsPVD.lsbVDLBN) != hsPVD.msbVDLBN)
+	{
+		printOut("WARNING:These values should match, but Apple software\n");
+		printOut("can handle this problem\n");
+	}
+	printOut("Volume Descriptor Type = %d [1]\n", hsPVD.VDType);
+	if (hsPVD.VDType != 1)
+		printOut("\007WARNING: This value is incorrect!\n");
+	printOut("Standard Identifier = %c%c%c%c%c [CDROM]\n",
+			hsPVD.VSStdId[0], hsPVD.VSStdId[1], hsPVD.VSStdId[2], 
+			hsPVD.VSStdId[3], hsPVD.VSStdId[4]);
+	if (hsPVD.VSStdId[0] != 'C' || hsPVD.VSStdId[1] != 'D' ||
+		hsPVD.VSStdId[2] != 'R' || hsPVD.VSStdId[3] != 'O' ||
+		hsPVD.VSStdId[4] != 'M')
+	{
+		printOut("\007WARNING: The standard identifier is a basic\n");
+		printOut("way of identifying High Sierra discs.  This disc is\n");
+		printOut("doesn't have the correct value and is not an High Sierra disc.\n");
+	}
+	
+
+	printOut("Volume Descriptor Version = %d [1]\n\n", hsPVD.VSStdVersion);
+	if (hsPVD.VSStdVersion != 1)
+		printOut("\007WARNING: This value is incorrect!\n");
+	
+	printOut("System Identifier = ");
+	for (i = 0; i < 32; i++)
+		printOut("%c", hsPVD.systemIdentifier[i]);
+	printOut("\n");
+	printOut("Volume Identifier = ");
+	for (i = 0; i < 32; i++)
+		printOut("%c", hsPVD.volumeIdentifier[i]);
+	printOut("\n\n");
+	
+	Pause();
+	
+	printOut("Volume Space Size      lsb: %8lx(hex) msb:%8lx(hex)\n",
+			NormalizeLong(hsPVD.lsbVolumeSpaceSize), hsPVD.msbVolumeSpaceSize);
+	if (NormalizeLong(hsPVD.lsbVolumeSpaceSize) != hsPVD.msbVolumeSpaceSize)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("has two different sizes.  This means the disc does not follow\n");
+		printOut("the High Sierra specification and is not usable.\n");
+	}
+			
+	printOut("Volume Set Size        lsb: %8x(hex) msb:%8x(hex)\n",
+			NormalizeWord(hsPVD.lsbVolumeSetSize), hsPVD.msbVolumeSetSize);
+	if (NormalizeWord(hsPVD.lsbVolumeSetSize) != hsPVD.msbVolumeSetSize)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("has two different sizes.  This means the disc does not follow\n");
+		printOut("the High Sierra specification and is not usable.\n");
+	}
+			
+			
+	printOut("Volume Sequence Number lsb: %8x(hex) msb:%8x(hex)\n",
+			NormalizeWord(hsPVD.lsbVolumeSetSequenceNumber), hsPVD.msbVolumeSetSequenceNumber);
+	if (NormalizeWord(hsPVD.lsbVolumeSetSequenceNumber) != hsPVD.msbVolumeSetSequenceNumber)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("belongs to two different volume sets.  This means the disc\n");
+		printOut("does not follow the High Sierra specification and is not usable.\n");
+	}
+			
+			
+	printOut("Logical Block Size     lsb: %8x(hex) msb:%8x(hex)\n",
+			NormalizeWord(hsPVD.lsbLogicalBlockSize), hsPVD.msbLogicalBlockSize);
+	logicalBlockSize = hsPVD.msbLogicalBlockSize;
+	if (NormalizeWord(hsPVD.lsbLogicalBlockSize) != hsPVD.msbLogicalBlockSize)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("has two different block sizes, which is impossible.  This\n");
+		printOut("means the disc does not follow the High Sierra specification\n");
+		printOut("and is not usable.\n");
+		logicalBlockSize = 0;
+	}
+			
+	printOut("Path Table Size        lsb: %8lx(hex) msb:%8lx(hex)\n",
+			NormalizeLong(hsPVD.lsbPathTableSize), hsPVD.msbPathTableSize);
+	if (NormalizeLong(hsPVD.lsbPathTableSize) != hsPVD.msbPathTableSize)
+	{
+		printOut("\007WARNING: These values tell me that on the disc in question\n");
+		printOut("the two types of path tables have different sizes.  This is\n");
+		printOut("not possible under the High Sierra specification.  This means\n");
+		printOut("the disc does not follow the High Sierra specification and\n");
+		printOut("is not usable.\n\n");
+	}
+	else
+		printOut("\n");
+	
+			
+	printOut("Mandatory Path Table lsb: %8lx(hex) msb %8lx(hex)\n",
+			NormalizeLong(hsPVD.lsbPathTable1), hsPVD.msbPathTable1);
+	
+	pathTableStart = (long) hsPVD.msbPathTable1 * (long) hsPVD.msbLogicalBlockSize;
+	
+	if (NormalizeLong(hsPVD.lsbPathTable1) == 0)
+	{
+		printOut("\007WARNING: Because the path table start is zero, this disc\n");
+		printOut("is unusable on Apple II computers!\n");
+	}
+	if (hsPVD.msbPathTable1 == 0)
+	{
+		printOut("\007WARNING: Because the path table start is zero, this disc\n");
+		printOut("is unusable on Macintosh computers!\n");
+		pathTableStart = 0;
+	}
+	
+	printOut("Optional Path Table lsb : %8lx(hex) msb %8lx(hex)\n",
+			NormalizeLong(hsPVD.lsbPathTable2), hsPVD.msbPathTable2);
+	printOut("Optional Path Table lsb : %8lx(hex) msb %8lx(hex)\n",
+			NormalizeLong(hsPVD.lsbPathTable3), hsPVD.msbPathTable3);
+	printOut("Optional Path Table lsb : %8lx(hex) msb %8lx(hex)\n\n",
+			NormalizeLong(hsPVD.lsbPathTable4), hsPVD.msbPathTable4);
+
+	printOut("Volume Creation Date and Time     ");
+	PrintDate(hsPVD.volumeCreation);
+	printOut("Volume Modification Date and Time ");
+	PrintDate(hsPVD.volumeModification);
+	printOut("Volume Expiration Date and Time   ");
+	PrintDate(hsPVD.volumeExpiration);
+	printOut("Volume Effective Date and Time    ");
+	PrintDate(hsPVD.volumeEffective);
+	
+	printOut("\nFile Structure Version = %d [1]\n", hsPVD.FileStructureStandardVersion);
+	if (hsPVD.FileStructureStandardVersion != 1)
+		if (hsPVD.FileStructureStandardVersion == 0)
+		{
+			printOut("This value is INCORRECT, but Apple software\n");
+			printOut("can handle this value\n");
+		}
+		else
+			printOut("\007WARNING: This value is incorrect!\n");
+	
+	Pause();
+	
+	HSDumpDirRcd((HSDirRcd *)hsPVD.rootDirectoryRecord);
+	HSReportDirRcdErr((HSDirRcd *)hsPVD.rootDirectoryRecord);
+	return true;
+}
+
+/************************************************************************
+ *
+ *  Function:		HSDumpSVD
+ *
+ *  Purpose:		display the contents of the Secondary Volume Descriptor.
+ *
+ *  Returns:		void
+ *
+ *  Side Effects:	adds to the output file.
+ *
+ *  Description:	go through all the Secondary volume descriptor, showing
+ *					each field in all it's glory.  We don't bother showing
+ *					the extra blanks at the end of each string field.
+ *
+ ************************************************************************/
+Boolean
+HSDumpSVD(refNum, offset)
+short	refNum;
+short	offset;
+{
+	short	i;
+	OSErr	result;
+	
+	result = Read(refNum, (Ptr)&hsPVD, (long) sizeof(hsPVD), (long) offset * CDBLKSIZE);
+	if (result != noErr)
+	{
+		printOut("Could not read Secondary Volume Descriptor. error %d\n", result);
+		return false;
+	}
+
+	printOut("\nDump of the Secondary Volume Descriptor.\n\n");
+	printOut("The correct default is shown in square brackets.\n");
+	
+	printOut("Volume Descriptor Logical Block Number lsb : %8lx(hex) msb %8lx(hex)\n",
+		NormalizeLong(hsPVD.lsbVDLBN), hsPVD.msbVDLBN);
+	if (NormalizeLong(hsPVD.lsbVDLBN) != hsPVD.msbVDLBN)
+	{
+		printOut("WARNING:These values should match, but Apple software\n");
+		printOut("can handle this problem\n");
+	}
+	printOut("Volume Descriptor Type = %d [2 or 255]\n", hsPVD.VDType);
+	if (hsPVD.VDType != 2 && hsPVD.VDType != 255)
+		printOut("\007WARNING: This value is incorrect!\n");
+	printOut("Standard Identifier = %c%c%c%c%c [CDROM]\n",
+			hsPVD.VSStdId[0], hsPVD.VSStdId[1], hsPVD.VSStdId[2], 
+			hsPVD.VSStdId[3], hsPVD.VSStdId[4]);
+	if (hsPVD.VSStdId[0] != 'C' || hsPVD.VSStdId[1] != 'D' ||
+		hsPVD.VSStdId[2] != 'R' || hsPVD.VSStdId[3] != 'O' ||
+		hsPVD.VSStdId[4] != 'M')
+	{
+		printOut("\007WARNING: The standard identifier is a basic\n");
+		printOut("way of identifying High Sierra discs.  This disc is\n");
+		printOut("doesn't have the correct value and is not an High Sierra disc.\n");
+	}
+	if (hsPVD.VDType == 255)
+		return(false);			/* we've hit the volume terminator. */
+
+	printOut("Volume Descriptor Version = %d [1]\n\n", hsPVD.VSStdVersion);
+	if (hsPVD.VSStdVersion != 1)
+		printOut("\007WARNING: This value is incorrect!\n");
+	
+	printOut("Volume Flags = %d [0 or 1]\n", hsPVD.volumeFlags);
+	if (hsPVD.volumeFlags == 1)
+		printOut("This volume uses non-ISO 2375 escape sequences.\n");
+	else if (hsPVD.volumeFlags != 0)
+		printOut("\007WARNING: This value is incorrect!\n");
+
+	printOut("System Identifier = ");
+	for (i = 0; i < 32; i++)
+		printOut("%c", hsPVD.systemIdentifier[i]);
+	printOut("\n");
+	printOut("Volume Identifier = ");
+	for (i = 0; i < 32; i++)
+		printOut("%c", hsPVD.volumeIdentifier[i]);
+	printOut("\n\n");
+	
+	Pause();
+	
+	printOut("Volume Space Size      lsb: %8lx(hex) msb:%8lx(hex)\n",
+			NormalizeLong(hsPVD.lsbVolumeSpaceSize), hsPVD.msbVolumeSpaceSize);
+	if (NormalizeLong(hsPVD.lsbVolumeSpaceSize) != hsPVD.msbVolumeSpaceSize)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("has two different sizes.  This means the disc does not follow\n");
+		printOut("the High Sierra specification and is not usable.\n");
+	}
+			
+	printOut("Volume Set Size        lsb: %8x(hex) msb:%8x(hex)\n",
+			NormalizeWord(hsPVD.lsbVolumeSetSize), hsPVD.msbVolumeSetSize);
+	if (NormalizeWord(hsPVD.lsbVolumeSetSize) != hsPVD.msbVolumeSetSize)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("has two different sizes.  This means the disc does not follow\n");
+		printOut("the High Sierra specification and is not usable.\n");
+	}
+			
+			
+	printOut("Volume Sequence Number lsb: %8x(hex) msb:%8x(hex)\n",
+			NormalizeWord(hsPVD.lsbVolumeSetSequenceNumber), hsPVD.msbVolumeSetSequenceNumber);
+	if (NormalizeWord(hsPVD.lsbVolumeSetSequenceNumber) != hsPVD.msbVolumeSetSequenceNumber)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("belongs to two different volume sets.  This means the disc\n");
+		printOut("does not follow the High Sierra specification and is not usable.\n");
+	}
+			
+			
+	printOut("Logical Block Size     lsb: %8x(hex) msb:%8x(hex)\n",
+			NormalizeWord(hsPVD.lsbLogicalBlockSize), hsPVD.msbLogicalBlockSize);
+	logicalBlockSize = hsPVD.msbLogicalBlockSize;
+	if (NormalizeWord(hsPVD.lsbLogicalBlockSize) != hsPVD.msbLogicalBlockSize)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("has two different block sizes, which is impossible.  This\n");
+		printOut("means the disc does not follow the High Sierra specification\n");
+		printOut("and is not usable.\n");
+		logicalBlockSize = 0;
+	}
+			
+	printOut("Path Table Size        lsb: %8lx(hex) msb:%8lx(hex)\n",
+			NormalizeLong(hsPVD.lsbPathTableSize), hsPVD.msbPathTableSize);
+	if (NormalizeLong(hsPVD.lsbPathTableSize) != hsPVD.msbPathTableSize)
+	{
+		printOut("\007WARNING: These values tell me that on the disc in question\n");
+		printOut("the two types of path tables have different sizes.  This is\n");
+		printOut("not possible under the High Sierra specification.  This means\n");
+		printOut("the disc does not follow the High Sierra specification and\n");
+		printOut("is not usable.\n\n");
+	}
+	else
+		printOut("\n");
+	
+			
+	printOut("Mandatory Path Table lsb: %8lx(hex) msb %8lx(hex)\n",
+			NormalizeLong(hsPVD.lsbPathTable1), hsPVD.msbPathTable1);
+	
+	pathTableStart = (long) hsPVD.msbPathTable1 * (long) hsPVD.msbLogicalBlockSize;
+	
+	if (NormalizeLong(hsPVD.lsbPathTable1) == 0)
+	{
+		printOut("\007WARNING: Because the path table start is zero, this disc\n");
+		printOut("is unusable on Apple II computers!\n");
+	}
+	if (hsPVD.msbPathTable1 == 0)
+	{
+		printOut("\007WARNING: Because the path table start is zero, this disc\n");
+		printOut("is unusable on Macintosh computers!\n");
+		pathTableStart = 0;
+	}
+	
+	printOut("Optional Path Table lsb : %8lx(hex) msb %8lx(hex)\n",
+			NormalizeLong(hsPVD.lsbPathTable2), hsPVD.msbPathTable2);
+	printOut("Optional Path Table lsb : %8lx(hex) msb %8lx(hex)\n",
+			NormalizeLong(hsPVD.lsbPathTable3), hsPVD.msbPathTable3);
+	printOut("Optional Path Table lsb : %8lx(hex) msb %8lx(hex)\n\n",
+			NormalizeLong(hsPVD.lsbPathTable4), hsPVD.msbPathTable4);
+
+	printOut("Volume Creation Date and Time     ");
+	PrintDate(hsPVD.volumeCreation);
+	printOut("Volume Modification Date and Time ");
+	PrintDate(hsPVD.volumeModification);
+	printOut("Volume Expiration Date and Time   ");
+	PrintDate(hsPVD.volumeExpiration);
+	printOut("Volume Effective Date and Time    ");
+	PrintDate(hsPVD.volumeEffective);
+	
+	printOut("\nFile Structure Version = %d [1]\n", hsPVD.FileStructureStandardVersion);
+	if (hsPVD.FileStructureStandardVersion != 1)
+		if (hsPVD.FileStructureStandardVersion == 0)
+		{
+			printOut("This value is INCORRECT, but Apple software\n");
+			printOut("can handle this value\n");
+		}
+		else
+			printOut("\007WARNING: This value is incorrect!\n");
+	
+	Pause();
+	
+	HSDumpDirRcd((HSDirRcd *)hsPVD.rootDirectoryRecord);
+	HSReportDirRcdErr((HSDirRcd *)hsPVD.rootDirectoryRecord);
+	return true;
+}
+
+
+
+/************************************************************************
+ *
+ *  Function:		HSDumpRoot
+ *
+ *  Purpose:		Dump directory records in the root directory
+ *
+ *  Returns:		nothing
+ *
+ *  Side Effects:	writes to screen
+ *
+ *  Description:	Find the root directory, based on our global path
+ *					table pointer.
+ *
+ ************************************************************************/
+void
+HSDumpRoot(refNum)
+short	refNum;
+{
+	long	offset;
+	HSDirRcd	*d;
+	OSErr	result;
+	HSPathTablePtr	p;
+	char	*bufPtr;
+	
+	offset = pathTableStart;		/* a global, set in DumpPVD */
+	
+	result = Read(refNum, (Ptr)buffer, (long) sizeof(buffer), (long) offset);
+	if (result != noErr)
+	{
+		printOut("Could not read path table. error %d\n", result);
+		return;
+	}
+	
+	p = (HSPathTablePtr) &buffer[0];
+	offset = p->dirLocation * logicalBlockSize;
+	
+	result = Read(refNum, (Ptr)buffer, (long) sizeof(buffer), (long) offset);
+	if (result != noErr)
+	{
+		printOut("Could not read path table. error %d\n", result);
+		return;
+	}
+	
+	bufPtr = &buffer[0];
+	d = (HSDirRcd *) bufPtr;
+	while (HSValidDirRcd(d) == true)
+	{
+		HSDumpDirRcd(d);
+		bufPtr += d->len_dr;
+		d = (HSDirRcd *) bufPtr;
+	}
+}
+
+#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <FileMgr.h>
+
+#include "HighSierra.h"
+#include "Validator.h"
+
+
+extern	long	pathTableStart;
+extern	long	logicalBlockSize;
+
+extern	HSPVD		hsPVD;
+extern	ISOPVD		isoPVD;
+
+extern	char	buffer[CDBLKSIZE];
+	
+
+
+/************************************************************************
+ *
+ *  Function:	HSIncrementPathTablePtr
+ *
+ *  Purpose:	increment a path table ptr
+ *
+ *  Returns:	nothing
+ *
+ *  Side Effects:
+ *				increments the path table ptr pointed at by 'p'.
+ *
+ *  Description:
+ *				Path table ptrs have this wierd structure. You have to
+ *				increment by the size of the fixed fields, plus the size
+ *				of the directory id, plus an extra byte if the directory
+ *				id is odd.
+ *
+ *  Revision History:
+ *
+ ************************************************************************/
+void
+HSIncrementPathTablePtr(p)
+HSPathTablePtr	*p;
+{
+	Ptr				newP;
+	HSPathTablePtr	ptPtr;
+	
+	newP = (Ptr) *p;
+	ptPtr = *p;
+	
+	/* add the size of the fixed fields.  Our definition of the dirID
+	 * field defines the largest possible dirID, not the actual size
+	 * of this path table entry.  (that's defined by len_di)
+	 */
+	newP += sizeof(HSPathTable)-sizeof(dirIDArray);
+	
+	newP += ptPtr->len_di;
+	if ( (ptPtr->len_di) & 0x01 )		/* if odd, there's an filler byte */
+		newP++;
+	*p = (HSPathTablePtr) newP;
+}
+
+
+/************************************************************************
+ *
+ *  Function:		HSCheckDirectory	
+ *
+ *  Purpose:		check each file in a directory
+ *
+ *  Returns:		nothing
+ *
+ *  Side Effects:	writes to screen
+ *
+ *  Description:	loop through  a directory, calling
+ *					HSReportDirRcdErr for each directory record.
+ *
+ *					We read the directory in to find the directory size
+ *					(the length in the first directory record) and then
+ *					loop, reading in each directory entry and checking
+ *					for validity.
+ *
+ ************************************************************************/
+void
+HSCheckDirectory(refNum, offset)
+short	refNum;
+long	offset;
+{
+	OSErr	result;
+	HSDirRcd	*d;
+	Ptr		bufPtr;
+	long	directorySize;
+	long	parentStart;
+
+	parentStart = offset / logicalBlockSize;
+	
+	result = Read(refNum, (Ptr)buffer, (long) sizeof(buffer), offset);
+	if (result != noErr)
+	{
+		printOut("Could not read directory records. error %d\n", result);
+		return;
+	}
+	
+	bufPtr = &buffer[0];
+	d = (HSDirRcd *) bufPtr;
+	
+	directorySize = d->len_dr;
+
+	if ((NormalizeLong(d->lsbStart) * logicalBlockSize) != offset)
+		printOut("LSB Directory record for self doesn't point to self\n");
+	if ((d->msbStart * logicalBlockSize) != offset)
+		printOut("MSB Directory record for self doesn't point to self\n");
+	
+	while (directorySize > 0)
+	{
+		result = Read(refNum, (Ptr)buffer, (long) sizeof(buffer), offset);
+		if (result != noErr)
+		{
+			printOut("Could not read directory records. error %d\n", result);
+			return;
+		}
+	
+		while (HSValidDirRcd(d) == true)
+		{
+			HSReportDirRcdErr(d);
+			if (d->fileFlags & directoryBit)
+				if (d->fi[0] != 0 && d->fi[0] != 1)
+					HSCheckSelfAndParent(refNum, d, parentStart);
+			bufPtr += d->len_dr;
+			d = (HSDirRcd *) bufPtr;
+		}
+		directorySize -= CDBLKSIZE;
+		offset += CDBLKSIZE;
+	}
+}
+
+
+/************************************************************************
+ *
+ *  Function:		HSCheckAllFiles
+ *
+ *  Purpose:		Check all files for bogons
+ *
+ *  Returns:		nothing
+ *
+ *  Side Effects:	writes to screen
+ *
+ *  Description:	Using the path table, cruise all the directory
+ *					records.  Find those that have anything wrong and
+ *					report them.
+ *
+ ************************************************************************/
+void
+HSCheckAllFiles(refNum)
+short	refNum;
+{
+	long			offset;
+	long			ptSize;
+	OSErr			result;
+	short			i;
+	HSPathTablePtr	ptPtr;
+	
+	offset = pathTableStart;
+	
+	ptSize = (hsPVD.msbPathTableSize + logicalBlockSize-1) & ~(logicalBlockSize-1);
+	
+	ptPtr = (HSPathTablePtr) malloc(ptSize);
+	if (ptPtr == NULL)
+		printOut("program error: Can't allocate space for path table.\n");
+	
+	result = Read(refNum, (Ptr)ptPtr, (long) ptSize, (long) offset);
+	if (result != noErr)
+	{
+		printOut("Could not read path table. error %d\n", result);
+		free((Ptr)ptPtr);
+		return;
+	}
+	
+	while (ptPtr->dirLocation != 0)
+	{
+		printOut("-----checking directory ");
+		for (i = 0; i < ptPtr->len_di; i++)
+			printOut("%c", ptPtr->dirID[i]);
+		printOut("\n");
+		offset = (long) (ptPtr->dirLocation) * (long) logicalBlockSize;
+		HSCheckDirectory(refNum, offset);
+		HSIncrementPathTablePtr(&ptPtr);
+	}
+	free((Ptr)ptPtr);
+}
+
+
+
+/************************************************************************
+ *
+ *  Function:	HSCheckSelfAndParent
+ *
+ *  Purpose:	validate the self and parent directory records
+ *
+ *  Returns:	nothing
+ *
+ *  Side Effects:
+ *				may write errors
+ *
+ *  Description:
+ *				Check to see if the directory record passed in is for
+ *				a subdirectory.  If it is, read the first two directory
+ *				records in that subdirectory.  Check that the first
+ *				one has a name of '\000', and points to itself.  Check
+ *				that the second one has a name of '\001', and points
+ *				to our incoming start.
+ *
+ *				We assume that msb and lsb values are the same, and only
+ *				test the msb values.  The other checks will be performed
+ *				by our calling "report dir record" routine.
+ *
+ ************************************************************************/
+void
+HSCheckSelfAndParent(refNum, d, parentStart)
+short		refNum;
+HSDirRcd	*d;
+long		parentStart;
+{
+	unsigned char	subDirBuffer[512];
+	HSDirRcd		*subDirPtr;
+	OSErr			result;
+	Boolean			foundError;
+	short			i;
+	
+	foundError = false;
+	
+	result = Read(refNum, (Ptr)subDirBuffer, 
+			(long) sizeof(subDirBuffer), d->msbStart * logicalBlockSize);
+	if (result != noErr)
+	{
+		printOut("Could not read subDirectory records. error %d\n", result);
+		return;
+	}
+	
+	subDirPtr = (HSDirRcd *) subDirBuffer;
+	
+	if (subDirPtr->fi[0] != 0)
+	{
+		printOut("First record in subdirectory doesn't have name of '0'\n");
+		foundError = true;
+	}
+	
+	if (subDirPtr->msbStart != d->msbStart)
+	{
+		printOut("Subdirectory start doesn't match start in parent.\n");
+		printOut("subdirectory start %8lx parent start %8lx\n",
+			subDirPtr->msbStart, d->msbStart);
+		foundError = true;
+	}
+	
+	subDirPtr = (HSDirRcd *) (subDirBuffer + subDirPtr->len_dr);
+	
+	if (subDirPtr->fi[0] != 1)
+	{
+		printOut("Second record in subdirectory doesn't have name of '1'\n");
+		foundError = true;
+	}
+	
+	if (subDirPtr->msbStart != parentStart)
+	{
+		printOut("Subdirectory doesn't point to its parent\n");
+		printOut("subdirectory parent %8lx actual parent start %8lx\n",
+			subDirPtr->msbStart, parentStart);
+		foundError = true;
+	}
+	
+	if (foundError)
+	{	
+		printOut("For directory named:");
+		for (i = 0; i < d->len_fi; i++)
+			printOut("%c", d->fi[i]);
+		printOut("\n");
+	}
+}
+#include <stdio.h>
+#include <ctype.h>
+#include <FileMgr.h>
+
+#include "HighSierra.h"
+#include "Validator.h"
+
+/************************************************************************
+ *
+ *	© Copyright 1988 Apple Computer, Inc.  All rights reserved.
+ *
+ *  Program:		DirRcd
+ *
+ *  Purpose:		directory record routines
+ *
+ *  Description:	Various routines for directory records.
+ *
+ *  Revision History:
+ *	11 Jul 88	Original Version for the Macintosh by Brian Bechtel,
+ *				Apple Computer, Inc.
+ *
+ ************************************************************************/
+
+/************************************************************************
+ *
+ *  Function:		HSDumpDirRcd
+ *
+ *  Purpose:		Dump a directory record.
+ *
+ *  Returns:		nothing.
+ *
+ *  Side Effects:	writes to screen.
+ *
+ *  Description:	show the format of the directory record to which 
+ *					we're passed a pointer.
+ *
+ ************************************************************************/
+void
+HSDumpDirRcd(d)
+HSDirRcd *d;
+{
+	short	i;
+
+	printOut("\n----------\n");
+	printOut("len %x(hex) XARlen %x(hex) start lsb : %8lx(hex) msb : %8lx(hex)\n",
+		d->len_dr, d->XARlength, NormalizeLong(d->lsbStart), d->msbStart);
+	printOut("date %02d/%02d/%02d %2d:%02d:%02d ",
+		d->year, d->month, d->day, d->hour, d->minute, d->second);
+	printOut("interleave Size %x(hex) interleave skip %x(hex)\n", 
+		d->interleaveSize, d->interleaveSkip);
+	printOut("flags = %x(hex), which means the following flag bits are set ON:\n", d->fileFlags);
+	if (d->fileFlags == 0)
+		printOut("[none]");
+	if (d->fileFlags & existenceBit)
+		printOut("existence ");
+	if (d->fileFlags & directoryBit)
+		printOut("directory ");
+	if (d->fileFlags & associatedBit)
+		printOut("associated ");
+	if (d->fileFlags & protectionBit)
+		printOut("protection ");
+	if (d->fileFlags & multiextentBit)
+		printOut("multi-extent ");
+	printOut("\n");
+
+	printOut("volume set sequence number lsb : %4x(hex) msb : %4x(hex) len_fi %x(hex)\n",
+		NormalizeWord(d->lsbVolSetSeqNum), d->msbVolSetSeqNum, d->len_fi);
+	printOut("Name:");
+	for (i = 0; i < d->len_fi; i++)
+		printOut("%c", d->fi[i]);
+	printOut("\n");
+}
+
+
+
+
+/************************************************************************
+*
+*  Function:	HSValidDirRcd
+*
+*  Purpose:		validate a directory id
+*
+*  Returns:		Boolean -- true if valid.
+*
+*  Side Effects:
+*				none
+*
+*  Description:
+*				Check the fields and see if they're good.  The directory
+*				length must be reasonable, the start must be greater than
+*				zero, the length of a file name must be from 1 to 37,
+*				and the date must be from 1970 (MSDOS's first possible
+*				date) to 2040 (The last valid date for a Macintosh).
+*
+*  Revision History:
+*
+************************************************************************/
+Boolean
+HSValidDirRcd(d)
+HSDirRcd	*d;
+{
+	Boolean result;
+	
+	result = true;
+	if (d->len_dr <= 0 || d->len_dr > (byte)sizeof(HSDirRcd) || d->len_dr & 1)
+		result = false;
+	if (NormalizeLong(d->lsbStart) <= 0)
+		result = false;
+	if (d->msbStart <= 0)
+		result = false;
+	if (d->len_fi <= 0 || d->len_fi > 37)
+		result = false;
+	if (d->year > 140)		/* year field starts at 1900 */
+		result = false;
+	return result;
+}
+
+
+/************************************************************************
+*
+*  Function:	HSReportDirRcdErr
+*
+*  Purpose:		report directory record errors
+*
+*  Returns:		nothing
+*
+*  Side Effects:
+*				none
+*
+*  Description:
+*				Check the fields and see if they're good.  The directory
+*				length must be reasonable, the start must be greater than
+*				zero, the length of a file name must be from 1 to 37,
+*				and the date must be from 1970 (MSDOS's first possible
+*				date) to 2040 (The last valid date for a Macintosh).
+*
+*				If any of these characteristics fail, report them to the
+*				user.
+*
+*  Revision History:
+*
+************************************************************************/
+void
+HSReportDirRcdErr(d)
+HSDirRcd	*d;
+{
+	short	i;
+	Boolean	FoundError;
+	
+	FoundError = false;
+	
+	if (d->len_dr <= 0 || d->len_dr > (byte)sizeof(HSDirRcd) || d->len_dr & 1)
+	{
+		printOut("directory record length should be even and between 34 and %d, but is %d (0x%d)\n",
+			sizeof(HSDirRcd), d->len_dr, d->len_dr);
+		FoundError = true;
+	}
+	
+	if ((d->XARlength > 0) && (d->fileFlags & directoryBit))
+	{
+		printOut("directories have extended attribute records.  Due to a bug\n");
+		printOut("in ISO 9660 file access version 1.0, this isn't supported\n");
+		printOut("properly.  This disc isn't usable with version 1.0 of\n");
+		printOut("ISO 9660 file access.  Please check for a later version.\n");
+	}
+	
+	if (NormalizeLong(d->lsbStart) <= 0)
+	{
+		printOut("lsb start of data is invalid : 0x%lx\n", NormalizeLong(d->lsbStart));
+		FoundError = true;
+	}
+	
+	if (d->msbStart <= 0)
+	{
+		printOut("msb start of data is invalid : 0x%lx\n", d->msbStart);
+		FoundError = true;
+	}
+	
+	if (NormalizeLong(d->lsbStart) != d->msbStart)
+	{
+		printOut("the lsb and msb start of data disagree.  lsb: %lx (hex) msb: %lx (hex)\n",
+			NormalizeLong(d->lsbStart), d->msbStart);
+		FoundError = true;
+	}
+	
+	if (d->len_fi <= 0 || d->len_fi > 37)
+	{
+		printOut("file name length must be between 1 and  37 characters but is %x(hex)\n", d->len_fi);
+		FoundError = true;
+	}
+	
+	if (d->year > 140)		/* year field starts at 1900 */
+	{
+		printOut("Year exceeds last valid year for Macintosh at 2040 : %d\n", d->year);
+		FoundError = true;
+	}
+	
+	
+	if (NormalizeWord(d->lsbVolSetSeqNum) != d->msbVolSetSeqNum)
+	{
+		printOut(
+		"volume set sequence numbers don't match or aren't '1' : lsb : 0x%4lx msb : 0x%4lx\n",
+		NormalizeWord(d->lsbVolSetSeqNum), d->msbVolSetSeqNum);
+	
+		FoundError = true;
+	}
+	
+	if (d->month < 0 || d->month > 12)
+	{
+		printOut("Invalid month : %d\n", d->month);
+		FoundError = true;
+	}
+	
+	if (d->day < 0 || d->day > 31)
+	{
+		printOut("Invalid day : %d\n", d->day);
+		FoundError = true;
+	}
+	
+	if (d->hour < 0 || d->hour > 24)
+	{
+		printOut("Invalid hour : %d\n", d->hour);
+		FoundError = true;
+	}
+	
+	if (d->minute < 0 || d->minute > 60)
+	{
+		printOut("Invalid minute : %d\n", d->minute);
+		FoundError = true;
+	}
+	
+	if (d->second < 0 || d->second > 60)
+	{
+		printOut("Invalid second : %d\n", d->second);
+		FoundError = true;
+	}
+	
+	if (d->fi[0] == 0 || d->fi[0] == 1)
+		if (!(d->fileFlags & directoryBit))
+		{
+			printOut("directory bit not set for self or parent\n");
+			FoundError = true;
+	}
+	if (d->interleaveSize != 0 || d->interleaveSkip != 0)
+	{
+		printOut("Warning: AppleCD SC 2.0.1 software");
+		printOut("doesn't support interleaved files.\n");
+		printOut("file unit size: %d file gap size %d\n",
+					d->interleaveSize, d->interleaveSkip);
+		FoundError = true;
+	}
+	
+	if (FoundError == true)
+	{
+		if (d->fi[0] == 0)
+			printOut("For the directory record of this directory");
+		else 
+		if (d->fi[0] == 1)
+			printOut("For the directory record of the parent of this directory");
+		else
+		{
+			printOut("For file named:");
+			for (i = 0; i < d->len_fi; i++)
+				printOut("%c", d->fi[i]);
+		}
+		printOut("\n");
+	}
+}
+
+#include <stdio.h>
+#include <ctype.h>
+#include <FileMgr.h>
+
+#include "HighSierra.h"
+#include "Validator.h"
+
+/************************************************************************
+ *
+ *	© Copyright 1988 Apple Computer, Inc.  All rights reserved.
+ *
+ *  Program:		ISO
+ *
+ *  Purpose:		ISO 9660 validation routines.
+ *
+ *  Description:	Checks various aspects of a ISO 9660 disc and
+ *					lets you know what's wrong with it.
+ *
+ *					Currently only checks the Primary Volume Descriptor.
+ *
+ *  Revision History:
+ *	16 Jun 88	Original Version for the Macintosh by Brian Bechtel,
+ *				Apple Computer, Inc.
+ *	14 Jul 88	1.3 Validate first 2K of directory records in each 
+ *				directory shown in the path table.
+ *
+ ************************************************************************/
+
+
+extern	long	pathTableStart;
+extern	long	logicalBlockSize;
+
+extern	HSPVD	hsPVD;
+extern	ISOPVD	isoPVD;
+
+extern	char	buffer[CDBLKSIZE];
+	
+
+/************************************************************************
+ *
+ *  Function:		ISODumpPVD
+ *
+ *  Purpose:		display the contents of the Primary Volume Descriptor.
+ *
+ *  Returns:		void
+ *
+ *  Side Effects:	adds to the output file.
+ *
+ *  Description:	go through all the primary volume descriptor, showing
+ *					each field in all it's glory.  We don't bother showing
+ *					the extra blanks at the end of each string field.
+ *
+ ************************************************************************/
+Boolean
+ISODumpPVD(refNum)
+short	refNum;
+{
+	short	i;
+	OSErr	result;
+	
+	result = Read(refNum, (Ptr)&isoPVD, (long) sizeof(isoPVD), (long) 16 * CDBLKSIZE);
+	if (result != noErr)
+	{
+		printOut("Could not read Primary Volume Descriptor. error %d\n", result);
+		return false;
+	}
+
+	printOut("Dump of the Primary Volume Descriptor.\n\n");
+	printOut("The correct default is shown in square brackets.\n");
+	
+	printOut("Volume Descriptor Type = %d [1]\n", isoPVD.VDType);
+	if (isoPVD.VDType != 1)
+		printOut("\007WARNING: This value is incorrect!\n");
+	printOut("Standard Identifier = %c%c%c%c%c [CD001]\n",
+			isoPVD.VSStdId[0], isoPVD.VSStdId[1], isoPVD.VSStdId[2], 
+			isoPVD.VSStdId[3], isoPVD.VSStdId[4]);
+	if (isoPVD.VSStdId[0] != 'C' || isoPVD.VSStdId[1] != 'D' ||
+		isoPVD.VSStdId[2] != '0' || isoPVD.VSStdId[3] != '0' ||
+		isoPVD.VSStdId[4] != '1')
+	{
+		printOut("\007WARNING: The standard identifier is a basic\n");
+		printOut("way of identifying ISO 9660 discs.  This disc is\n");
+		printOut("doesn't have the correct value and is not an ISO 9660 disc.\n");
+	}
+	
+	printOut("Volume Descriptor Version = %d [1]\n\n", isoPVD.VSStdVersion);
+	if (isoPVD.VSStdVersion != 1)
+		printOut("\007WARNING: This value is incorrect!\n");
+	
+	printOut("System Identifier = ");
+	for (i = 0; i < 32; i++)
+		printOut("%c", isoPVD.systemIdentifier[i]);
+	printOut("\n");
+	printOut("Volume Identifier = ");
+	for (i = 0; i < 32; i++)
+		printOut("%c", isoPVD.volumeIdentifier[i]);
+	printOut("\n\n");
+	
+	Pause();
+	
+	printOut("Volume Space Size      lsb: %8lx(hex) msb:%8lx(hex)\n",
+			NormalizeLong(isoPVD.lsbVolumeSpaceSize), isoPVD.msbVolumeSpaceSize);
+	if (NormalizeLong(isoPVD.lsbVolumeSpaceSize) != isoPVD.msbVolumeSpaceSize)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("has two different sizes.  This means the disc does not follow\n");
+		printOut("the ISO 9660 specification and is not usable.\n");
+	}
+			
+	printOut("Volume Set Size        lsb: %8x(hex) msb:%8x(hex)\n",
+			NormalizeWord(isoPVD.lsbVolumeSetSize), isoPVD.msbVolumeSetSize);
+	if (NormalizeWord(isoPVD.lsbVolumeSetSize) != isoPVD.msbVolumeSetSize)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("has two different sizes.  This means the disc does not follow\n");
+		printOut("the ISO 9660 specification and is not usable.\n");
+	}
+			
+			
+	printOut("Volume Sequence Number lsb: %8x(hex) msb:%8x(hex)\n",
+			NormalizeWord(isoPVD.lsbVolumeSetSequenceNumber), isoPVD.msbVolumeSetSequenceNumber);
+	if (NormalizeWord(isoPVD.lsbVolumeSetSequenceNumber) != isoPVD.msbVolumeSetSequenceNumber)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("belongs to two different volume sets.  This means the disc\n");
+		printOut("does not follow the ISO 9660 specification and is not usable.\n");
+	}
+			
+			
+	printOut("Logical Block Size     lsb: %8x(hex) msb:%8x(hex)\n",
+			NormalizeWord(isoPVD.lsbLogicalBlockSize), isoPVD.msbLogicalBlockSize);
+	logicalBlockSize = isoPVD.msbLogicalBlockSize;
+	if (NormalizeWord(isoPVD.lsbLogicalBlockSize) != isoPVD.msbLogicalBlockSize)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("has two different block sizes, which is impossible.  This\n");
+		printOut("means the disc does not follow the ISO 9660 specification\n");
+		printOut("and is not usable.\n");
+		logicalBlockSize = 0;
+	}
+			
+	printOut("Path Table Size        lsb: %8lx(hex) msb:%8lx(hex)\n",
+			NormalizeLong(isoPVD.lsbPathTableSize), isoPVD.msbPathTableSize);
+	if (NormalizeLong(isoPVD.lsbPathTableSize) != isoPVD.msbPathTableSize)
+	{
+		printOut("\007WARNING: These values tell me that on the disc in question\n");
+		printOut("the two types of path tables have different sizes.  This is\n");
+		printOut("not possible under the ISO 9660 specification.  This means\n");
+		printOut("the disc does not follow the ISO 9660 specification and\n");
+		printOut("is not usable.\n\n");
+	}
+	else
+		printOut("\n");
+	
+			
+	printOut("Mandatory Path Table lsb: %8lx(hex) msb %8lx(hex)\n",
+			NormalizeLong(isoPVD.lsbPathTable1), isoPVD.msbPathTable1);
+	
+	pathTableStart = (long) isoPVD.msbPathTable1 * (long) isoPVD.msbLogicalBlockSize;
+	
+	if (NormalizeLong(isoPVD.lsbPathTable1) == 0)
+	{
+		printOut("\007WARNING: Because the path table start is zero, this disc\n");
+		printOut("is unusable on Apple II computers!\n");
+	}
+	if (isoPVD.msbPathTable1 == 0)
+	{
+		printOut("\007WARNING: Because the path table start is zero, this disc\n");
+		printOut("is unusable on Macintosh computers!\n");
+		pathTableStart = 0;
+	}
+	
+	printOut("Optional Path Table lsb : %8lx(hex) msb %8lx(hex)\n",
+			NormalizeLong(isoPVD.lsbPathTable2), isoPVD.msbPathTable2);
+
+	printOut("Volume Creation Date and Time     ");
+	PrintDate(isoPVD.volumeCreation);
+	printOut("Volume Modification Date and Time ");
+	PrintDate(isoPVD.volumeModification);
+	printOut("Volume Expiration Date and Time   ");
+	PrintDate(isoPVD.volumeExpiration);
+	printOut("Volume Effective Date and Time    ");
+	PrintDate(isoPVD.volumeEffective);
+	
+	printOut("\nFile Structure Version = %d [1]\n", isoPVD.FileStructureStandardVersion);
+	if (isoPVD.FileStructureStandardVersion != 1)
+		if (isoPVD.FileStructureStandardVersion == 0)
+		{
+			printOut("This value is INCORRECT, but Apple software\n");
+			printOut("can handle this value\n");
+		}
+		else
+			printOut("\007WARNING: This value is incorrect!\n");
+	
+	Pause();
+	
+	ISODumpDirRcd((ISODirRcd *)isoPVD.rootDirectoryRecord);
+	ISOReportDirRcdErr((ISODirRcd *)isoPVD.rootDirectoryRecord);
+	return true;
+}
+
+/************************************************************************
+ *
+ *  Function:		ISODumpSVD
+ *
+ *  Purpose:		display the contents of the Secondary Volume Descriptor.
+ *
+ *  Returns:		void
+ *
+ *  Side Effects:	adds to the output file.
+ *
+ *  Description:	go through all the secondary volume descriptor, showing
+ *					each field in all it's glory.  We don't bother showing
+ *					the extra blanks at the end of each string field.
+ *
+ ************************************************************************/
+Boolean
+ISODumpSVD(refNum, offset)
+short	refNum;
+short	offset;
+{
+	short	i;
+	OSErr	result;
+	
+	result = Read(refNum, (Ptr)&isoPVD, (long) sizeof(isoPVD), (long) offset * CDBLKSIZE);
+	if (result != noErr)
+	{
+		printOut("Could not read Secondary Volume Descriptor. error %d\n", result);
+		return false;
+	}
+
+	printOut("\nDump of the Secondary Volume Descriptor.\n\n");
+	printOut("The correct default is shown in square brackets.\n");
+	
+	printOut("Volume Descriptor Type = %d [2 or 255]\n", isoPVD.VDType);
+	if (isoPVD.VDType != 2 && isoPVD.VDType != 255)
+		printOut("\007WARNING: This value is incorrect!\n");
+	printOut("Standard Identifier = %c%c%c%c%c [CD001]\n",
+			isoPVD.VSStdId[0], isoPVD.VSStdId[1], isoPVD.VSStdId[2], 
+			isoPVD.VSStdId[3], isoPVD.VSStdId[4]);
+	if (isoPVD.VSStdId[0] != 'C' || isoPVD.VSStdId[1] != 'D' ||
+		isoPVD.VSStdId[2] != '0' || isoPVD.VSStdId[3] != '0' ||
+		isoPVD.VSStdId[4] != '1')
+	{
+		printOut("\007WARNING: The standard identifier is a basic\n");
+		printOut("way of identifying ISO 9660 discs.  This disc is\n");
+		printOut("doesn't have the correct value and is not an ISO 9660 disc.\n");
+	}
+	
+	if (isoPVD.VDType == 255)
+		return(false);			/* we've hit the volume terminator. */
+
+	printOut("Volume Descriptor Version = %d [1]\n", isoPVD.VSStdVersion);
+	if (isoPVD.VSStdVersion != 1)
+		printOut("\007WARNING: This value is incorrect!\n");
+	
+	printOut("Volume Flags = %d [0 or 1]\n", isoPVD.volumeFlags);
+	if (isoPVD.volumeFlags == 1)
+		printOut("This volume uses non-ISO 2375 escape sequences.\n");
+	else if (isoPVD.volumeFlags != 0)
+		printOut("\007WARNING: This value is incorrect!\n");
+
+	printOut("\nSystem Identifier = ");
+	for (i = 0; i < 32; i++)
+		printOut("%c", isoPVD.systemIdentifier[i]);
+	printOut("\n");
+	printOut("Volume Identifier = ");
+	for (i = 0; i < 32; i++)
+		printOut("%c", isoPVD.volumeIdentifier[i]);
+	printOut("\n\n");
+	
+	Pause();
+	
+	printOut("Volume Space Size      lsb: %8lx(hex) msb:%8lx(hex)\n",
+			NormalizeLong(isoPVD.lsbVolumeSpaceSize), isoPVD.msbVolumeSpaceSize);
+	if (NormalizeLong(isoPVD.lsbVolumeSpaceSize) != isoPVD.msbVolumeSpaceSize)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("has two different sizes.  This means the disc does not follow\n");
+		printOut("the ISO 9660 specification and is not usable.\n");
+	}
+			
+	printOut("Volume Set Size        lsb: %8x(hex) msb:%8x(hex)\n",
+			NormalizeWord(isoPVD.lsbVolumeSetSize), isoPVD.msbVolumeSetSize);
+	if (NormalizeWord(isoPVD.lsbVolumeSetSize) != isoPVD.msbVolumeSetSize)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("has two different sizes.  This means the disc does not follow\n");
+		printOut("the ISO 9660 specification and is not usable.\n");
+	}
+			
+			
+	printOut("Volume Sequence Number lsb: %8x(hex) msb:%8x(hex)\n",
+			NormalizeWord(isoPVD.lsbVolumeSetSequenceNumber), isoPVD.msbVolumeSetSequenceNumber);
+	if (NormalizeWord(isoPVD.lsbVolumeSetSequenceNumber) != isoPVD.msbVolumeSetSequenceNumber)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("belongs to two different volume sets.  This means the disc\n");
+		printOut("does not follow the ISO 9660 specification and is not usable.\n");
+	}
+			
+			
+	printOut("Logical Block Size     lsb: %8x(hex) msb:%8x(hex)\n",
+			NormalizeWord(isoPVD.lsbLogicalBlockSize), isoPVD.msbLogicalBlockSize);
+	logicalBlockSize = isoPVD.msbLogicalBlockSize;
+	if (NormalizeWord(isoPVD.lsbLogicalBlockSize) != isoPVD.msbLogicalBlockSize)
+	{
+		printOut("\007WARNING: These values tell me that the disc in question\n");
+		printOut("has two different block sizes, which is impossible.  This\n");
+		printOut("means the disc does not follow the ISO 9660 specification\n");
+		printOut("and is not usable.\n");
+		logicalBlockSize = 0;
+	}
+			
+	printOut("Path Table Size        lsb: %8lx(hex) msb:%8lx(hex)\n",
+			NormalizeLong(isoPVD.lsbPathTableSize), isoPVD.msbPathTableSize);
+	if (NormalizeLong(isoPVD.lsbPathTableSize) != isoPVD.msbPathTableSize)
+	{
+		printOut("\007WARNING: These values tell me that on the disc in question\n");
+		printOut("the two types of path tables have different sizes.  This is\n");
+		printOut("not possible under the ISO 9660 specification.  This means\n");
+		printOut("the disc does not follow the ISO 9660 specification and\n");
+		printOut("is not usable.\n\n");
+	}
+	else
+		printOut("\n");
+	
+			
+	printOut("Mandatory Path Table lsb: %8lx(hex) msb %8lx(hex)\n",
+			NormalizeLong(isoPVD.lsbPathTable1), isoPVD.msbPathTable1);
+	
+	pathTableStart = (long) isoPVD.msbPathTable1 * (long) isoPVD.msbLogicalBlockSize;
+	
+	if (NormalizeLong(isoPVD.lsbPathTable1) == 0)
+	{
+		printOut("\007WARNING: Because the path table start is zero, this disc\n");
+		printOut("is unusable on Apple II computers!\n");
+	}
+	if (isoPVD.msbPathTable1 == 0)
+	{
+		printOut("\007WARNING: Because the path table start is zero, this disc\n");
+		printOut("is unusable on Macintosh computers!\n");
+		pathTableStart = 0;
+	}
+	
+	printOut("Optional Path Table lsb : %8lx(hex) msb %8lx(hex)\n",
+			NormalizeLong(isoPVD.lsbPathTable2), isoPVD.msbPathTable2);
+
+	printOut("Volume Creation Date and Time     ");
+	PrintDate(isoPVD.volumeCreation);
+	printOut("Volume Modification Date and Time ");
+	PrintDate(isoPVD.volumeModification);
+	printOut("Volume Expiration Date and Time   ");
+	PrintDate(isoPVD.volumeExpiration);
+	printOut("Volume Effective Date and Time    ");
+	PrintDate(isoPVD.volumeEffective);
+	
+	printOut("\nFile Structure Version = %d [1]\n", isoPVD.FileStructureStandardVersion);
+	if (isoPVD.FileStructureStandardVersion != 1)
+		if (isoPVD.FileStructureStandardVersion == 0)
+		{
+			printOut("This value is INCORRECT, but Apple software\n");
+			printOut("can handle this value\n");
+		}
+		else
+			printOut("\007WARNING: This value is incorrect!\n");
+	
+	Pause();
+	
+	ISODumpDirRcd((ISODirRcd *)isoPVD.rootDirectoryRecord);
+	ISOReportDirRcdErr((ISODirRcd *)isoPVD.rootDirectoryRecord);
+	return true;
+}
+
+
+/************************************************************************
+ *
+ *  Function:		ISODumpRoot
+ *
+ *  Purpose:		Dump directory records in the root directory
+ *
+ *  Returns:		nothing
+ *
+ *  Side Effects:	writes to screen
+ *
+ *  Description:	Find the root directory, based on our global path
+ *					table pointer.
+ *
+ ************************************************************************/
+void
+ISODumpRoot(refNum)
+short	refNum;
+{
+	long	offset;
+	ISODirRcd	*d;
+	OSErr	result;
+	ISOPathTablePtr	p;
+	char	*bufPtr;
+	
+	offset = pathTableStart;		/* a global, set in DumpPVD */
+	
+	result = Read(refNum, (Ptr)buffer, (long) sizeof(buffer), (long) offset);
+	if (result != noErr)
+	{
+		printOut("Could not read path table. error %d\n", result);
+		return;
+	}
+	
+	p = (ISOPathTablePtr) &buffer[0];
+	offset = p->dirLocation * logicalBlockSize;
+	
+	result = Read(refNum, (Ptr)buffer, (long) sizeof(buffer), (long) offset);
+	if (result != noErr)
+	{
+		printOut("Could not read path table. error %d\n", result);
+		return;
+	}
+	
+	bufPtr = &buffer[0];
+	d = (ISODirRcd *) bufPtr;
+	while (ISOValidDirRcd(d) == true)
+	{
+		ISODumpDirRcd(d);
+		bufPtr += d->len_dr;
+		d = (ISODirRcd *) bufPtr;
+	}
+}
+
+#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <FileMgr.h>
+
+#include "HighSierra.h"
+#include "Validator.h"
+
+
+extern	long	pathTableStart;
+extern	long	logicalBlockSize;
+
+extern	HSPVD		hsPVD;
+extern	ISOPVD		isoPVD;
+
+extern	char	buffer[CDBLKSIZE];
+	
+
+
+/************************************************************************
+ *
+ *  Function:	ISOIncrementPathTablePtr
+ *
+ *  Purpose:	increment a path table ptr
+ *
+ *  Returns:	nothing
+ *
+ *  Side Effects:
+ *				increments the path table ptr pointed at by 'p'.
+ *
+ *  Description:
+ *				Path table ptrs have this wierd structure. You have to
+ *				increment by the size of the fixed fields, plus the size
+ *				of the directory id, plus an extra byte if the directory
+ *				id is odd.
+ *
+ *  Revision History:
+ *
+ ************************************************************************/
+void
+ISOIncrementPathTablePtr(p)
+ISOPathTablePtr	*p;
+{
+	Ptr				newP;
+	ISOPathTablePtr	ptPtr;
+	
+	newP = (Ptr) *p;
+	ptPtr = *p;
+	
+	/* add the size of the fixed fields.  Our definition of the dirID
+	 * field defines the largest possible dirID, not the actual size
+	 * of this path table entry.  (that's defined by len_di)
+	 */
+	newP += sizeof(ISOPathTable)-sizeof(dirIDArray);
+	
+	newP += ptPtr->len_di;
+	if ( (ptPtr->len_di) & 0x01 )		/* if odd, there's an filler byte */
+		newP++;
+	*p = (ISOPathTablePtr) newP;
+}
+
+
+/************************************************************************
+ *
+ *  Function:		ISOCheckDirectory	
+ *
+ *  Purpose:		check each file in a directory
+ *
+ *  Returns:		nothing
+ *
+ *  Side Effects:	writes to screen
+ *
+ *  Description:	loop through  a directory, calling
+ *					ISOReportDirRcdErr for each directory record.
+ *
+ *					We read the directory in to find the directory size
+ *					(the length in the first directory record) and then
+ *					loop, reading in each directory entry and checking
+ *					for validity.
+ *
+ ************************************************************************/
+void
+ISOCheckDirectory(refNum, offset)
+short	refNum;
+long	offset;
+{
+	OSErr	result;
+	ISODirRcd	*d;
+	Ptr		bufPtr;
+	long	directorySize;
+	long	parentStart;
+
+	parentStart = offset / logicalBlockSize;
+	
+	result = Read(refNum, (Ptr)buffer, (long) sizeof(buffer), offset);
+	if (result != noErr)
+	{
+		printOut("Could not read directory records. error %d\n", result);
+		return;
+	}
+	
+	bufPtr = &buffer[0];
+	d = (ISODirRcd *) bufPtr;
+	
+	directorySize = d->len_dr;
+
+	if ((NormalizeLong(d->lsbStart) * logicalBlockSize) != offset)
+		printOut("LSB Directory record for self doesn't point to self\n");
+	if ((d->msbStart * logicalBlockSize) != offset)
+		printOut("MSB Directory record for self doesn't point to self\n");
+	
+	while (directorySize > 0)
+	{
+		result = Read(refNum, (Ptr)buffer, (long) sizeof(buffer), offset);
+		if (result != noErr)
+		{
+			printOut("Could not read directory records. error %d\n", result);
+			return;
+		}
+	
+		while (ISOValidDirRcd(d) == true)
+		{
+			ISOReportDirRcdErr(d);
+			if (d->fileFlags & directoryBit)
+				if (d->fi[0] != 0 && d->fi[0] != 1)
+					ISOCheckSelfAndParent(refNum, d, parentStart);
+			bufPtr += d->len_dr;
+			d = (ISODirRcd *) bufPtr;
+		}
+		directorySize -= CDBLKSIZE;
+		offset += CDBLKSIZE;
+	}
+}
+
+
+/************************************************************************
+ *
+ *  Function:		ISOCheckAllFiles
+ *
+ *  Purpose:		Check all files for bogons
+ *
+ *  Returns:		nothing
+ *
+ *  Side Effects:	writes to screen
+ *
+ *  Description:	Using the path table, cruise all the directory
+ *					records.  Find those that have anything wrong and
+ *					report them.
+ *
+ ************************************************************************/
+void
+ISOCheckAllFiles(refNum)
+short	refNum;
+{
+	long			offset;
+	long			ptSize;
+	OSErr			result;
+	short			i;
+	ISOPathTablePtr	ptPtr;
+	
+	offset = pathTableStart;
+	
+	ptSize = (isoPVD.msbPathTableSize + logicalBlockSize-1) & ~(logicalBlockSize-1);
+	
+	ptPtr = (ISOPathTablePtr) malloc(ptSize);
+	if (ptPtr == NULL)
+		printOut("program error: Can't allocate space for path table.\n");
+	
+	result = Read(refNum, (Ptr)ptPtr, (long) ptSize, (long) offset);
+	if (result != noErr)
+	{
+		printOut("Could not read path table. error %d\n", result);
+		free((Ptr)ptPtr);
+		return;
+	}
+	
+	while (ptPtr->dirLocation != 0)
+	{
+		printOut("-----checking directory ");
+		for (i = 0; i < ptPtr->len_di; i++)
+			printOut("%c", ptPtr->dirID[i]);
+		printOut("\n");
+		offset = (long) (ptPtr->dirLocation) * (long) logicalBlockSize;
+		ISOCheckDirectory(refNum, offset);
+		ISOIncrementPathTablePtr(&ptPtr);
+	}
+	free((Ptr)ptPtr);
+}
+
+
+
+/************************************************************************
+ *
+ *  Function:	ISOCheckSelfAndParent
+ *
+ *  Purpose:	validate the self and parent directory records
+ *
+ *  Returns:	nothing
+ *
+ *  Side Effects:
+ *				may write errors
+ *
+ *  Description:
+ *				Check to see if the directory record passed in is for
+ *				a subdirectory.  If it is, read the first two directory
+ *				records in that subdirectory.  Check that the first
+ *				one has a name of '\000', and points to itself.  Check
+ *				that the second one has a name of '\001', and points
+ *				to our incoming start.
+ *
+ *				We assume that msb and lsb values are the same, and only
+ *				test the msb values.  The other checks will be performed
+ *				by our calling "report dir record" routine.
+ *
+ ************************************************************************/
+void
+ISOCheckSelfAndParent(refNum, d, parentStart)
+short		refNum;
+ISODirRcd	*d;
+long		parentStart;
+{
+	unsigned char	subDirBuffer[512];
+	ISODirRcd		*subDirPtr;
+	OSErr			result;
+	Boolean			foundError;
+	short			i;
+	
+	foundError = false;
+	
+	result = Read(refNum, (Ptr)subDirBuffer, 
+			(long) sizeof(subDirBuffer), d->msbStart * logicalBlockSize);
+	if (result != noErr)
+	{
+		printOut("Could not read subDirectory records. error %d\n", result);
+		return;
+	}
+	
+	subDirPtr = (ISODirRcd *) subDirBuffer;
+	
+	if (subDirPtr->fi[0] != 0)
+	{
+		printOut("First record in subdirectory doesn't have name of '0'\n");
+		foundError = true;
+	}
+	
+	if (subDirPtr->msbStart != d->msbStart)
+	{
+		printOut("Subdirectory start doesn't match start in parent.\n");
+		printOut("subdirectory start %8lx parent start %8lx\n",
+			subDirPtr->msbStart, d->msbStart);
+		foundError = true;
+	}
+	
+	subDirPtr = (ISODirRcd *) (subDirBuffer + subDirPtr->len_dr);
+	
+	if (subDirPtr->fi[0] != 1)
+	{
+		printOut("Second record in subdirectory doesn't have name of '1'\n");
+		foundError = true;
+	}
+	
+	if (subDirPtr->msbStart != parentStart)
+	{
+		printOut("Subdirectory doesn't point to its parent\n");
+		printOut("subdirectory parent %8lx actual parent start %8lx\n",
+			subDirPtr->msbStart, parentStart);
+		foundError = true;
+	}
+	
+	if (foundError)
+	{	
+		printOut("For directory named:");
+		for (i = 0; i < d->len_fi; i++)
+			printOut("%c", d->fi[i]);
+		printOut("\n");
+	}
+}
+#include <stdio.h>
+#include <ctype.h>
+#include <FileMgr.h>
+
+#include "HighSierra.h"
+#include "Validator.h"
+
+
+/************************************************************************
+ *
+ *	© Copyright 1988 Apple Computer, Inc.  All rights reserved.
+ *
+ *  Program:		DirRcd
+ *
+ *  Purpose:		directory record routines
+ *
+ *  Description:	Various routines for directory records.
+ *
+ *  Revision History:
+ *	11 Jul 88	Original Version for the Macintosh by Brian Bechtel,
+ *				Apple Computer, Inc.
+ *
+ ************************************************************************/
+
+/************************************************************************
+ *
+ *  Function:		ISODumpDirRcd
+ *
+ *  Purpose:		Dump a directory record.
+ *
+ *  Returns:		nothing.
+ *
+ *  Side Effects:	writes to screen.
+ *
+ *  Description:	show the format of the directory record to which 
+ *					we're passed a pointer.
+ *
+ ************************************************************************/
+void
+ISODumpDirRcd(d)
+ISODirRcd *d;
+{
+	short	i;
+
+	printOut("\n----------\n");
+	printOut("len %x(hex) XARlen %x(hex) start lsb : %8lx(hex) msb : %8lx(hex)\n",
+		d->len_dr, d->XARlength, NormalizeLong(d->lsbStart), d->msbStart);
+	printOut("date %02d/%02d/%02d %2d:%02d:%02d ",
+		d->year, d->month, d->day, d->hour, d->minute, d->second);
+	printOut("interleave Size %x(hex) interleave skip %x(hex)\n", 
+		d->interleaveSize, d->interleaveSkip);
+	printOut("flags = %x(hex), which means the following flag bits are set ON:\n", d->fileFlags);
+	if (d->fileFlags == 0)
+		printOut("[none]");
+	if (d->fileFlags & existenceBit)
+		printOut("existence ");
+	if (d->fileFlags & directoryBit)
+		printOut("directory ");
+	if (d->fileFlags & associatedBit)
+		printOut("associated ");
+	if (d->fileFlags & protectionBit)
+		printOut("protection ");
+	if (d->fileFlags & multiextentBit)
+		printOut("multi-extent ");
+	printOut("\n");
+
+	printOut("volume set sequence number lsb : %4x(hex) msb : %4x(hex) len_fi %x(hex)\n",
+		NormalizeWord(d->lsbVolSetSeqNum), d->msbVolSetSeqNum, d->len_fi);
+	printOut("Name:");
+	for (i = 0; i < d->len_fi; i++)
+		printOut("%c", d->fi[i]);
+	printOut("\n");
+}
+
+
+
+
+/************************************************************************
+*
+*  Function:	ISOValidDirRcd
+*
+*  Purpose:		validate a directory id
+*
+*  Returns:		Boolean -- true if valid.
+*
+*  Side Effects:
+*				none
+*
+*  Description:
+*				Check the fields and see if they're good.  The directory
+*				length must be reasonable, the start must be greater than
+*				zero, the length of a file name must be from 1 to 37,
+*				and the date must be from 1970 (MSDOS's first possible
+*				date) to 2040 (The last valid date for a Macintosh).
+*
+*  Revision History:
+*
+************************************************************************/
+Boolean
+ISOValidDirRcd(d)
+ISODirRcd	*d;
+{
+	Boolean result;
+	
+	result = true;
+	if (d->len_dr <= 0 || d->len_dr > (byte)sizeof(ISODirRcd) || d->len_dr & 1)
+		result = false;
+	if (NormalizeLong(d->lsbStart) <= 0)
+		result = false;
+	if (d->msbStart <= 0)
+		result = false;
+	if (d->len_fi <= 0 || d->len_fi > 37)
+		result = false;
+	if (d->year > 140)		/* year field starts at 1900 */
+		result = false;
+	return result;
+}
+
+
+/************************************************************************
+*
+*  Function:	ISOReportDirRcdErr
+*
+*  Purpose:		report directory record errors
+*
+*  Returns:		nothing
+*
+*  Side Effects:
+*				none
+*
+*  Description:
+*				Check the fields and see if they're good.  The directory
+*				length must be reasonable, the start must be greater than
+*				zero, the length of a file name must be from 1 to 37,
+*				and the date must be from 1970 (MSDOS's first possible
+*				date) to 2040 (The last valid date for a Macintosh).
+*
+*				If any of these characteristics fail, report them to the
+*				user.
+*
+*  Revision History:
+*
+************************************************************************/
+void
+ISOReportDirRcdErr(d)
+ISODirRcd	*d;
+{
+	short	i;
+	Boolean	FoundError;
+	
+	FoundError = false;
+	
+	if (d->len_dr <= 0 || d->len_dr > (byte)sizeof(ISODirRcd) || d->len_dr & 1)
+	{
+		printOut("directory record length should be even and between 34 and %d, but is %d (0x%d)\n",
+			sizeof(ISODirRcd), d->len_dr, d->len_dr);
+		FoundError = true;
+	}
+	
+	if ((d->XARlength > 0) && (d->fileFlags & directoryBit))
+	{
+		printOut("directories have extended attribute records.  Due to a bug\n");
+		printOut("in ISO 9660 file access version 1.0, this isn't supported\n");
+		printOut("properly.  This disc isn't usable with version 1.0 of\n");
+		printOut("ISO 9660 file access.  Please check for a later version.\n");
+	}
+	
+	if (NormalizeLong(d->lsbStart) <= 0)
+	{
+		printOut("lsb start of data is invalid : 0x%lx\n", NormalizeLong(d->lsbStart));
+		FoundError = true;
+	}
+	
+	if (d->msbStart <= 0)
+	{
+		printOut("msb start of data is invalid : 0x%lx\n", d->msbStart);
+		FoundError = true;
+	}
+	
+	if (NormalizeLong(d->lsbStart) != d->msbStart)
+	{
+		printOut("the lsb and msb start of data disagree.  lsb: %lx (hex) msb: %lx (hex)\n",
+			NormalizeLong(d->lsbStart), d->msbStart);
+		FoundError = true;
+	}
+	
+	if (d->len_fi <= 0 || d->len_fi > 37)
+	{
+		printOut("file name length must be between 1 and  37 characters but is %x(hex)\n", d->len_fi);
+		FoundError = true;
+	}
+	
+	if (d->year > 140)		/* year field starts at 1900 */
+	{
+		printOut("Year exceeds last valid year for Macintosh at 2040 : %d\n", d->year);
+		FoundError = true;
+	}
+	
+	
+	if (NormalizeWord(d->lsbVolSetSeqNum) != d->msbVolSetSeqNum)
+	{
+		printOut(
+		"volume set sequence numbers don't match or aren't '1' : lsb : 0x%4lx msb : 0x%4lx\n",
+		NormalizeWord(d->lsbVolSetSeqNum), d->msbVolSetSeqNum);
+	
+		FoundError = true;
+	}
+	
+	if (d->month < 0 || d->month > 12)
+	{
+		printOut("Invalid month : %d\n", d->month);
+		FoundError = true;
+	}
+	
+	if (d->day < 0 || d->day > 31)
+	{
+		printOut("Invalid day : %d\n", d->day);
+		FoundError = true;
+	}
+	
+	if (d->hour < 0 || d->hour > 24)
+	{
+		printOut("Invalid hour : %d\n", d->hour);
+		FoundError = true;
+	}
+	
+	if (d->minute < 0 || d->minute > 60)
+	{
+		printOut("Invalid minute : %d\n", d->minute);
+		FoundError = true;
+	}
+	
+	if (d->second < 0 || d->second > 60)
+	{
+		printOut("Invalid second : %d\n", d->second);
+		FoundError = true;
+	}
+	
+	if (d->fi[0] == 0 || d->fi[0] == 1)
+		if (!(d->fileFlags & directoryBit))
+		{
+			printOut("directory bit not set for self or parent\n");
+			FoundError = true;
+	}
+	if (d->interleaveSize != 0 || d->interleaveSkip != 0)
+	{
+		printOut("Warning: AppleCD SC 2.0.1 software");
+		printOut("doesn't support interleaved files.\n");
+		printOut("file unit size: %d file gap size %d\n",
+					d->interleaveSize, d->interleaveSkip);
+		FoundError = true;
+	}
+			
+	if (FoundError == true)
+	{
+		if (d->fi[0] == 0)
+			printOut("For the directory record of this directory");
+		else 
+		if (d->fi[0] == 1)
+			printOut("For the directory record of the parent of this directory");
+		else
+		{
+			printOut("For file named:");
+			for (i = 0; i < d->len_fi; i++)
+				printOut("%c", d->fi[i]);
+		}
+		printOut("\n");
+	}
+}
+#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <time.h>
+#include <FileMgr.h>
+#include <unix.h>
+#include <MemoryMgr.h>
+
+#include "HighSierra.h"
+#include "Validator.h"
+
+#define FILENAME	"Validation Results"
+#define pFILENAME	"\pValidation Results"
+
+/************************************************************************
+ *
+ *	© Copyright 1988 Apple Computer, Inc.  All rights reserved.
+ *
+ *  Program:		Validator
+ *
+ *  Purpose:		validate High Sierra & ISO 9660 discs
+ *
+ *  Description:	Checks various aspects of a ISO/High Sierra disc and
+ *					lets you know what's wrong with it.
+ *
+ *					Currently only checks the Primary Volume Descriptor.
+ *
+ *  Revision History:
+ *	16 Jun 88	Original Version for the Macintosh by Brian Bechtel,
+ *				Apple Computer, Inc.
+ *	14 Jul 88	1.3 Validate first 2K of directory records in each 
+ *				directory shown in the path table.
+ *	30 Jul 88	Validate both ISO 9660 and High Sierra discs in one program.
+ *	18 Aug 88	Validate subdirectory self and parent directory records
+ *
+ ************************************************************************/
+
+long	pathTableStart;
+long	logicalBlockSize;
+
+HSPVD		hsPVD;
+ISOPVD		isoPVD;
+
+char	buffer[CDBLKSIZE];
+	
+FILE	*outFile;
+
+
+
+/************************************************************************
+ *
+ *  Function:	PrintDate
+ *
+ *  Purpose:	Print the date in a pretty format
+ *
+ *  Returns:	nothing.
+ *
+ *  Side Effects:
+ *
+ *  Description:	just take the tedium of printing a fancy date.
+ *
+ ************************************************************************/
+void
+PrintDate(c)
+char c[];
+{
+	short	i;
+	
+	for (i = 0; i < 4; i++)	printOut("%c", c[i]);
+	printOut("/");
+	for (i = 4; i < 6; i++)	printOut("%c", c[i]);
+	printOut("/");
+	for (i = 6; i < 8; i++)	printOut("%c", c[i]);
+	printOut("  ");
+	for (i = 8; i < 10; i++)	printOut("%c", c[i]);
+	printOut(":");
+	for (i = 10; i < 12; i++)	printOut("%c", c[i]);
+	printOut(":");
+	for (i = 12; i < 14; i++)	printOut("%c", c[i]);
+	printOut(":");
+	for (i = 14; i < 16; i++)	printOut("%c", c[i]);
+	printOut("\n");
+}
+		
+/************************************************************************
+ *
+ *  Function:		printOut
+ *
+ *  Purpose:		write to a file and the console
+ *
+ *  Returns:		void
+ *
+ *  Side Effects:	writes to the output file
+ *
+ *  Description:	do a printf followed by an fprintf to get a
+ *					file of results for later use.
+ *
+ ************************************************************************/
+/* VARARGS */
+void
+printOut(a, b, c, d, e, f, g)
+char *a, *b, *c, *d, *e, *f, *g;
+{
+	printf(a, b, c, d, e, f, g);
+	fprintf(outFile, a, b, c, d, e, f, g);
+}
+
+
+/************************************************************************
+ *
+ *  Function:		Help
+ *
+ *  Purpose:		explain what we're doing
+ *
+ *  Returns:		void
+ *
+ *  Side Effects:	none.
+ *
+ *  Description:	Asks if you want help.  If yes, tell you what's
+ *					going on.
+ *
+ ************************************************************************/
+void
+Help()
+{
+
+	if (YesOrNo("Do you want help?  y/n:") == false)
+		return;
+
+	printf("High Sierra/ISO 9660 Validation, version 1.11\n\n");
+	printf("This program is designed to validate a High Sierra or ISO 9660 disc.\n");
+	printf("(A disc conforming to either the \"28 May 1986 Working Paper for\n");
+	printf("Information Processing-Volume and File Structure of Compact\n");
+	printf("Read Only Optical Discs for Information Interchange\" or\n");
+	printf("the \"ISO 9960 Volume and File Structure of CDROM discs\".)\n\n");
+	printf("Before running this program, you should have the CDROM\n");
+	printf("disc that you want to examine in the lowest SCSI ID CDROM\n");
+	printf("drive attached to this Macintosh.\n\n");
+	printf("This program prints out a list of values that it reads directly\n");
+	printf("from the disc, and compares them to the standard.  Any warnings\n");
+	printf("that you receive mean that this disc does not conform to the\n");
+	printf("High Sierra standard, and so may not be usable on a Macintosh.\n\n");
+	printf("We don't check all the possible ways that a disc can go wrong\n");
+	printf("(partially because there are many, many ways that a disc can\n");
+	printf("be wrong...) but we try to catch most of the major errors.\n");
+	printf("\nThis version checks the Primary volume descriptor and two\n");
+	printf("secondary volume descriptors.\n");
+
+	Pause();
+}
+
+
+/************************************************************************
+ *
+ *  Function:		IsItHighSierra
+ *
+ *  Purpose:		Figure out the basic type of this disc.
+ *
+ *  Returns:		void
+ *
+ *  Side Effects:	none.
+ *
+ *  Description:	Check the PVD VDType and Standard ID.  If we don't 
+ *					get "CDROM" and 1, it isn't a High Sierra disc.
+ *
+ ************************************************************************/
+Boolean
+IsItHighSierra(refNum)
+short refNum;
+{
+	OSErr	result;
+	Boolean	retCode;
+	
+	retCode = true;
+		
+	result = Read(refNum, (Ptr)&hsPVD, (long) sizeof(hsPVD), (long) HSVOLSTART * CDBLKSIZE);
+	if (result != noErr)
+	{
+		printf("Could not read Primary Volume Descriptor. error %d\n", result);
+		retCode = false;
+	}
+	
+	if (retCode)
+	{
+		if (hsPVD.VSStdId[0] != 'C' || hsPVD.VSStdId[1] != 'D' ||
+			hsPVD.VSStdId[2] != 'R' || hsPVD.VSStdId[3] != 'O' ||
+			hsPVD.VSStdId[4] != 'M')
+			retCode = false;
+	}
+	
+	if (retCode)
+	{
+		if (hsPVD.VDType != 1)
+			retCode = false;
+	}
+	return retCode;
+}
+
+
+/************************************************************************
+ *
+ *  Function:		main
+ *
+ *  Purpose:		Validation of a High Sierra disk.
+ *
+ *  Returns:		nothing.
+ *
+ *  Side Effects:	nothing.
+ *
+ *  Description:	open a file for writing results.  Read in the Primary
+ *					volume descriptor, which should be at HSVOLSTART * 
+ *					CDBLKSIZE (famous value).  Dump it out to the screen
+ *					and file.
+ *
+ ************************************************************************/
+void
+main()
+{
+	OSErr	result;
+	short	refNum;
+	int		i;
+	long	count;
+	char	answer;
+	Boolean	doHighSierra;
+	StringHandle	strHandle;
+	
+	Help();
+	
+	outFile = fopen(FILENAME, "r");
+	if (outFile == NULL)
+		Create(pFILENAME,0,'MPS ','TEXT');
+	else
+		fclose(outFile);
+	outFile = fopen(FILENAME, "a");
+	if (outFile == NULL)
+	{
+		printf("Can't open/create log file %s\n", FILENAME);
+		return;
+	}
+
+	printOut("\n\nHigh Sierra/ISO 9660 Validation program 1.12\n");
+	printOut("\t\t\t%s\n", ctime(NULL));
+	
+	strHandle = GetString(256);
+	
+	if (strHandle == NULL)
+	{
+		printOut("Unable to get driver name! Application damaged.\n");
+		return;
+	}
+	HLock(strHandle);
+	refNum = 0;
+	result = Open(*strHandle, &refNum);
+	HUnlock(strHandle);
+	if (result != noErr)
+	{
+		printOut("Open failed with code %d\n", result);
+		printOut("\t(Please look at page III-206 of Inside Macintosh for details)\n");
+		return;
+	}
+	
+	doHighSierra =  IsItHighSierra(refNum);
+
+	if (doHighSierra)
+	{
+		printOut("This disc is apparently in May 28th, 1986 High Sierra format.\n"); 
+		if (HSDumpPVD(refNum) == true)
+		{
+			if (YesOrNo("Validate all directory records? y/n:") == true)
+				HSCheckAllFiles(refNum);
+			i = HSVOLSTART+1;
+			while (HSDumpSVD(refNum, i++) == true)
+			{
+				if (YesOrNo("Validate all directory records? y/n:") == true)
+					HSCheckAllFiles(refNum);
+			}
+		}
+	}
+	else
+	{
+		printOut("This disc is apparently in ISO 9660 format.\n"); 
+		if (ISODumpPVD(refNum) == true)
+		{
+			if (YesOrNo("Validate all directory records? y/n:") == true)
+				ISOCheckAllFiles(refNum);
+			i = HSVOLSTART+1;
+			while (ISODumpSVD(refNum, i++) == true)
+			{
+				if (YesOrNo("Validate all directory records? y/n:") == true)
+					ISOCheckAllFiles(refNum);
+			}
+		}
+	}
+		
+	CloseDriver(refNum);
+	fclose(outFile);
+	
+	printf("Type any key to quit:");
+	answer = getchar();
+	ExitToShell();
+}

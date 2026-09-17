@@ -1,0 +1,39 @@
+# MacMach Operating System
+# Copyright (c) 1992 Carnegie Mellon University
+# All Rights Reserved.
+#
+# MacMach was developed by CMU with support from Apple Computer, Inc.
+# Use of this software is constrained by the MacMach End-User license.
+#  
+######################################################################
+#
+#  Master Macintosh II configuration file (see the master machine independent
+#  configuration file for a description of the file format).
+#
+######################################################################
+# HISTORY
+# $Log:	MASTER.mac2,v $
+# Revision 2.2  90/08/30  10:59:45  bohman
+# 	Created.
+# 	[90/08/29  13:39:55  bohman]
+# 
+######################################################################
+#
+#  CPU TYPE
+#	mac2 = Macintosh II{,x,cx,ci,fx} or SE/30
+#
+# MSTD = [ ]
+#
+######################################################################
+#
+#  Standard configurations
+#
+# MACMACH = [ MSTD mach vice unix small mtime muarea nbc md ]
+#
+######################################################################
+#
+
+conftype	"mac2"
+platform	"mac2"
+
+config		vmunix		swap generic

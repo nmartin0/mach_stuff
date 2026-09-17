@@ -1,0 +1,8 @@
+# Use collect2 to link
+
+EXTRA_PROGRAMS = ld
+
+ld : collect2
+	rm -f ld
+	ln collect2 ld
+

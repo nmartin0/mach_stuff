@@ -1,0 +1,141 @@
+dnl
+dnl Copyright (c) 1995 The University of Utah and
+dnl the Computer Systems Laboratory (CSL).  All rights reserved.
+dnl
+dnl Permission to use, copy, modify and distribute this software and its
+dnl documentation is hereby granted, provided that both the copyright
+dnl notice and this permission notice appear in all copies of the
+dnl software, derivative works or modified versions, and any portions
+dnl thereof, and that both notices appear in supporting documentation.
+dnl
+dnl THE UNIVERSITY OF UTAH AND CSL ALLOW FREE USE OF THIS SOFTWARE IN ITS "AS
+dnl IS" CONDITION.  THE UNIVERSITY OF UTAH AND CSL DISCLAIM ANY LIABILITY OF
+dnl ANY KIND FOR ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+dnl
+dnl CSL requests users of this software to return to csl-dist@cs.utah.edu any
+dnl improvements that they make and grant CSL redistribution rights.
+dnl
+dnl      Authors: Stephen Clawson and Bryan Ford, University of Utah CSL
+dnl
+dnl
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(lib/libmachid/machid.defs)
+AC_PREREQ(2.0)
+
+AC_PREFIX_DEFAULT(/usr/mach4)
+
+AC_PATH_PROG(MIG, mig, /usr/mach4/bin/mig)
+
+# Find the primary build tools we'll be using.
+AC_PROG_CC
+LD="ld"
+AC_SUBST(LD)
+AR="ar"
+AC_SUBST(STRIP)
+STRIP="strip"
+AC_SUBST(AR)
+AC_PROG_RANLIB
+HOST_CC=$CC
+AC_SUBST(HOST_CC)
+
+PREVCC=$CC
+CC="$CC -pipe"
+
+AC_TRY_COMPILE([], [return 0;],
+        [test -n "$verbose" && echo "build compiler understands -pipe option"],
+        [CC=$PREVCC
+        test -n "$verbose" && echo "build compiler does not understand -pipe option"])
+
+# gcc needs -x c with -E to preprocess files with arbitrary suffixes
+if test -n "$GCC"; then
+        CPP="$CPP -x c"
+        AC_MSG_RESULT(CPP reset to $CPP)
+fi
+
+BUILD_CC=$CC
+AC_SUBST(BUILD_CC)
+BUILD_CPP=$CPP
+AC_SUBST(BUILD_CPP)
+
+# Other miscellaneous things we need.
+dnl AC_PROG_AWK
+AC_PROG_INSTALL
+
+# Autoconf 2.0 doesn't set top_objdir automatically. so set top_objdir.
+top_objdir=`pwd`
+AC_SUBST(top_objdir)
+
+# If the user didn't specify a host name, guess it.
+if test "$host" = "NONE"; then
+        host=`$srcdir/config.guess` || (AC_ERROR(Unable to guess system type))
+fi
+
+
+# Figure out what tools we're going to use to compile stuff for the host machine.
+if test "$target" = "NONE" -o "$target" = "$host"; then
+
+        # If we're not cross-compiling, make sure we have GCC.
+        # Mach won't compile with just any ol' C compiler...
+        if test -z "$GCC"; then
+                AC_ERROR(You need GCC to compile Mach4.)
+        fi
+else
+        # If we _are_ cross-compiling, just assume they're there.
+        # Note that these can still be overridden on the make command line;
+        # that's what I understand you're normally supposed to do.
+        #
+        # Be careful not to change the CC variable
+        # until after we're all done with ac_xxx things
+        # that might need to run the C compiler.
+        CC="$target-gcc"
+        PREVCC=$CC
+        CC="$CC -pipe"
+
+        AC_TRY_COMPILE([], [return 0;],
+        [test -n "$verbose" && echo "target compiler understands -pipe option"],
+        [CC=$PREVCC
+        test -n "$verbose" && echo "target compiler does not understand -pipe option"])
+
+
+        CPP="$target-gcc -x c -E"
+        AC_SUBST(CPP)
+        LD="$target-ld"
+        STRIP="$target-strip"
+        AR="$target-ar"
+        RANLIB="$target-ranlib"
+        SIZE="$target-size"
+	
+# 	eventually we'll have a cross-mig, but not now. =(
+#	MIG="$target-mig"
+fi
+
+
+# Figure out the host machine name from the full host system name.
+target_arch=`echo $host | sed -e 's/-.*$//'`
+if test "$target_arch" = "i486"; then target_arch="i386"; fi
+if test "$target_arch" = "pc532"; then target_arch="ns532"; fi
+if test "$target_arch" = "pmax"; then target_arch="mips"; fi
+if test "$target_arch" = "hppa1.1"; then target_arch="parisc"; fi
+AC_SUBST(target_arch)
+
+DEFS="$DEFS -D$target_arch"
+
+# Find the set of directories that have Makefile.in's in them.
+mach_makefiles=`cd $srcdir; find * -name Makefile.in -print|sort|sed 's%.in$%%g'`
+mach_subdirs=`echo $mach_makefiles|sed 's%/*Makefile%%g'`
+AC_SUBST(mach_subdirs)
+export mach_makefiles
+
+# Pre-create the object directories,
+# because the autoconf-provided mkdir that comes later doesn't use -p.
+#if test "$mach_subdirs" != ""; then
+#	mkdir -p $mach_subdirs
+#fi
+
+# XXX hack, hack, hack
+# bin/Flags comes before bin/Makefile, so there are problems
+if test ! -d bin; then mkdir bin; fi
+if test ! -d include; then mkdir include; fi
+
+AC_OUTPUT($mach_makefiles Makeconf)
