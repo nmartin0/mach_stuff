@@ -1,0 +1,168 @@
+/*
+ * @OSF_COPYRIGHT@
+ */
+/*
+ * HISTORY
+ * $Log: default_pager_object.defs,v $
+ * Revision 1.2.9.3  1995/01/11  19:30:37  devrcs
+ * 	mk6 CR668 - 1.3b26 merge
+ * 	[1994/11/10  15:34:24  bolinger]
+ *
+ * 	Insert OSC1_3 log.
+ *
+ * 	BEGIN OSC1_3 HISTORY
+ *
+ * 	Revision 1.2.4.8  1994/04/01  18:42:54  jph
+ * 	  CR10550 -- Add backing store info interfaces.
+ * 	  [1994/04/01  18:40:27  jph]
+ *
+ * 	  CR10433 -- Add backing store interfaces.
+ * 	  [1994/02/07  22:30:42  jph]
+ *
+ * 	END OSC1_3 HISTORY
+ * 	[1994/11/02  20:47:58  bolinger]
+ *
+ * Revision 1.2.9.1  1994/09/23  06:57:03  ezf
+ * 	change marker to not FREE
+ * 	[1994/09/23  06:54:32  ezf]
+ * 
+ * Revision 1.2.4.5  1993/10/08  17:32:23  jeffc
+ * 	CR9508 - Delete typed IPC code
+ * 	[1993/09/28  17:27:17  jeffc]
+ * 
+ * Revision 1.2.4.4  1993/08/05  17:57:48  gm
+ * 	CR9627: Removed deprecated default_pager_paging_file() interface.
+ * 	[1993/07/09  19:19:41  gm]
+ * 
+ * Revision 1.2.4.3  1993/06/18  18:29:16  jeffc
+ * 	The Untyped MIG does not support CountInOut for unbounded variable
+ * 	arrays (array[] of ...): in fact, these types are now sent always
+ * 	OOL (before, they were sent OOL iff size > 2048 bytes).
+ * 	CountInOut is meaningless for OOL types.  CR #9007.
+ * 	[1993/04/30  21:25:06  travos]
+ * 
+ * Revision 1.2.4.2  1993/06/09  02:11:07  gm
+ * 	Added to OSF/1 R1.3 from NMK15.0.
+ * 	[1993/06/02  20:42:03  gm]
+ * 
+ * Revision 1.2  1993/04/19  16:32:35  devrcs
+ * 	Modified to use the new interface (from mk78
+ * 	 	bootstrap/mach/default_pager.defs)
+ * 	[1993/02/17  13:42:22  bruel]
+ * 
+ * Revision 1.1  1992/09/30  02:22:31  robert
+ * 	Initial revision
+ * 
+ * $EndLog$
+ */
+/* CMU_HIST */
+/*
+ * Revision 2.6  91/08/28  11:15:01  jsb
+ * 	Added default_pager_info.
+ * 	[91/08/15            rpd]
+ * 
+ * Revision 2.5  91/05/14  16:51:18  mrt
+ * 	Correcting copyright
+ * 
+ * Revision 2.4  91/02/05  17:31:44  mrt
+ * 	Changed to new Mach copyright
+ * 	[91/02/01  17:16:43  mrt]
+ * 
+ * Revision 2.3  90/06/02  14:57:42  rpd
+ * 	Changed default_pager_object_create so the out argument
+ * 	is a poly send right.
+ * 	[90/05/03            rpd]
+ * 
+ * Revision 2.2  90/03/14  21:10:47  rwd
+ * 	Created
+ * 	[90/01/22            rwd]
+ * 
+ */
+/* CMU_ENDHIST */
+/* 
+ * Mach Operating System
+ * Copyright (c) 1991,1990,1989 Carnegie Mellon University
+ * All Rights Reserved.
+ * 
+ * Permission to use, copy, modify and distribute this software and its
+ * documentation is hereby granted, provided that both the copyright
+ * notice and this permission notice appear in all copies of the
+ * software, derivative works or modified versions, and any portions
+ * thereof, and that both notices appear in supporting documentation.
+ * 
+ * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+ * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+ * 
+ * Carnegie Mellon requests users of this software to return to
+ * 
+ *  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+ *  School of Computer Science
+ *  Carnegie Mellon University
+ *  Pittsburgh PA 15213-3890
+ * 
+ * any improvements or extensions that they make and grant Carnegie Mellon
+ * the rights to redistribute these changes.
+ */
+/*
+ */
+/*
+ * File:	mach/default_pager_object.defs
+ *
+ */
+
+subsystem default_pager_object 2275;
+
+#include <mach/std_types.defs>
+#include <mach/mach_types.defs>
+#include <mach/default_pager_types.defs>
+#include <device/device_types.defs>
+
+routine	default_pager_object_create(
+		default_pager		: mach_port_t;
+	out	memory_object		: memory_object_t =
+			MACH_MSG_TYPE_MAKE_SEND;
+		object_size		: vm_size_t);
+
+routine default_pager_info(
+		default_pager		: mach_port_t;
+	out	info			: default_pager_info_t);
+
+routine default_pager_objects(
+		default_pager		: mach_port_t;
+	out	objects			: default_pager_object_array_t,
+			Dealloc;
+	out	ports			: mach_port_array_t =
+			array[] of mach_port_move_send_t,
+			Dealloc);
+
+routine default_pager_object_pages(
+		default_pager		: mach_port_t;
+		memory_object		: memory_object_name_t;
+	out	pages			: default_pager_page_array_t,
+			Dealloc);
+
+skip;					/* default_pager_paging_file */
+
+routine	default_pager_backing_store_create(
+		default_pager		: mach_port_t;
+	in	priority		: int;
+	in	clsize			: int;
+	out	backing_store		: mach_port_t =
+			MACH_MSG_TYPE_MAKE_SEND);
+
+routine	default_pager_backing_store_delete(
+		backing_store		: mach_port_t);
+
+routine	default_pager_add_segment(
+		backing_store		: mach_port_t;
+	in	device			: mach_port_t;
+	in	offset			: recnum_t;
+	in	count			: recnum_t;
+	in	record_size		: int);
+
+routine default_pager_backing_store_info(
+		backing_store		: mach_port_t;
+		flavor			: backing_store_flavor_t;
+	out	info			: backing_store_info_t, CountInOut);
+

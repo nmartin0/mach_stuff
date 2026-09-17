@@ -1,0 +1,101 @@
+XCOMM platform:  linux-hp.cf
+
+#ifndef OSName
+#define OSName			Linux
+#endif
+#ifndef OSVendor
+#define OSVendor		Linux HP
+#endif
+#ifndef OSMajorVersion
+#define OSMajorVersion		2
+#endif
+#ifndef OSMinorVersion
+#define OSMinorVersion		0
+#endif
+#ifndef OSTeenyVersion
+#define OSTeenyVersion		21
+#endif
+
+#define HasNdbm			YES
+#define DBMLibrary		-lgdbm
+#define UseElfFormat		YES
+#define HasGcc			YES
+#define HasGcc2			YES
+#define HasGcc2ForCplusplus	YES
+#define GccUsesGas		YES
+#define UseGas			YES
+#define GnuCpp			YES
+
+#define HasShadowPasswd		NO
+# define HasLibCrypt		NO
+#define HasPutenv		YES
+#define HasShm			YES
+#define HasSockets		YES
+
+#define AvoidNullMakeCommand	YES
+#define StripInstalledPrograms	YES
+#define CompressAllFonts	YES
+#define Malloc0ReturnsNull	YES
+#define NeedConstPrototypes	YES
+#define NeedFunctionPrototypes	YES
+#define NeedNestedPrototypes	YES
+#define NeedVarargsPrototypes	YES
+#define NeedWidePrototypes	NO
+#define SetTtyGroup		YES
+
+#define CcCmd			gcc
+#define DefaultCCOptions	-fsigned-char
+#define AsCmd			as
+#define LdCmd			ld
+#define AsmDefines		-DUSE_GAS -U__ELF__
+#define MkdirHierCmd		mkdir -p
+#define CppCmd			/lib/cpp
+#define YaccCmd			bison -y
+#define LexCmd			flex -l
+#define LexLib			-lfl
+#define PreProcessCmd		CcCmd -E
+#define PostIncDir		`CcCmd --print-libgcc-file-name | sed 's/libgcc.a/include/'`
+#define LdCombineFlags		-r
+#define OptimizedCDebugFlags	-O2 
+#define StandardDefines		-Dlinux -Dhppa -D__hppa__ -D__hp9000s700 \
+				-D_POSIX_SOURCE -D_BSD_SOURCE -D_GNU_SOURCE \
+				-DX_LOCALE 
+#define XawI18nDefines		-DUSE_XWCHAR_STRING -DUSE_XMBTOWC 
+#define HasWChar32		YES
+#define StandardCppDefines	-traditional StandardDefines
+#define	XhpServer		YES
+#ifndef BuildXInputExt
+# define BuildXInputExt		YES
+#endif
+#define BuildXKB		YES
+#define BuildXKBLib		YES
+#define HPFastScrolling         YES
+#define ExtensionOSDefines	-DHPINPUT -DXTESTEXT1
+#define ServerExtraDefines	-DGCCUSESGAS -DXOS -DBSTORE -DSOFTWARE_CURSOR -DSCREEN_PIXMAPS -DMERGE_SAVE_UNDERS -DHAS_IFREQ -DFORCE_SEPARATE_PRIVATE -D__hp9000s700
+#define ConnectionFlags		-DUNIXCONN -DTCPCONN
+#define InstallXserverSetUID	YES
+#define InstUidFlags		-s -m 4711
+
+#define	ServerExtraSysLibs	
+
+/* Some of these man page defaults are overriden in the above OS sections */
+#ifndef ManSuffix
+# define ManSuffix	1x
+#endif
+#ifndef ManDir
+# define ManDir		$(MANSOURCEPATH)1
+#endif
+#ifndef LibManSuffix
+# define LibManSuffix	3x
+#endif
+#ifndef LibmanDir
+# define LibmanDir	$(MANSOURCEPATH)3
+#endif
+#ifndef FileManSuffix
+# define FileManSuffix	5x
+#endif
+#ifndef FileManDir
+# define FileManDir	$(MANSOURCEPATH)5
+#endif
+
+#define ArchitectureDefines	-DHP_ARCHITECTURE

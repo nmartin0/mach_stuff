@@ -1,0 +1,940 @@
+/*
+ * @OSF_COPYRIGHT@
+ */
+/*
+ * HISTORY
+ * $Log: mach_host.defs,v $
+ * Revision 1.2.60.3  1997/03/27  18:53:20  barbou
+ * 	Add vm_cpm option (picco)
+ * 	[1997/01/31  18:44:46  jyao]
+ * 	[97/02/28            barbou]
+ *
+ * Revision 1.2.60.2  1997/02/17  11:25:56  ferranti
+ * 	Added #include <advisory_pageout.h> statement.
+ * 	Made memory_object_discard_reply() conditionnal
+ * 	on ADVISORY_PAGEOUT option.
+ * 	[1997/02/17  11:18:22  ferranti]
+ * 
+ * Revision 1.2.60.1  1996/11/29  16:59:16  stephen
+ * 	nmklinux_1.0b3_shared into pmk1.1
+ * 	Added memory_object_discard_reply().
+ * 	[1996/10/24  13:39:00  barbou]
+ * 
+ * Revision 1.2.34.7  1995/02/24  14:48:19  alanl
+ * 	Merged with DIPC2_SHARED.
+ * 	[1995/01/04  13:54:43  alanl]
+ * 
+ * Revision 1.2.46.1  1994/11/02  18:39:09  dwm
+ * 	mk6 CR668 - 1.3b26 merge
+ * 	* Revision 1.2.5.14  1994/03/17  18:29:20  jeffc
+ * 	Cleaning in place - add new host_default_memory_manager interface.
+ * 	* Revision 1.2.5.12  1994/02/03  16:52:34  collins
+ * 	CR10525: Removed obsolete interfaces thread_priority, task_priority
+ * 	and thread_set_priority.
+ * 	* Revision 1.2.5.10  1993/10/28  17:17:32  jeffc
+ * 	CR10039 -- Add flavor interface typedefs
+ * 	Move thread_state_flavor_t to mach_types.defs. Other interfaces
+ * 	need this type.
+ * 	 * End1.3merge
+ * 	[1994/11/02  18:29:03  dwm]
+ * 
+ * Revision 1.2.34.5  1994/09/23  02:38:38  ezf
+ * 	change marker to not FREE
+ * 	[1994/09/22  21:40:49  ezf]
+ * 
+ * Revision 1.2.34.4  1994/09/10  21:47:01  bolinger
+ * 	Merge up to NMK17.3
+ * 	[1994/09/08  19:57:53  bolinger]
+ * 
+ * Revision 1.2.34.3  1994/08/18  23:13:36  widyono
+ * 	task_set_port_space(), new
+ * 	[1994/07/28  22:34:22  widyono]
+ * 
+ * Revision 1.2.34.2  1994/08/07  20:49:19  bolinger
+ * 	Merge up to colo_b7.
+ * 	[1994/08/01  21:01:42  bolinger]
+ * 
+ * Revision 1.2.27.2  1994/07/22  09:53:59  paire
+ * 	Changed vm_remap src_task and target_task arguments from vm_task_t
+ * 	to mach_port_t in order to handle remapping between remote tasks.
+ * 	[94/07/05            paire]
+ * 
+ * Revision 1.2.34.1  1994/06/13  20:49:30  dlb
+ * 	Merge MK6 and NMK17
+ * 	[1994/06/13  20:47:48  dlb]
+ * 
+ * Revision 1.2.19.4  1994/06/25  03:46:49  dwm
+ * 	mk6 CR98 - add flavor interface typedefs
+ * 	(host_flavor_t,processor(_set)_flavor_t);
+ * 	moved thread_state_flavor_t to mach_types.defs (other
+ * 	interfaces need it).
+ * 	[1994/06/24  21:54:33  dwm]
+ * 
+ * Revision 1.2.19.3  1994/05/02  21:35:46  dwm
+ * 	Remove nmk15_compat support.
+ * 	[1994/05/02  21:08:54  dwm]
+ * 
+ * Revision 1.2.19.2  1994/03/17  22:38:50  dwm
+ * 	The infamous name change:  thread_activation + thread_shuttle = thread.
+ * 	[1994/03/17  21:28:29  dwm]
+ * 
+ * Revision 1.2.42.1  1994/09/09  23:13:05  alanl
+ * 	Merged up to NMK17.3.
+ * 
+ * 	Revision 1.2.27.2  1994/07/22  09:53:59  paire
+ * 		Changed vm_remap src_task and target_task arguments
+ * 		from vm_task_t to mach_port_t in order to handle
+ * 		remapping between remote tasks.
+ * 		[94/07/05            paire]
+ * 	[94/09/08            alanl]
+ * 
+ * Revision 1.2.27.1  1994/03/07  16:41:16  paire
+ * 	Moved exception types to mach_types.defs.
+ * 	[94/02/22            paire]
+ * 
+ * Revision 1.2.5.9  1993/08/11  09:18:18  david
+ * 	CR 9530: samecount modification for swap/get exception ports.
+ * 	[1993/08/10  15:23:57  david]
+ * 
+ * Revision 1.2.5.8  1993/08/03  19:05:02  gm
+ * 	CR9596: Change KERNEL to MACH_KERNEL.
+ * 	CR9600: Changes to use new *_port_* typedefs.
+ * 	[1993/08/02  18:04:17  gm]
+ * 
+ * Revision 1.2.5.7  1993/07/28  18:01:43  jeffc
+ * 	CR9523 - Add prototypes to mach kernel. The
+ * 	vm_msync() and memory_object_synchronize_completed() interfaces need
+ * 	to be defined in mach.defs, not mach_host.defs, so that the prototypes
+ * 	end up in the correct header file.
+ * 	[1993/07/28  12:22:15  jeffc]
+ * 
+ * Revision 1.2.5.6  1993/07/08  19:04:47  watkins
+ * 	Add processor_set_statistics. New version of processor_set_info;
+ * 	old version is now under nmk15_compat.
+ * 	[1993/07/07  21:04:02  watkins]
+ * 
+ * Revision 1.2.5.5  1993/06/29  21:55:40  watkins
+ * 	Merge scheduler interface changes forward.
+ * 	[1993/06/29  20:50:18  watkins]
+ * 
+ * 	Add processor_set_control, task_policy, task_set_policy,
+ * 	thread_policy, and thread_set_policy. Old versions of
+ * 	thread_policy and thread_set_policy now under NMK15_COMPAT.
+ * 	[1993/06/29  18:21:06  watkins]
+ * 
+ * Revision 1.2.5.4  1993/06/29  17:54:33  brezak
+ * 	Add host_processor_slots().
+ * 	[1993/06/29  14:52:37  brezak]
+ * 
+ * Revision 1.2.5.3  1993/06/15  20:28:21  brezak
+ * 	obsolete: yyy_host_info
+ * 	obsolete: yyy_processor_info
+ * 	obsolete: yyy_processor_control
+ * 	obsolete: yyy_processor_set_info
+ * 	obsolete: xxx_processor_set_default_priv
+ * 	[1993/06/14  14:10:54  brezak]
+ * 
+ * Revision 1.2.3.2  1993/06/08  19:02:54  brezak
+ * 	Add host_page_size().
+ * 	Add host_statistics().
+ * 	host_processor_sets() now needs host_priv port.
+ * 
+ * Revision 1.1.9.2  1993/06/02  23:45:16  jeffc
+ * 	Added to OSF/1 R1.3 from NMK15.0.
+ * 	[1993/06/02  21:16:45  jeffc]
+ * 
+ * Revision 1.2  1993/04/19  16:35:03  devrcs
+ * 	replaced task_mach_calls with skip
+ * 	[1993/04/05  12:08:53  david]
+ * 
+ * 	Merge untyped ipc:
+ * 	Introducing new MIG syntax for Untyped IPC (via compile option
+ * 	MACH_IPC_TYPED)
+ * 	[1993/02/17  23:45:35  travos]
+ * 
+ * 	Added thread_set_policy interface.
+ * 	[93/01/28            jat]
+ * 
+ * 	stubs for vm_msync and memory_object_synchronize_completed
+ * 	[1993/03/03  12:33:08  david]
+ * 
+ * 	Added mig stubs for new get/swap exception interface.
+ * 
+ * 	Add definitions of vm_remap and new exception port handling
+ * 	interfaces. Added task_mach_calls.	[sp@gr.osf.org]
+ * 	[1992/12/23  13:07:21  david]
+ * 
+ * Revision 1.1  1992/09/30  02:22:42  robert
+ * 	Initial revision
+ * 
+ * $EndLog$
+ */
+/* CMU_HIST */
+/*
+ * Revision 2.7.5.5  92/09/15  17:23:35  jeffreyh
+ * 	Fixed profiling interfaces: removed extra port
+ * 	and use mach_port_make_send_t type.
+ * 	[92/07/24            bernadat]
+ * 
+ * Revision 2.7.5.4  92/03/28  10:11:03  jeffreyh
+ * 	Pick up changes from MK71
+ * 	[92/03/20  13:21:37  jeffreyh]
+ * 
+ * Revision 2.9  92/02/19  16:07:19  elf
+ * 	Reenable thread_depress_abort.
+ * 	[92/01/20            rwd]
+ * 
+ * Revision 2.8  92/01/03  20:21:13  dbg
+ * 	Add 'CountInOut' tag to routines returning variable-length
+ * 	inline arrays.  Remove 'IsLong' tag from routines passing or
+ * 	returning variable-length arrays.  Old routines left under
+ * 	'xxx_' names.  REMOVE THESE SOON!
+ * 	[91/11/26            dbg]
+ * 
+ * Revision 2.7.5.2  92/02/18  19:13:15  jeffreyh
+ * 	Added interface for profiling
+ * 	(Bernard Tabib & Andrei Danes @ gr.osf.org)
+ * 	[91/09/17            bernadat]
+ * 
+ * Revision 2.7.5.1  92/01/09  18:44:21  jsb
+ * 	From durriya@ri.osf.org: added host_get_boot_info.
+ * 	[92/01/08  15:01:12  jsb]
+ * 
+ * Revision 2.7  91/07/31  17:53:39  dbg
+ * 	Add vm_wire and thread_wire.
+ * 	[91/07/30  17:10:17  dbg]
+ * 
+ * Revision 2.6  91/05/14  16:54:32  mrt
+ * 	Correcting copyright
+ * 
+ * Revision 2.5  91/02/05  17:33:20  mrt
+ * 	Changed to new Mach copyright
+ * 	[91/02/01  17:17:52  mrt]
+ * 
+ * Revision 2.4  90/09/09  14:33:08  rpd
+ * 	Restored processor_set_create's out arguments.
+ * 	[90/08/30            rpd]
+ * 
+ * Revision 2.3  90/08/07  18:00:21  rpd
+ * 	Removed thread_depress_abort.  Changed host_processor_sets
+ * 	to use unprivileged ports.
+ * 	[90/08/06            rpd]
+ * 
+ * Revision 2.2  90/06/02  14:58:17  rpd
+ * 	Created for new host/processor technology.
+ * 	[90/03/26  23:51:11  rpd]
+ * 
+ * 	Remove KERNEL_SERVER define.  Cleanup.
+ * 	[89/08/02            dlb]
+ * 	Add IsLong specifiers to variable length arguments to info calls.
+ * 	[89/08/02            dlb]
+ * 	Add thread_depress_abort.
+ * 	[89/06/20            dlb]
+ * 
+ * 	Add processor_set_{tasks,threads}, host_processor_sets,
+ * 	host_processor_set_priv.
+ * 	[89/06/08            dlb]
+ * 
+ * 	Add priority and policy calls.
+ * 	[89/05/12            dlb]
+ * 
+ * 	Move type definitions to mach_types.defs, delete kernel keyword.
+ * 	[89/01/25            dlb]
+ * 
+ * 	Moved to mach/ from kern/
+ * 	[89/01/25            dlb]
+ * 
+ * 	Split processor_set_default.  Add task_assign_default and
+ * 	thread_assign_default.
+ * 	[88/12/21            dlb]
+ * 
+ * 	Minor cleanups, add host_kernel_version.
+ * 	[88/12/02            dlb]
+ * 
+ * Revision 2.4  89/12/22  15:54:26  rpd
+ * 	Under KERNEL_SERVER, pass the out arguments of
+ * 	processor_set_create as port_t's.  They really are
+ * 	the appropriate processor set types, but processor_set_create
+ * 	does the type conversions internally.  This isn't pretty.
+ * 	[89/12/15            dlb]
+ * 
+ * Revision 2.3  89/10/15  02:05:40  rpd
+ * 	Minor cleanups.
+ * 
+ * Revision 2.2  89/10/11  14:38:34  dlb
+ * 	Add IsLong specifiers to variable length arguments to info calls.
+ * 	Add thread_depress_abort.
+ * 	Add processor_set_{tasks,threads}, host_processor_sets,
+ * 	       host_processor_set_priv.
+ * 	Add priority and policy calls.
+ * 	Split processor_set_default.  Add task_assign_default and
+ * 	       thread_assign_default.
+ * 	Add host_kernel_version.
+ * 
+ * Revision 2.1  89/01/30  16:17:06  dlb
+ * Created.
+ * 
+ */
+/* CMU_ENDHIST */
+/* 
+ * Mach Operating System
+ * Copyright (c) 1991,1990,1989 Carnegie Mellon University
+ * All Rights Reserved.
+ * 
+ * Permission to use, copy, modify and distribute this software and its
+ * documentation is hereby granted, provided that both the copyright
+ * notice and this permission notice appear in all copies of the
+ * software, derivative works or modified versions, and any portions
+ * thereof, and that both notices appear in supporting documentation.
+ * 
+ * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+ * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+ * 
+ * Carnegie Mellon requests users of this software to return to
+ * 
+ *  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+ *  School of Computer Science
+ *  Carnegie Mellon University
+ *  Pittsburgh PA 15213-3890
+ * 
+ * any improvements or extensions that they make and grant Carnegie Mellon
+ * the rights to redistribute these changes.
+ */
+/*
+ */
+
+/*
+ * File:	mach/mach_host.defs
+ *
+ * Abstract:
+ *	Mach host operations support.  Includes processor allocation and
+ *	control.  
+ */
+
+#ifdef	MACH_KERNEL
+#include <mach_prof.h>
+#include <advisory_pageout.h>
+#endif	/* MACH_KERNEL */
+
+subsystem
+#if	KERNEL_SERVER
+	  KernelServer
+#endif	/* KERNEL_SERVER */
+		       mach_host 2600;
+
+/*
+ *	Basic types
+ */
+
+#include <mach/std_types.defs>
+#include <mach/mach_types.defs>
+
+/*
+ *	Get list of processors on this host.
+ */
+
+routine host_processors(
+		host	: host_t;
+	out	processor_list	: processor_port_array_t);
+
+/*
+ *	Sets the default memory manager, the port to which
+ *	newly-created temporary memory objects are delivered.
+ *	[See (memory_object_default)memory_object_create.]
+ *	Also sets the default cluster size used for pagein/pageout
+ *	to this port.
+ *	The old memory manager port is returned.
+ */
+routine host_default_memory_manager(
+		host_priv	: host_priv_t;
+	inout	default_manager	: mach_port_make_send_t;
+		cluster_size	: vm_size_t);
+
+skip;	/* obsolete: yyy_processor_info */
+
+/*
+ *	Start processor.
+ */
+
+routine	processor_start(
+		processor	: processor_t);
+
+/*
+ *	Exit processor -- may not be restartable.
+ */
+
+routine	processor_exit(
+		processor	: processor_t);
+
+skip;	/* obsolete: yyy_processor_control */
+
+/*
+ *	Get default processor set for host.
+ */
+routine processor_set_default(
+		host		: host_t;
+	out	default_set	: processor_set_name_t);
+
+skip;	/* obsolete: xxx_processor_set_default_priv */
+
+/*
+ *	Create new processor set.  Returns real port for manipulations,
+ *	and name port for obtaining information.
+ */
+routine processor_set_create(
+		host		: host_t;
+	out	new_set		: processor_set_t;
+	out	new_name	: processor_set_name_t);
+
+/*
+ *	Destroy processor set.
+ */
+routine processor_set_destroy(
+		set		: processor_set_t);
+
+skip;	/* obsolete: yyy_processor_set_info */
+
+/*
+ *	Assign processor to processor set.
+ */
+routine processor_assign(
+		processor	: processor_t;
+		new_set		: processor_set_t;
+		wait		: boolean_t);
+
+/*
+ *	Get current assignment for processor.
+ */
+
+routine processor_get_assignment(
+		processor	: processor_t;
+	out	assigned_set	: processor_set_name_t);
+
+/*
+ *	Assign thread to processor set.
+ */
+routine	thread_assign(
+		thread		: thread_act_t;
+		new_set		: processor_set_t);
+
+/*
+ *	Assign thread to default set.
+ */
+routine thread_assign_default(
+		thread		: thread_act_t);
+
+/*
+ *	Get current assignment for thread.
+ */
+routine thread_get_assignment(
+		thread		: thread_act_t;
+	out	assigned_set	: processor_set_name_t);
+
+/*
+ *	Assign task to processor set.
+ */
+routine task_assign(
+		task		: task_t;
+		new_set		: processor_set_t;
+		assign_threads	: boolean_t);
+/*
+ *	Assign task to default set.
+ */
+routine task_assign_default(
+		task		: task_t;
+		assign_threads	: boolean_t);
+
+/*
+ *	Get current assignment for task.
+ */
+routine task_get_assignment(
+		task		: task_t;
+	out	assigned_set	: processor_set_name_t);
+
+/*
+ *	Get string describing current kernel version.
+ */
+routine	host_kernel_version(
+		host		: host_t;
+	out	kernel_version	: kernel_version_t);
+
+skip;	/* obsolete: thread_priority */
+
+skip;	/* obsolete: thread_max_priority */
+
+skip;	/* obsolete: task_priority */
+
+/*
+ *	Set max priority for processor_set.
+ */
+routine processor_set_max_priority(
+		processor_set	: processor_set_t;
+		max_priority	: int;
+		change_threads	: boolean_t);
+
+skip; 	/* old nmk15_thread_policy */
+
+/*
+ *	Enable policy for processor set
+ */
+routine processor_set_policy_enable(
+		processor_set	: processor_set_t;
+		policy		: int);
+
+/*
+ *	Disable policy for processor set
+ */
+routine processor_set_policy_disable(
+		processor_set	: processor_set_t;
+		policy		: int;
+		change_threads	: boolean_t);
+/*
+ *	List all tasks in processor set.
+ */
+routine processor_set_tasks(
+		processor_set	: processor_set_t;
+	out	task_list	: task_port_array_t);
+
+/*
+ *	List all threads in processor set.
+ */
+routine processor_set_threads(
+		processor_set	: processor_set_t;
+	out	thread_list	: thread_port_array_t);
+
+/*
+ *	List all processor sets on host.
+ */
+routine host_processor_sets(
+		host_priv	: host_priv_t;
+	out	processor_sets	: processor_set_name_port_array_t);
+
+/*
+ *	Get control port for a processor set.
+ */
+routine host_processor_set_priv(
+		host_priv	: host_priv_t;
+		set_name	: processor_set_name_t;
+	out	set		: processor_set_t);
+
+routine thread_depress_abort(
+		thread		: thread_act_t);
+
+/*
+ *	Set the time on this host.
+ *	Only available to privileged users.
+ */
+routine host_set_time(
+		host_priv	: host_priv_t;
+		new_time	: time_value_t);
+
+/*
+ *	Arrange for the time on this host to be gradually changed
+ *	by an adjustment value, and return the old value.
+ *	Only available to privileged users.
+ */
+routine	host_adjust_time(
+		host_priv	: host_priv_t;
+	in	new_adjustment	: time_value_t;
+	out	old_adjustment	: time_value_t);
+
+/*
+ *	Get the time on this host.
+ *	Available to all.
+ */
+routine	host_get_time(
+		host		: host_t;
+	out	current_time	: time_value_t);
+
+/*
+ *	Reboot this host.
+ *	Only available to privileged users.
+ */
+routine host_reboot(
+		host_priv	: host_priv_t;
+		options		: int);
+
+/*
+ *	Specify that the range of the virtual address space
+ *	of the target task must not cause page faults for
+ *	the indicated accesses.
+ *
+ *	[ To unwire the pages, specify VM_PROT_NONE. ]
+ */
+routine	vm_wire(
+		host_priv	: host_priv_t;
+		task		: vm_task_t;
+		address		: vm_address_t;
+		size		: vm_size_t;
+		access		: vm_prot_t);
+
+/*
+ *	Specify that the target thread must always be able
+ *	to run and to allocate memory.
+ */
+routine	thread_wire(
+		host_priv	: host_priv_t;
+		thread		: thread_act_t;
+		wired		: boolean_t);
+
+/*
+ *	Return information about this host.
+ */
+
+routine host_info(
+		host		: host_t;
+		flavor		: host_flavor_t;
+	out	host_info_out	: host_info_t, CountInOut);
+
+
+/*
+ *	Return information about this processor.
+ */
+routine processor_info(
+		processor	: processor_t;
+		flavor		: processor_flavor_t;
+	out	host		: host_t;
+	out	processor_info_out: processor_info_t, CountInOut);
+
+skip;	/* old nmk15 processor_set_info */
+
+/*
+ *	Do something machine-dependent to processor.
+ */
+routine processor_control(
+		processor	: processor_t;
+		processor_cmd	: processor_info_t);
+
+/*
+ *      Get boot configuration information from kernel.
+ */
+routine host_get_boot_info(
+		host_priv	: host_priv_t;
+	out	boot_info	: kernel_boot_info_t);
+
+
+/*
+ *	Return statistics from this host.
+ */
+
+routine host_statistics(
+		host_priv	: host_priv_t;
+		flavor		: host_flavor_t;
+	out	host_info_out	: host_info_t, CountInOut);
+
+/*
+ *      Get host page size
+ */
+routine host_page_size(
+		host		: host_t;
+	out	page_size	: vm_size_t);
+
+
+/*
+ *	Get defined processor slots for host
+ */
+routine host_processor_slots(
+		host		: host_t;
+	out	slots		: processor_slot_t);
+
+skip;	/* skip 32 entries in case CMU adds new one */
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+#if     !defined(ADVISORY_PAGEOUT) || ADVISORY_PAGEOUT
+/*
+ * Reply to a memory_object_discard_request().
+ * The pages from "discard_offset" to "discard_offset+discard_size" will
+ * be flushed. If these pages are not the same as those requested, the
+ * kernel will cancel the discard_request on the requested pages, provided
+ * that at least an equivalent number of pages are actually flushed in the
+ * same time.
+ * The "should_return" flag has the same meaning as in the
+ * memory_object_lock_request() interface.
+ * A memory_object_lock_completed() message is sent to the "reply_to" port
+ * if provided.
+ */
+simpleroutine memory_object_discard_reply(
+		memory_control	: memory_object_control_t;
+		requested_offset: vm_offset_t;
+		requested_size	: vm_size_t;
+		discard_offset	: vm_offset_t;
+		discard_size	: vm_size_t;
+		should_return	: memory_object_return_t;
+		reply_to	: mach_port_t = 
+			MACH_MSG_TYPE_MAKE_SEND|polymorphic);
+#else   /* !defined(ADVISORY_PAGEOUT) || ADVISORY_PAGEOUT */
+skip;
+#endif  /* !defined(ADVISORY_PAGEOUT) || ADVISORY_PAGEOUT */
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+
+/*
+ * Thread profiling
+ */
+
+#if	!defined(MACH_PROF) || MACH_PROF
+type reply_port_t = MACH_MSG_TYPE_PORT_NAME
+	ctype: mach_port_t;
+
+routine thread_sample(
+		thread		: thread_act_t;
+		reply		: mach_port_make_send_t);
+
+routine task_sample(
+		task		: task_t;
+		reply		: mach_port_make_send_t);
+
+#else	!defined(MACH_PROF) || MACH_PROF
+skip; /* task_sample */
+skip; /* thread_sample */
+#endif	/* !defined(MACH_PROF) || MACH_PROF */
+
+/*
+ *      Map portion of a task's address space.
+ */
+
+routine vm_remap(
+		target_task	: mach_port_t;
+	inout	target_address	: vm_address_t;
+		size		: vm_size_t;
+		mask		: vm_address_t;
+		anywhere	: boolean_t;
+		src_task	: mach_port_t;
+		src_address	: vm_address_t;
+		copy		: boolean_t;
+	out	cur_protection	: vm_prot_t;
+	out	max_protection	: vm_prot_t;
+		inheritance	: vm_inherit_t);
+
+routine		thread_set_exception_ports(
+			thread		: thread_act_t;
+			exception_mask	: exception_mask_t;
+			new_port	: mach_port_t;
+			behavior	: exception_behavior_t;
+			new_flavor	: thread_state_flavor_t);
+
+routine		task_set_exception_ports(
+			task		: task_t;
+			exception_mask	: exception_mask_t;
+			new_port	: mach_port_t;
+			behavior	: exception_behavior_t;
+			new_flavor	: thread_state_flavor_t);
+
+routine		thread_get_exception_ports(
+			thread		: thread_act_t;
+			exception_mask	: exception_mask_t;
+		  out	masks		: exception_mask_array_t;
+		  out	old_ports	: exception_port_array_t, SameCount;
+		  out	old_behaviors	: exception_behavior_array_t, SameCount;
+		  out	old_flavors	: exception_flavor_array_t, SameCount);
+
+
+routine		task_get_exception_ports(
+			task		: task_t;
+			exception_mask	: exception_mask_t;
+		  out	masks		: exception_mask_array_t;
+		  out	old_ports	: exception_port_array_t, SameCount;
+		  out	old_behaviors	: exception_behavior_array_t, SameCount;
+		  out	old_flavors	: exception_flavor_array_t, SameCount);
+
+routine		thread_swap_exception_ports(
+			thread		: thread_act_t;
+			exception_mask	: exception_mask_t;
+			new_port	: mach_port_t;
+			behavior	: exception_behavior_t;
+			new_flavor	: thread_state_flavor_t;
+		  out	masks		: exception_mask_array_t;
+		  out	old_ports	: exception_port_array_t, SameCount;
+		  out	old_behaviors	: exception_behavior_array_t, SameCount;
+		  out	old_flavors	: exception_flavor_array_t, SameCount);
+
+routine		task_swap_exception_ports(
+			task		: task_t;
+			exception_mask	: exception_mask_t;
+			new_port	: mach_port_t;
+			behavior	: exception_behavior_t;
+			new_flavor	: thread_state_flavor_t;
+		  out	masks		: exception_mask_array_t;
+		  out	old_ports	: exception_port_array_t, SameCount;
+		  out	old_behaviors	: exception_behavior_array_t, SameCount;
+		  out	old_flavors	: exception_flavor_array_t, SameCount);
+
+skip;		/* task_mach_calls */
+
+skip;	/* old nmk15  vm_msync */
+
+skip;	/* old nmk15 memory_object_synchronize_completed */
+
+skip;	/* old nmk15_thread_set_policy */
+
+/*
+ *      Controls the scheduling attributes governing the processor set.
+ *      Allows control of enabled policies, and per-policy base and limit
+ *      priorities.
+ */
+routine processor_set_policy_control(
+	pset			: processor_set_t;
+	flavor			: processor_set_flavor_t;
+	policy_info		: processor_set_info_t;
+	change			: boolean_t);
+
+/*
+ *      Set scheduling policy and parameters, both base and limit, for
+ *      the given task. Policy must be a policy which is enabled for the
+ *      processor set. Change contained threads if requested.
+ */
+routine task_policy(
+	task			: task_t;
+	policy			: policy_t;
+	base			: policy_base_t;
+	set_limit		: boolean_t;
+	change			: boolean_t);
+
+/*
+ *      Set scheduling policy and parameters, both base and limit, for
+ *      the given task. Policy can be any policy implemented by the
+ *      processor set, whether enabled or not. Change contained threads
+ *      if requested.
+ */
+routine task_set_policy(
+	task			: task_t;
+	pset			: processor_set_t;
+	policy			: policy_t;
+	base			: policy_base_t;
+	limit			: policy_limit_t;
+	change			: boolean_t);
+
+/*
+ *      Set scheduling policy and parameters, both base and limit, for
+ *      the given thread. Policy must be a policy which is enabled for the
+ *      processor set. Change contained threads if requested.
+ */
+routine thread_policy(
+	thr_act			: thread_act_t;
+	policy			: policy_t;
+	base			: policy_base_t;
+	set_limit		: boolean_t);
+
+/*
+ *      Set scheduling policy and parameters, both base and limit, for
+ *      the given thread. Policy can be any policy implemented by the
+ *      processor set, whether enabled or not.
+ */
+routine thread_set_policy(
+	thr_act			: thread_act_t;
+	pset			: processor_set_t;
+	policy			: policy_t;
+	base			: policy_base_t;
+	limit			: policy_limit_t);
+
+
+/*
+ *      Return scheduling statistics for a processor set.
+ */
+routine processor_set_statistics(
+        	pset                    : processor_set_t;
+        	flavor                  : processor_set_flavor_t;
+	out     info_out        	: processor_set_info_t, CountInOut);
+
+/*
+ *      Get information about processor set.
+ */
+routine processor_set_info(
+                set_name        : processor_set_name_t;
+                flavor          : int;
+        out     host            : host_t;
+        out     info_out        : processor_set_info_t, CountInOut);
+
+
+/*
+ * activation stuff - XXXX probably doesn't belong here
+ */
+skip;	/* collision avoidance */
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+skip;
+
+/*
+ *	Return the selected state information for the target
+ *	thr_act.  If the thr_act is currently executing, the results
+ *	may be stale.  [Flavor THREAD_STATE_FLAVOR_LIST provides a
+ *	list of valid flavors for the target thread.]
+ */
+routine act_get_state(
+		target_act	: thread_act_t;
+		flavor		: int;
+	out	old_state	: thread_state_t, CountInOut);
+
+/*
+ *	Set the selected state information for the target thread.
+ *	If the thread is currently executing, the state change
+ *	may be ill-defined.
+ */
+routine	act_set_state(
+		target_act	: thread_act_t;
+		flavor		: int;
+		new_state	: thread_state_t);
+
+/*
+ *	Pre-expand task port name space.
+ */
+routine task_set_port_space(
+		task		: task_t;
+		table_entries	: int);
+
+/*
+ *	Allocate zero-filled, wired, contiguous physical memory
+ *	in the address space of the target task, either at the
+ *	specified address, or wherever space can be found (if
+ *	anywhere is TRUE), of the specified size.  The address
+ *	at which the allocation actually took place is returned.
+ *	All pages will be entered into the task's pmap immediately,
+ *	with VM_PROT_ALL.
+ *
+ *	In addition to all the failure modes of its cousin,
+ *	vm_allocate, this call may also fail if insufficient
+ *	contiguous memory exists to satisfy the request.
+ *
+ *	Memory obtained from this call should be freed the
+ *	normal way, via vm_deallocate.
+ *
+ *	N.B.  This is an EXPERIMENTAL interface!
+ */
+routine	vm_allocate_cpm(
+		host_priv	: host_priv_t;
+		task		: vm_task_t;
+	inout	address		: vm_address_t;
+		size		: vm_size_t;
+		anywhere	: boolean_t);

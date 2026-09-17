@@ -1,0 +1,1036 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 38;
+	objects = {
+		06AA1264FFB2107B11CA28AA = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			generatedFileNames = (
+			);
+			isa = PBXShellScriptBuildPhase;
+			neededFileNames = (
+			);
+			shellPath = /bin/sh;
+			shellScript = "script=\"${SYSTEM_DEVELOPER_DIR}/ProjectBuilder Extras/Kernel Extension Support/KEXTPostprocess\";\nif [ -x \"$script\" ]; then\n    . \"$script\"\nfi";
+		};
+		06AA1265FFB2107B11CA28AA = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OPTIMIZATION_CFLAGS = "-O0 -DMACH_DEBUG=1 -DSERIAL_DEBUG=1";
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		06AA1266FFB2107B11CA28AA = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+		06AA1267FFB2110C11CA28AA = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			generatedFileNames = (
+			);
+			isa = PBXShellScriptBuildPhase;
+			neededFileNames = (
+			);
+			shellPath = /bin/sh;
+			shellScript = "script=\"${SYSTEM_DEVELOPER_DIR}/ProjectBuilder Extras/Kernel Extension Support/KEXTPreprocess\";\nif [ -x \"$script\" ]; then\n    . \"$script\"\nfi";
+		};
+//060
+//061
+//062
+//063
+//064
+//080
+//081
+//082
+//083
+//084
+		089C1669FE841209C02AAC07 = {
+			buildStyles = (
+				06AA1265FFB2107B11CA28AA,
+				F589AE630263835401CB2147,
+				06AA1266FFB2107B11CA28AA,
+				F5F1AC5F02625EE801CB2147,
+			);
+			isa = PBXProject;
+			mainGroup = 089C166AFE841209C02AAC07;
+			projectDirPath = "";
+			targets = (
+				F50BE012027F8DF501CB2147,
+				089C1673FE841209C02AAC07,
+				F5C63F81026CFE6901CB2147,
+				F51768EA0293236D0145E470,
+			);
+		};
+		089C166AFE841209C02AAC07 = {
+			children = (
+				247142CAFF3F8F9811CA285C,
+				089C167CFE841241C02AAC07,
+				19C28FB6FE9D52B211CA2CBB,
+			);
+			isa = PBXGroup;
+			name = floppy;
+			refType = 4;
+		};
+		089C1673FE841209C02AAC07 = {
+			buildPhases = (
+				06AA1267FFB2110C11CA28AA,
+				089C1674FE841209C02AAC07,
+				089C1675FE841209C02AAC07,
+				089C1676FE841209C02AAC07,
+				089C1677FE841209C02AAC07,
+				089C1679FE841209C02AAC07,
+				06AA1264FFB2107B11CA28AA,
+			);
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+				KERNEL_MODULE = YES;
+				LIBRARY_SEARCH_PATHS = "";
+				MODULE_IOKIT = YES;
+				MODULE_NAME = org.mklinux.iokit.swim3;
+				MODULE_VERSION = 0.96;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "-no-cpp-precomp -fpermissive";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = swim3;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WRAPPER_EXTENSION = kext;
+			};
+			dependencies = (
+			);
+			isa = PBXBundleTarget;
+			name = floppy;
+			productInstallPath = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+			productName = floppy;
+			productReference = 0B81C263FFB7832611CA28AA;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">
+<plist version=\"0.9\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>swim3</string>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string>org.mklinux.iokit.swim3</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>KEXT</string>
+	<key>CFBundleSignature</key>
+	<string>MKLX</string>
+	<key>CFBundleVersion</key>
+	<string>0.96</string>
+	<key>IOKitPersonalities</key>
+	<dict>
+		<key>swim3</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.mklinux.iokit.swim3</string>
+			<key>IOClass</key>
+			<string>org_mklinux_iokit_swim3_driver</string>
+			<key>IONameMatch</key>
+			<array>
+				<string>swim3</string>
+				<string>floppy</string>
+			</array>
+			<key>IOProviderClass</key>
+			<string>AppleMacIODevice</string>
+			<key>SWIM3 Debug</key>
+			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.iokit.IOStorageFamily</key>
+		<string>1.1</string>
+		<key>com.apple.kernel.iokit</key>
+		<string>1.1</string>
+		<key>com.apple.kernel.libkern</key>
+		<string>1.1</string>
+		<key>com.apple.kernel.mach</key>
+		<string>1.1</string>
+	</dict>
+</dict>
+</plist>
+";
+			shouldUseHeadermap = 1;
+		};
+		089C1674FE841209C02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				1A224C40FF42367911CA2CB7,
+				F6BFBF0501E1CD2F010DA18F,
+				F6BFBF0601E1CD2F010DA18F,
+				F6BFBF0701E1CD2F010DA18F,
+				F6BFBF0901E1CD2F010DA18F,
+				F6BFBF0A01E1CD2F010DA18F,
+				F6BFBF0B01E1CD2F010DA18F,
+				F6BFBF0D01E1CD2F010DA18F,
+				F6BFBF0E01E1CD2F010DA18F,
+				F6BFBF0F01E1CD2F010DA18F,
+				F6BFBF1001E1CD2F010DA18F,
+				F6BFBF1101E1CD2F010DA18F,
+				F6BFBF1D01E1CE6C010DA18F,
+				F5E6D2BE0210C91D01CB2148,
+				F569D9500240717401BBB0C4,
+			);
+			isa = PBXHeadersBuildPhase;
+		};
+		089C1675FE841209C02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				089C1680FE841241C02AAC07,
+				F50BE01A027F8EA201CB2147,
+				F581AB7B0210F4A601A80009,
+			);
+			isa = PBXResourcesBuildPhase;
+		};
+		089C1676FE841209C02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				1A224C41FF42367911CA2CB7,
+				F6BFBF1201E1CD2F010DA18F,
+				F6BFBF1301E1CD2F010DA18F,
+				F6BFBF1401E1CD2F010DA18F,
+				F6BFBF1501E1CD2F010DA18F,
+				F6BFBF1601E1CD2F010DA18F,
+				F6BFBF1801E1CD2F010DA18F,
+				F6BFBF1901E1CD2F010DA18F,
+				F6BFBF1A01E1CD2F010DA18F,
+				F581AB800210F60D01A80009,
+				F569D94B02406C4F01BBB0C4,
+				F5E098F3024712B4010154E1,
+				F50261E50251336201391342,
+			);
+			isa = PBXSourcesBuildPhase;
+		};
+		089C1677FE841209C02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+		};
+		089C1679FE841209C02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+		};
+		089C167CFE841241C02AAC07 = {
+			children = (
+				089C167DFE841241C02AAC07,
+			);
+			isa = PBXGroup;
+			name = Resources;
+			refType = 4;
+		};
+		089C167DFE841241C02AAC07 = {
+			children = (
+				089C167EFE841241C02AAC07,
+			);
+			isa = PBXVariantGroup;
+			name = InfoPlist.strings;
+			refType = 4;
+		};
+		089C167EFE841241C02AAC07 = {
+			fileEncoding = 10;
+			isa = PBXFileReference;
+			name = English;
+			path = English.lproj/InfoPlist.strings;
+			refType = 4;
+		};
+		089C1680FE841241C02AAC07 = {
+			fileRef = 089C167DFE841241C02AAC07;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//080
+//081
+//082
+//083
+//084
+//0B0
+//0B1
+//0B2
+//0B3
+//0B4
+		0B81C263FFB7832611CA28AA = {
+			isa = PBXBundleReference;
+			path = swim3.kext;
+			refType = 3;
+		};
+//0B0
+//0B1
+//0B2
+//0B3
+//0B4
+//190
+//191
+//192
+//193
+//194
+		19C28FB6FE9D52B211CA2CBB = {
+			children = (
+				F5C63F80026CFE6901CB2147,
+				0B81C263FFB7832611CA28AA,
+				F51768EB0293236D0145E470,
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+		};
+//190
+//191
+//192
+//193
+//194
+//1A0
+//1A1
+//1A2
+//1A3
+//1A4
+		1A224C3EFF42367911CA2CB7 = {
+			isa = PBXFileReference;
+			path = floppy.h;
+			refType = 4;
+		};
+		1A224C3FFF42367911CA2CB7 = {
+			isa = PBXFileReference;
+			path = floppy.cpp;
+			refType = 4;
+		};
+		1A224C40FF42367911CA2CB7 = {
+			fileRef = 1A224C3EFF42367911CA2CB7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1A224C41FF42367911CA2CB7 = {
+			fileRef = 1A224C3FFF42367911CA2CB7;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+//1A0
+//1A1
+//1A2
+//1A3
+//1A4
+//240
+//241
+//242
+//243
+//244
+		247142CAFF3F8F9811CA285C = {
+			children = (
+				F581AB7A0210F4A601A80009,
+				1A224C3EFF42367911CA2CB7,
+				1A224C3FFF42367911CA2CB7,
+				F581AB7F0210F60D01A80009,
+				F6BFBEEE01E1CD2F010DA18F,
+				F6BFBEEF01E1CD2F010DA18F,
+				F6BFBEF001E1CD2F010DA18F,
+				F6BFBEF101E1CD2F010DA18F,
+				F6BFBEF201E1CD2F010DA18F,
+				F6BFBEF401E1CD2F010DA18F,
+				F6BFBEF501E1CD2F010DA18F,
+				F6BFBEF601E1CD2F010DA18F,
+				F6BFBEF701E1CD2F010DA18F,
+				F6BFBEF801E1CD2F010DA18F,
+				F6BFBEF901E1CD2F010DA18F,
+				F6BFBEFA01E1CD2F010DA18F,
+				F6BFBEFB01E1CD2F010DA18F,
+				F6BFBEFC01E1CD2F010DA18F,
+				F6BFBEFE01E1CD2F010DA18F,
+				F6BFBEFF01E1CD2F010DA18F,
+				F6BFBF0101E1CD2F010DA18F,
+				F6BFBF0201E1CD2F010DA18F,
+				F6BFBF0301E1CD2F010DA18F,
+				F6BFBF0401E1CD2F010DA18F,
+				F6BFBF1C01E1CE6C010DA18F,
+				F5E6D2BD0210C91D01CB2148,
+				F569D94F0240717401BBB0C4,
+				F5E098F2024712B4010154E1,
+				F50261E40251336101391342,
+				F5C63F86026CFEA201CB2147,
+				F52267FD02A477D50140571E,
+				F52267FE02A477D50140571E,
+				F54AE08802A72DA201CB2147,
+				F54AE08902A72DA201CB2147,
+			);
+			isa = PBXGroup;
+			name = Source;
+			path = "";
+			refType = 4;
+		};
+//240
+//241
+//242
+//243
+//244
+//F50
+//F51
+//F52
+//F53
+//F54
+		F50261E40251336101391342 = {
+			isa = PBXFileReference;
+			path = floppy_iocache.c;
+			refType = 4;
+		};
+		F50261E50251336201391342 = {
+			fileRef = F50261E40251336101391342;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F50BE012027F8DF501CB2147 = {
+			buildPhases = (
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = floppy_bundle;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+				F50BE014027F8DFE01CB2147,
+				F50BE013027F8DFB01CB2147,
+				F538F1A40293335A0156A83B,
+			);
+			isa = PBXAggregateTarget;
+			name = floppy_bundle;
+			productName = floppy_bundle;
+			shouldUseHeadermap = 0;
+		};
+		F50BE013027F8DFB01CB2147 = {
+			isa = PBXTargetDependency;
+			target = 089C1673FE841209C02AAC07;
+		};
+		F50BE014027F8DFE01CB2147 = {
+			isa = PBXTargetDependency;
+			target = F5C63F81026CFE6901CB2147;
+		};
+		F50BE01A027F8EA201CB2147 = {
+			fileRef = F5C63F80026CFE6901CB2147;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F51768E40293236D0145E470 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			generatedFileNames = (
+			);
+			isa = PBXShellScriptBuildPhase;
+			neededFileNames = (
+			);
+			shellPath = /bin/sh;
+			shellScript = "script=\"${SYSTEM_DEVELOPER_DIR}/ProjectBuilder Extras/Kernel Extension Support/KEXTPreprocess\";\nif [ -x \"$script\" ]; then\n    . \"$script\"\nfi";
+		};
+		F51768E50293236D0145E470 = {
+			buildActionMask = 2147483647;
+			files = (
+				F522680002A477D50140571E,
+			);
+			isa = PBXHeadersBuildPhase;
+		};
+		F51768E60293236D0145E470 = {
+			buildActionMask = 2147483647;
+			files = (
+				F52267FF02A477D50140571E,
+			);
+			isa = PBXSourcesBuildPhase;
+		};
+		F51768E70293236D0145E470 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXResourcesBuildPhase;
+		};
+		F51768E80293236D0145E470 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+		};
+		F51768E90293236D0145E470 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			generatedFileNames = (
+			);
+			isa = PBXShellScriptBuildPhase;
+			neededFileNames = (
+			);
+			shellPath = /bin/sh;
+			shellScript = "script=\"${SYSTEM_DEVELOPER_DIR}/ProjectBuilder Extras/Kernel Extension Support/KEXTPostprocess\";\nif [ -x \"$script\" ]; then\n    . \"$script\"\nfi";
+		};
+		F51768EA0293236D0145E470 = {
+			buildPhases = (
+				F51768E40293236D0145E470,
+				F51768E50293236D0145E470,
+				F51768E60293236D0145E470,
+				F51768E70293236D0145E470,
+				F51768E80293236D0145E470,
+				F51768E90293236D0145E470,
+			);
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+				KERNEL_MODULE = YES;
+				LIBRARY_SEARCH_PATHS = "";
+				MODULE_IOKIT = YES;
+				MODULE_NAME = org.mklinux.iokit.FloppyMediaBSDClient;
+				MODULE_VERSION = 0.1.0d1;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = FloppyMediaBSDClient;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WRAPPER_EXTENSION = kext;
+			};
+			dependencies = (
+			);
+			isa = PBXBundleTarget;
+			name = FloppyMediaBSDClient;
+			productInstallPath = "$(USER_LIBRARY_DIR)/Bundles";
+			productName = FloppyMediaBSDClient;
+			productReference = F51768EB0293236D0145E470;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">
+<plist version=\"0.9\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>FloppyMediaBSDClient</string>
+	<key>CFBundleGetInfoString</key>
+	<string>0.1, Copyright The MkLinux Project. 2002</string>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string>org.mklinux.iokit.FloppyMediaBSDClient</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>I/O Kit Floppy Storage Family</string>
+	<key>CFBundlePackageType</key>
+	<string>KEXT</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.1</string>
+	<key>CFBundleSignature</key>
+	<string>MKLX</string>
+	<key>CFBundleVersion</key>
+	<string>0.1.0d1</string>
+	<key>IOKitPersonalities</key>
+	<dict>
+		<key>FloppyMediaBSDClient</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.mklinux.iokit.FloppyMediaBSDClient</string>
+			<key>IOClass</key>
+			<string>FloppyMediaBSDClient</string>
+			<key>IOMatchCategory</key>
+			<string>IOMediaBSDClient</string>
+			<key>IOProbeScore</key>
+			<integer>40000</integer>
+			<key>IOProviderClass</key>
+			<string>IOMedia</string>
+		</dict>
+	</dict>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.iokit.IOStorageFamily</key>
+		<string>1.1</string>
+		<key>com.apple.kernel.iokit</key>
+		<string>1.1</string>
+		<key>com.apple.kernel.libkern</key>
+		<string>1.1</string>
+		<key>com.apple.kernel.mach</key>
+		<string>1.1</string>
+	</dict>
+</dict>
+</plist>
+";
+			shouldUseHeadermap = 0;
+		};
+		F51768EB0293236D0145E470 = {
+			isa = PBXBundleReference;
+			path = FloppyMediaBSDClient.kext;
+			refType = 3;
+		};
+		F52267FD02A477D50140571E = {
+			isa = PBXFileReference;
+			name = FloppyMediaBSDClient.cpp;
+			path = FloppyMediaBSDClient/FloppyMediaBSDClient.cpp;
+			refType = 4;
+		};
+		F52267FE02A477D50140571E = {
+			isa = PBXFileReference;
+			name = FloppyMediaBSDClient.h;
+			path = FloppyMediaBSDClient/FloppyMediaBSDClient.h;
+			refType = 4;
+		};
+		F52267FF02A477D50140571E = {
+			fileRef = F52267FD02A477D50140571E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F522680002A477D50140571E = {
+			fileRef = F52267FE02A477D50140571E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F538F1A40293335A0156A83B = {
+			isa = PBXTargetDependency;
+			target = F51768EA0293236D0145E470;
+		};
+		F54AE08802A72DA201CB2147 = {
+			isa = PBXFileReference;
+			name = FloppyPartitionScheme.cpp;
+			path = FloppyPartitionScheme/FloppyPartitionScheme.cpp;
+			refType = 4;
+		};
+		F54AE08902A72DA201CB2147 = {
+			isa = PBXFileReference;
+			name = FloppyPartitionScheme.h;
+			path = FloppyPartitionScheme/FloppyPartitionScheme.h;
+			refType = 4;
+		};
+		F569D94B02406C4F01BBB0C4 = {
+			fileRef = F6BFBEF801E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F569D94F0240717401BBB0C4 = {
+			isa = PBXFileReference;
+			name = floppy_darwin_dbdma.h;
+			path = MkLinux_floppy/floppy_darwin_dbdma.h;
+			refType = 4;
+		};
+		F569D9500240717401BBB0C4 = {
+			fileRef = F569D94F0240717401BBB0C4;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F581AB7A0210F4A601A80009 = {
+			isa = PBXFileReference;
+			path = NOTES;
+			refType = 4;
+		};
+		F581AB7B0210F4A601A80009 = {
+			fileRef = F581AB7A0210F4A601A80009;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F581AB7F0210F60D01A80009 = {
+			isa = PBXFileReference;
+			path = floppy_blkdev.cpp;
+			refType = 4;
+		};
+		F581AB800210F60D01A80009 = {
+			fileRef = F581AB7F0210F60D01A80009;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F589AE630263835401CB2147 = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OPTIMIZATION_CFLAGS = "-O2";
+			};
+			isa = PBXBuildStyle;
+			name = "Deployment-DEBUG";
+		};
+		F5C63F80026CFE6901CB2147 = {
+			isa = PBXExecutableFileReference;
+			path = swim3_setdebug;
+			refType = 3;
+		};
+		F5C63F81026CFE6901CB2147 = {
+			buildPhases = (
+				F5C63F82026CFE6901CB2147,
+				F5C63F83026CFE6901CB2147,
+				F5C63F84026CFE6901CB2147,
+				F5C63F85026CFE6901CB2147,
+			);
+			buildSettings = {
+				OTHER_LDFLAGS = "-lIOKit -framework CoreFoundation";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = swim3_setdebug;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+			);
+			isa = PBXToolTarget;
+			name = swim3_setdebug;
+			productInstallPath = /usr/local/bin;
+			productName = swim3_setdebug;
+			productReference = F5C63F80026CFE6901CB2147;
+			shouldUseHeadermap = 0;
+		};
+		F5C63F82026CFE6901CB2147 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXHeadersBuildPhase;
+		};
+		F5C63F83026CFE6901CB2147 = {
+			buildActionMask = 2147483647;
+			files = (
+				F5C63F87026CFEA201CB2147,
+			);
+			isa = PBXSourcesBuildPhase;
+		};
+		F5C63F84026CFE6901CB2147 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+		};
+		F5C63F85026CFE6901CB2147 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+		};
+		F5C63F86026CFEA201CB2147 = {
+			isa = PBXFileReference;
+			name = swim3_setdebug.c;
+			path = debug/swim3_setdebug.c;
+			refType = 4;
+		};
+		F5C63F87026CFEA201CB2147 = {
+			fileRef = F5C63F86026CFEA201CB2147;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5E098F2024712B4010154E1 = {
+			isa = PBXFileReference;
+			path = floppy_sleep.c;
+			refType = 4;
+		};
+		F5E098F3024712B4010154E1 = {
+			fileRef = F5E098F2024712B4010154E1;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5E6D2BD0210C91D01CB2148 = {
+			isa = PBXFileReference;
+			path = bus_device.h;
+			refType = 4;
+		};
+		F5E6D2BE0210C91D01CB2148 = {
+			fileRef = F5E6D2BD0210C91D01CB2148;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5F1AC5F02625EE801CB2147 = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OPTIMIZATION_CFLAGS = "-O0 -E";
+			};
+			isa = PBXBuildStyle;
+			name = CPPOUTPUT;
+		};
+//F50
+//F51
+//F52
+//F53
+//F54
+//F60
+//F61
+//F62
+//F63
+//F64
+		F6BFBEEE01E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = bsfloppy.c;
+			path = MkLinux_floppy/bsfloppy.c;
+			refType = 2;
+		};
+		F6BFBEEF01E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = floppy_dbdma.h;
+			path = MkLinux_floppy/floppy_dbdma.h;
+			refType = 2;
+		};
+		F6BFBEF001E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = grcswimiiihal.c;
+			path = MkLinux_floppy/grcswimiiihal.c;
+			refType = 2;
+		};
+		F6BFBEF101E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = floppy_amic.h;
+			path = MkLinux_floppy/floppy_amic.h;
+			refType = 2;
+		};
+		F6BFBEF201E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = floppyhal.h;
+			path = MkLinux_floppy/floppyhal.h;
+			refType = 2;
+		};
+		F6BFBEF401E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = floppycore.c;
+			path = MkLinux_floppy/floppycore.c;
+			refType = 2;
+		};
+		F6BFBEF501E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = extern.c;
+			path = MkLinux_floppy/extern.c;
+			refType = 2;
+		};
+		F6BFBEF601E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = swimiiicommonhal.c;
+			path = MkLinux_floppy/swimiiicommonhal.c;
+			refType = 2;
+		};
+		F6BFBEF701E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = floppycore.h;
+			path = MkLinux_floppy/floppycore.h;
+			refType = 2;
+		};
+		F6BFBEF801E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = floppy_dbdma.c;
+			path = MkLinux_floppy/floppy_dbdma.c;
+			refType = 2;
+		};
+		F6BFBEF901E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = dbdma_maxwell.h;
+			path = MkLinux_floppy/dbdma_maxwell.h;
+			refType = 2;
+		};
+		F6BFBEFA01E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = maxwellfloppysal.c;
+			path = MkLinux_floppy/maxwellfloppysal.c;
+			refType = 2;
+		};
+		F6BFBEFB01E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = dbdmasupport.c;
+			path = MkLinux_floppy/dbdmasupport.c;
+			refType = 2;
+		};
+		F6BFBEFC01E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = floppysal.h;
+			path = MkLinux_floppy/floppysal.h;
+			refType = 2;
+		};
+		F6BFBEFE01E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = floppy_amic.c;
+			path = MkLinux_floppy/floppy_amic.c;
+			refType = 2;
+		};
+		F6BFBEFF01E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = portdef.h;
+			path = MkLinux_floppy/portdef.h;
+			refType = 2;
+		};
+		F6BFBF0101E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = swimiii.h;
+			path = MkLinux_floppy/swimiii.h;
+			refType = 2;
+		};
+		F6BFBF0201E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = floppypriv.h;
+			path = MkLinux_floppy/floppypriv.h;
+			refType = 2;
+		};
+		F6BFBF0301E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = floppyerr.h;
+			path = MkLinux_floppy/floppyerr.h;
+			refType = 2;
+		};
+		F6BFBF0401E1CD2F010DA18F = {
+			isa = PBXFileReference;
+			name = swimiiicommonhal.h;
+			path = MkLinux_floppy/swimiiicommonhal.h;
+			refType = 2;
+		};
+		F6BFBF0501E1CD2F010DA18F = {
+			fileRef = F6BFBEEF01E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF0601E1CD2F010DA18F = {
+			fileRef = F6BFBEF101E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF0701E1CD2F010DA18F = {
+			fileRef = F6BFBEF201E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF0901E1CD2F010DA18F = {
+			fileRef = F6BFBEF701E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF0A01E1CD2F010DA18F = {
+			fileRef = F6BFBEF901E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF0B01E1CD2F010DA18F = {
+			fileRef = F6BFBEFC01E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF0D01E1CD2F010DA18F = {
+			fileRef = F6BFBEFF01E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF0E01E1CD2F010DA18F = {
+			fileRef = F6BFBF0101E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF0F01E1CD2F010DA18F = {
+			fileRef = F6BFBF0201E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF1001E1CD2F010DA18F = {
+			fileRef = F6BFBF0301E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF1101E1CD2F010DA18F = {
+			fileRef = F6BFBF0401E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF1201E1CD2F010DA18F = {
+			fileRef = F6BFBEEE01E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF1301E1CD2F010DA18F = {
+			fileRef = F6BFBEF001E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF1401E1CD2F010DA18F = {
+			fileRef = F6BFBEF401E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF1501E1CD2F010DA18F = {
+			fileRef = F6BFBEF501E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF1601E1CD2F010DA18F = {
+			fileRef = F6BFBEF601E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF1801E1CD2F010DA18F = {
+			fileRef = F6BFBEFA01E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF1901E1CD2F010DA18F = {
+			fileRef = F6BFBEFB01E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF1A01E1CD2F010DA18F = {
+			fileRef = F6BFBEFE01E1CD2F010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F6BFBF1C01E1CE6C010DA18F = {
+			isa = PBXFileReference;
+			path = fd.h;
+			refType = 4;
+		};
+		F6BFBF1D01E1CE6C010DA18F = {
+			fileRef = F6BFBF1C01E1CE6C010DA18F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+	};
+	rootObject = 089C1669FE841209C02AAC07;
+}

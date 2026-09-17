@@ -1,0 +1,115 @@
+/*
+ * @OSF_COPYRIGHT@
+ */
+/*
+ * HISTORY
+ * $Log: bootstrap.defs,v $
+ * Revision 1.1.8.3  1995/08/21  20:45:28  devrcs
+ * 	Added a "bootstrap_completed" message to allow servers to indicate
+ * 	when they have finished startup processing and are ready to
+ * 	service.
+ * 	[95/07/10            randys]
+ *
+ * Revision 1.1.8.2  1995/01/06  19:50:08  devrcs
+ * 	 mk6 CR668 - 1.3b26 merge
+ * 	[1994/10/07  15:45:48  duthie]
+ * 
+ * Revision 1.1.8.1  1994/09/23  02:34:29  ezf
+ * 	change marker to not FREE
+ * 	[1994/09/22  21:39:07  ezf]
+ * 
+ * Revision 1.1.2.6  1994/03/04  18:37:24  jeffc
+ * 	CR10636 -- delete NMK15_COMPAT support
+ * 	[1994/03/01  19:38:00  jeffc]
+ * 
+ * Revision 1.1.2.5  1994/01/28  18:24:33  chasb
+ * 	Expand Copyrights
+ * 	[1994/01/27  20:08:18  chasb]
+ * 
+ * Revision 1.1.2.4  1993/11/24  21:22:47  jph
+ * 	CR9801 brezak merge, ledgers, security and NMK15_COMPAT
+ * 	[1993/11/23  22:41:27  jph]
+ * 
+ * Revision 1.1.2.3  1993/10/20  18:45:42  gm
+ * 	CR9917: Added bootstrap_arguments() and bootstrap_environment().
+ * 	[1993/10/13  17:21:06  gm]
+ * 
+ * Revision 1.1.2.2  1993/06/24  16:14:02  gm
+ * 	CR9371: Moved from default_pager.  Added KERNEL_SERVER support.
+ * 	[1993/06/24  15:59:38  gm]
+ * 
+ * Revision 1.2.2.2  1993/06/09  02:10:58  gm
+ * 	Added to OSF/1 R1.3 from NMK15.0.
+ * 	[1993/06/02  20:41:58  gm]
+ * 
+ * Revision 1.2  1993/04/19  15:10:28  devrcs
+ * 	Fixed comments.
+ * 	[1993/02/11  08:34:42  bruel]
+ * 
+ * 	Typo.
+ * 	[93/02/10            bruel]
+ * 
+ * 	Created for external default pager.
+ * 	[1993/02/09  15:01:01  bruel]
+ * 
+ * $EndLog$
+ */
+
+subsystem
+#if	KERNEL_SERVER
+	KernelServer
+#endif	/* KERNEL_SERVER */
+		bootstrap 999999;
+
+#include <mach/std_types.defs>
+#include <mach/mach_types.defs>
+
+ServerPrefix do_;
+
+/*
+ *	The old form of the bootstrap_privileged_ports RPC
+ *	is not expressible in Mig syntax, because the reply
+ *	message doesn't have a return code.
+ */
+skip;	/* old bootstrap_privileged_ports */
+
+skip;	/* other old bootstrap_privileged_ports */
+
+/*
+ *	A task can make this call on its bootstrap port
+ *	to get its privileged ports.
+ */
+routine bootstrap_ports(
+		bootstrap		: mach_port_t;
+	out	priv_host		: mach_port_t;
+	out	priv_device		: mach_port_t;
+	out	wired_ledger		: mach_port_t;
+	out	paged_ledger		: mach_port_t;
+	out	host_security		: mach_port_t);
+
+/*
+ *	A task can use this call to get its argument strings.
+ */
+routine bootstrap_arguments(
+		bootstrap		: mach_port_t;
+		task			: task_t;
+	out	arguments		: pointer_t, Dealloc);
+
+/*
+ *	A task can use this call to get its environment strings.
+ */
+routine bootstrap_environment(
+		bootstrap		: mach_port_t;
+		task			: task_t;
+	out	environment		: pointer_t, Dealloc);
+
+/*
+ *	A task can use this call to indicate to its bootstrapper that it
+ *	is done with its startup processing.  This call is used when the
+ *	task is important enough so that the bootstrap process wants to
+ *	wait for it to come up before continuing with other things.
+ */
+simpleroutine bootstrap_completed(
+		bootstrap		: mach_port_t;
+		task			: task_t);
+

@@ -1,0 +1,86 @@
+/*
+ * @OSF_COPYRIGHT@
+ */
+/*
+ * HISTORY
+ * $Log: clock_types.defs,v $
+ * Revision 1.2.8.2  1994/09/23  02:35:01  ezf
+ * 	change marker to not FREE
+ * 	[1994/09/22  21:39:18  ezf]
+ *
+ * Revision 1.2.8.1  1994/08/07  20:48:39  bolinger
+ * 	Merge up to colo_b7.
+ * 	[1994/08/01  21:01:19  bolinger]
+ * 
+ * Revision 1.2.6.1  1994/06/25  03:46:39  dwm
+ * 	mk6 CR98 - add flavor interface typedefs (clock_flavor_t)
+ * 	Fix variable-size inline arrays to be only as large as necessary,
+ * 	saving on kernel reply message size. (clock_attr_t)
+ * 	[1994/06/24  21:54:24  dwm]
+ * 
+ * Revision 1.2.2.2  1993/06/09  02:39:43  gm
+ * 	Added to OSF/1 R1.3 from NMK15.0.
+ * 	[1993/06/02  21:15:41  jeffc]
+ * 
+ * Revision 1.2  1993/04/19  16:32:12  devrcs
+ * 	Changed timespec to tvalspec.
+ * 	[93/03/19            jat]
+ * 
+ * 	Fixed copyright
+ * 	[93/03/17            bernadat]
+ * 
+ * 	Added clock_attr_t type definition.
+ * 	[92/12/14            jat]
+ * 
+ * 	Added OSF copyright notice.
+ * 	[92/08/26            jat]
+ * 
+ * 	Initial version for new kernel alarm clock facility.
+ * 	[92/03/07            jat]
+ * 
+ * $EndLog$
+ */
+
+/*
+ *	File:		clock_types.defs
+ *	Purpose:
+ *		Clock kernel interface type declarations
+ */
+
+#ifndef	_MACH_CLOCK_TYPES_DEFS_
+#define _MACH_CLOCK_TYPES_DEFS_
+
+#include <mach/std_types.defs>
+
+type clock_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: clock_t convert_port_to_clock(mach_port_t)
+		outtran: mach_port_t convert_clock_to_port(clock_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type clock_ctrl_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: clock_t convert_port_to_clock_ctrl(mach_port_t)
+		outtran: mach_port_t convert_clock_ctrl_to_port(clock_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type clock_flavor_t = int;
+type clock_attr_t = array[*:1] of int;
+type tvalspec_t	= struct[2] of int;
+type time_t = int;
+type sleep_type_t = int;
+type alarm_type_t = int;
+type clock_res_t = int;
+type clock_id_t = int;
+
+#if	KERNEL_SERVER
+simport <kern/clock.h>;		/* for clock_t */
+#endif	/* KERNEL_SERVER */
+
+import <mach/mach_types.h>;
+
+#endif	/* _MACH_CLOCK_TYPES_DEFS_ */

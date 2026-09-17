@@ -1,0 +1,13 @@
+#! /bin/sh
+if [ "`uname`" = "SunOS" ]; then
+  pscmd="ps -aux"
+else
+  pscmd="ps -ef"
+fi
+id=`$pscmd | awk '$11 ~ /[^\-]*acms$/ { print $2 }'`
+if [ "$id" = "" ]; then
+  echo No acm server processes found on this system.
+else
+  echo "Killing process(es) $id ..."
+  kill -9 $id
+fi

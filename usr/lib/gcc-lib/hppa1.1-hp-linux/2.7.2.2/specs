@@ -1,0 +1,45 @@
+*asm:
+
+
+*asm_final:
+
+
+*cpp:
+%{fPIC:-D__PIC__ -D__pic__} %{fpic:-D__PIC__ -D__pic__} %{mhppa:-D__hppa__} %{posix:-D_POSIX_SOURCE} -D__hp9000s700 -D_PA_RISC1_1
+
+*cc1:
+%{pg:} %{p:}
+
+*cc1plus:
+
+
+*endfile:
+
+
+*link:
+%{!shared:-u main} %{shared:-b}
+
+*lib:
+%{!p:%{!pg:-lc}}%{p:-lc_p}%{pg:-lc_p} -lmilli
+
+*libgcc:
+%{!shared:-lgcc}
+
+*startfile:
+%{!shared:%{pg:gcrt0%O%s}%{!pg:%{p:mcrt0%O%s}%{!p:crt0%O%s}}}
+
+*switches_need_spaces:
+
+
+*signed_char:
+%{funsigned-char:-D__CHAR_UNSIGNED__}
+
+*predefines:
+-D__ELF__ -Dunix -Dhppa -Dlinux -Asystem(unix) -Asystem(posix) -Acpu(hppa) -Amachine(hppa) -Amachine(bigendian)
+
+*cross_compile:
+0
+
+*multilib:
+. ;
+

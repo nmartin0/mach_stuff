@@ -1,0 +1,81 @@
+/*
+ * @OSF_COPYRIGHT@
+ */
+/*
+ * HISTORY
+ * $Log: ledger.defs,v $
+ * Revision 1.1.6.1  1995/01/06  19:50:55  devrcs
+ * 	mk6 CR668 - 1.3b26 merge
+ * 	new file for mk6
+ * 	[1994/11/02  18:18:31  dwm]
+ *
+ * Revision 1.1.3.1  1993/11/24  21:22:50  jph
+ * 	CR9801 brezak merge, ledgers, security and NMK15_COMPAT
+ * 	[1993/11/23  22:41:30  jph]
+ * 
+ * Revision 1.1.1.3  1993/08/20  14:17:38  brezak
+ * 	Created to hold the ledger interface.
+ * 
+ * $EndLog$
+ */
+subsystem
+#if	KERNEL_USER
+	  KernelUser
+#endif	/* KERNEL_USER */
+#if	KERNEL_SERVER
+	  KernelServer
+#endif	/* KERNEL_SERVER */
+		       ledger 5000;
+
+#ifdef	KERNEL_USER
+userprefix r_;
+#endif	/* KERNEL_USER */
+
+#include <mach/std_types.defs>
+#include <mach/mach_types.defs>
+
+/*
+ *	Create a subordinate ledger
+ */
+routine ledger_create(
+		parent_ledger		: ledger_port_t;
+		ledger_ledger		: ledger_port_t;
+	out	new_ledger		: ledger_port_t;
+		transfer		: ledger_item_t);
+
+/*
+ *	Get the remote ledger service port
+ */
+routine ledger_get_remote(
+		ledger			: ledger_port_t;
+		host			: host_t;
+	out	service_ledger		: ledger_port_t);
+
+/*
+ *	Return the ledger limit and balance
+ */
+routine ledger_read(
+		ledger			: ledger_port_t;
+	out	balance			: ledger_item_t;
+	out	limit			: ledger_item_t);
+
+/*
+ *	Sets the remote ledger service port
+ */
+routine ledger_set_remote(
+		ledger			: ledger_port_t;
+		service_ledger		: ledger_port_t);
+
+/*
+ *	Destroy a ledger
+ */
+routine ledger_terminate(
+		ledger			: ledger_port_t);
+
+/*
+ *	Transfer resources from a parent ledger to a child
+ */
+routine ledger_transfer(
+		parent_ledger		: ledger_port_t;
+		child_ledger		: ledger_port_t;
+		transfer		: ledger_item_t);

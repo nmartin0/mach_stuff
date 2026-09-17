@@ -1,0 +1,71 @@
+/*
+ * @OSF_COPYRIGHT@
+ */
+/*
+ * HISTORY
+ * $Log: clock_reply.defs,v $
+ * Revision 1.2.6.1  1994/09/23  02:34:50  ezf
+ * 	change marker to not FREE
+ * 	[1994/09/22  21:39:15  ezf]
+ *
+ * Revision 1.2.2.2  1993/06/09  02:39:38  gm
+ * 	Added to OSF/1 R1.3 from NMK15.0.
+ * 	[1993/06/02  21:15:38  jeffc]
+ * 
+ * Revision 1.2  1993/04/19  16:32:05  devrcs
+ * 	Changed timespec to tvalspec.
+ * 	[93/03/19            jat]
+ * 
+ * 	Fixed copyright
+ * 	[93/03/17            bernadat]
+ * 
+ * 	Added alarm_code parameter to clock_alarm_reply
+ * 	routine.
+ * 	[92/10/14            jat]
+ * 
+ * 	Deleted clock_sleep ipc interface.
+ * 	[92/08/28            jat]
+ * 
+ * 	Added OSF copyright notice.
+ * 	[92/08/26            jat]
+ * 
+ * 	Initial version for new kernel alarm clock facility.
+ * 	[92/03/07            jat]
+ * 
+ * $EndLog$
+ */
+
+/*
+ *	File:		clock_reply.defs
+ *	Purpose:	Kernel clock subsystem definitions. This
+ *			file defines the clock reply interface.
+ */
+
+subsystem
+#if	KERNEL_USER
+	  KernelUser
+#endif	/* KERNEL_USER */
+		     clock_reply 3125100;
+
+#include <mach/std_types.defs>
+#include <mach/clock_types.defs>
+
+
+skip;	/* host_get_clock_service */
+skip;	/* host_get_clock_control */
+skip;	/* clock_get_time */
+skip;	/* clock_get_res */
+skip;	/* clock_set_time */
+skip;	/* clock_set_res */
+skip;	/* clock_map_time */
+
+/*
+ *	Reply routine for clock_alarm. 
+ */
+simpleroutine clock_alarm_reply(
+                alarm_port      : reply_port_t =
+                        polymorphic|MACH_MSG_TYPE_PORT_SEND_ONCE
+                        ctype: mach_port_t;
+		alarm_code	: kern_return_t;
+		alarm_type	: alarm_type_t;
+		alarm_time	: tvalspec_t);

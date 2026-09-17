@@ -1,0 +1,49 @@
+!*
+!* XSysinfo-color: app-defaults for color displays
+!*
+!* $Id: XSysinfo-color.ad,v 1.1 1993/02/22 20:03:45 gabor Exp $
+!* 
+!* Written by Gabor Herr <herr@iti.informatik.th-darmstadt.de>.
+!*
+!* Copyright (c) 1993 by Gabor Herr, all rights reserved.
+!* 
+!* Permission to use, copy, modify, distribute, and sell this software
+!* and its documentation for any purpose is hereby granted without fee,
+!* provided that the above copyright notice appear in all copies and
+!* that both that copyright notice and this permission notice appear in
+!* supporting documentation, and that may name is not used in
+!* advertising or publicity pertaining to distribution of the software
+!* without specific, written prior permission. I make no representations
+!* about the suitability of this software for any purpose. It is
+!* provided "as is" without express or implied warranty.
+!*
+!
+
+#include "XSysinfo"
+
+! set foreground colors for load
+*loadavg*bar.foreground:	RosyBrown1
+*loadavg*bar.foreground1:	IndianRed1
+*loadavg*bar.foreground2:	OrangeRed1
+*loadavg*bar.foreground3:	firebrick1
+*loadavg*bar.foreground4:	pink1
+*loadavg*bar.foreground5:	HotPink1
+*loadavg*bar.foreground6:	DeepPink2
+*loadavg*bar.foreground7:	maroon1
+*loadavg*bar.segmentGap:	1
+
+! set idle gauge color
+*load*bar.foreground:	cyan2
+*load*bar.foreground1:	SteelBlue2
+*load*bar.foreground2:	blue
+
+! set mem info gauge colors
+*mem*bar.foreground:	green2
+*mem*bar.foreground1:	green4
+
+! set swap gauge color
+*swap*bar.foreground:	hotpink1
+
+! set background
+*.background:		grey80
+*.BarGauge.background:	white

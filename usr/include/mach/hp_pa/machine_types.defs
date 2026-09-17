@@ -1,0 +1,56 @@
+/*
+ * @OSF_COPYRIGHT@
+ */
+/*
+ * HISTORY
+ * $Log: machine_types.defs,v $
+ * Revision 1.1.5.1  1995/03/15  17:47:17  bruel
+ * 	hppa merge
+ * 	[1995/03/15  09:45:27  bruel]
+ *
+ * Revision 1.1.2.1  1995/02/06  09:35:42  bruel
+ * 	First Revision.
+ * 	[95/01/26            bruel]
+ * 
+ * $EndLog$
+ */
+/*
+ *	Header file for basic, machine-dependent data types.  i386 version.
+ */
+
+#ifndef	_MACHINE_VM_TYPES_DEFS_
+#define	_MACHINE_VM_TYPES_DEFS_	1
+
+/*
+ * A natural_t is the type for the native
+ * integer type, e.g. 32 or 64 or.. whatever
+ * register size the machine has.  Unsigned, it is
+ * used for entities that might be either
+ * unsigned integers or pointers, and for
+ * type-casting between the two.
+ * For instance, the IPC system represents
+ * a port in user space as an integer and
+ * in kernel space as a pointer.
+ */
+type natural_t = unsigned32;
+
+/*
+ * An integer_t is the signed counterpart
+ * of the natural_t type. Both types are
+ * only supposed to be used to define
+ * other types in a machine-independent
+ * way.
+ */
+type integer_t = int32;
+
+
+#if	MACH_IPC_COMPAT
+/*
+ * For the old IPC interface
+ */
+#define	MSG_TYPE_PORT_NAME	MACH_MSG_TYPE_INTEGER_32
+
+#endif	/* MACH_IPC_COMPAT */
+
+
+#endif	/* _MACHINE_VM_TYPES_DEFS_ */

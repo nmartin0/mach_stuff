@@ -1,0 +1,22 @@
+/Makefile/1.1.1.1/Mon Oct  5 23:07:03 1998//
+/async_services.h/1.1.1.1/Mon Oct  5 23:07:03 1998//
+/cli_services.h/1.1.1.1/Mon Oct  5 23:07:03 1998//
+/conf.h/1.1.1.1/Mon Oct  5 23:07:03 1998//
+/debug_services.h/1.1.1.1/Mon Oct  5 23:07:03 1998//
+/mach_perf.h/1.1.1.1/Mon Oct  5 23:07:04 1998//
+/mach_services.h/1.1.1.1/Mon Oct  5 23:07:04 1998//
+/norma_services.h/1.1.1.1/Mon Oct  5 23:07:04 1998//
+/printf_services.h/1.1.1.1/Mon Oct  5 23:07:04 1998//
+/prof_services.h/1.1.1.1/Mon Oct  5 23:07:04 1998//
+/resource_services.h/1.1.1.1/Mon Oct  5 23:07:04 1998//
+/ressource_services.h/1.1.1.1/Mon Oct  5 23:07:05 1998//
+/rpc_services.h/1.1.1.1/Mon Oct  5 23:07:05 1998//
+/sched_services.h/1.1.1.1/Mon Oct  5 23:07:05 1998//
+/server_services.h/1.1.1.1/Mon Oct  5 23:07:05 1998//
+/stat_services.h/1.1.1.1/Mon Oct  5 23:07:05 1998//
+/synthetic_services.h/1.1.1.1/Mon Oct  5 23:07:05 1998//
+/test_services.h/1.1.1.1/Mon Oct  5 23:07:05 1998//
+/time_services.h/1.1.1.1/Mon Oct  5 23:07:05 1998//
+D/AT386////
+D/HP700////
+D/POWERMAC////

@@ -1,0 +1,18 @@
+/Makefile/1.2/Wed Nov 18 23:33:07 1998//
+/card.h/1.2/Wed Nov 18 23:33:08 1998//
+/command.c/1.2/Wed Nov 18 23:33:08 1998//
+/debug.c/1.2/Wed Nov 18 23:33:08 1998//
+/debug.h/1.2/Wed Nov 18 23:33:08 1998//
+/event.c/1.2/Wed Nov 18 23:33:08 1998//
+/hardware.h/1.1.1.1/Fri Oct  2 21:14:36 1998//
+/includes.h/1.2/Mon Oct  5 23:44:17 1998//
+/init.c/1.1.1.1/Fri Oct  2 21:14:37 1998//
+/interrupt.c/1.3/Wed Nov 18 23:33:08 1998//
+/ioctl.c/1.1.1.1/Fri Oct  2 21:14:37 1998//
+/message.c/1.2/Wed Nov 18 23:33:08 1998//
+/message.h/1.2/Wed Nov 18 23:33:08 1998//
+/packet.c/1.2/Wed Nov 18 23:33:08 1998//
+/scioc.h/1.1.1.1/Fri Oct  2 21:14:38 1998//
+/shmem.c/1.2/Wed Nov 18 23:33:09 1998//
+/timer.c/1.2/Wed Nov 18 23:33:10 1998//
+D

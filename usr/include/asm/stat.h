@@ -1,0 +1,56 @@
+/*
+ * @OSF_FREE_FREE_COPYRIGHT@
+ * 
+ */
+/*
+ * HISTORY
+ * $Log: stat.h,v $
+ * Revision 1.1.2.1  1997/02/27  11:10:32  bruel
+ * 	First revision
+ * 	[1997/02/27  11:01:03  bruel]
+ *
+ * $EndLog$
+ */
+
+
+#ifndef _ASM_OSFMACH3_MACHINE_STAT_H
+#define _ASM_OSFMACH3_MACHINE_STAT_H
+
+#include <linux/types.h>
+
+struct old_stat {
+	unsigned short st_dev;
+	unsigned short st_ino;
+	unsigned short st_mode;
+	unsigned short st_nlink;
+	unsigned short st_uid;
+	unsigned short st_gid;
+	unsigned short st_rdev;
+	unsigned long  st_size;
+	unsigned long  st_atime;
+	unsigned long  st_mtime;
+	unsigned long  st_ctime;
+};
+
+struct new_stat {
+	dev_t		st_dev;
+	ino_t		st_ino;
+	mode_t		st_mode;
+	nlink_t		st_nlink;
+	uid_t 		st_uid;
+	gid_t 		st_gid;
+	dev_t		st_rdev;
+	off_t		st_size;
+	unsigned long  	st_blksize;
+	unsigned long  	st_blocks;
+	unsigned long  	st_atime;
+	unsigned long  	__unused1;
+	unsigned long  	st_mtime;
+	unsigned long  	__unused2;
+	unsigned long  	st_ctime;
+	unsigned long  	__unused3;
+	unsigned long  	__unused4;
+	unsigned long  	__unused5;
+};
+
+#endif	/* _ASM_OSFMACH3_MACHINE_STAT_H */

@@ -1,0 +1,713 @@
+/*
+ * @OSF_COPYRIGHT@
+ */
+/*
+ * HISTORY
+ * $Log: mach_types.defs,v $
+ * Revision 1.4.46.11  1996/01/09  19:21:53  devrcs
+ * 	Change type memory_object_info_t from an array of 5 integer_t
+ * 	to an array of 6 ints.  The data put in the array is a mixture
+ * 	of int's and integer_t's.  When integer_t represents 64 bits,
+ * 	and there are 3 32-bit int's in the data, only 2 will get copied.
+ * 	Changed mach_port_qos_t from int to integer_t.
+ * 	Removed trailing '\' from 4 lines.
+ * 	[1995/12/01  19:49:44  jfraser]
+ *
+ * 	Merged '64-bit safe' changes from DEC alpha port.
+ * 	[1995/11/21  18:08:58  jfraser]
+ *
+ * Revision 1.4.46.10  1995/06/08  14:31:45  rwd
+ * 	Rid this file of the NORMA_IPC taint.
+ * 	[95/06/07            rwd]
+ * 
+ * Revision 1.4.46.9  1995/04/07  19:05:33  barbou
+ * 	Increased size of mach_port_info_t and mach_port_status_t to 10 for
+ * 	RECEIVE_STATUS.
+ * 	[95/03/08            barbou]
+ * 
+ * 	VM Merge - Clustered Pagein.
+ * 	Updated max size of memory_object_info_t type to fit new
+ * 	memory_object_attr_info structure.
+ * 	[95/01/11            barbou]
+ * 	[95/03/08            barbou]
+ * 
+ * Revision 1.4.46.8  1995/02/23  17:57:06  alanl
+ * 	The file xmm_obj.h has moved from norma/ to xmm/.
+ * 	[95/02/22            alanl]
+ * 
+ * Revision 1.4.46.7  1995/01/11  21:14:15  robert
+ * 	osc1.3 merge to cnmk_shared
+ * 	[1995/01/11  20:41:50  robert]
+ * 
+ * Revision 1.4.56.4  1995/01/10  03:18:42  devrcs
+ * 	mk6 CR801 - merge up from nmk18b4 to nmk18b7
+ * 	* Rev 1.4.46.6  1994/10/14  10:37:56  bolinger
+ * 	  Another tweak for ri-osc CR704:  raise size of user_subsystem_t so
+ * 	  AD1.2 fsvr subsystem fits.
+ * 	  Fix ri-osc CR704:  increase size of memory_object_info_t to
+ * 	  accomodate memory_object_norma_info_t.
+ * 	[1994/12/09  21:11:51  dwm]
+ * 
+ * 	mk6 CR668 - 1.3b26 merge
+ * 	* Revision 1.4.6.17
+ * 	Repaired some array[*:n] declarations.
+ * 	Formerly natural_t now integer_t.
+ * 	* Revision 1.4.6.16
+ * 	Merged with osc1.3b19
+ * 	* Revision 1.4.6.15
+ * 	CR10731 -- delete memory_object_name_t kernel server translations,
+ * 	the kernel is never a receiver on the name port.
+ * 	* Revision 1.4.6.13
+ * 	CR9801 brezak merge, ledgers, security
+ * 	* Revision 1.4.17.6
+ * 	Add definition of ledger_item_t.
+ * 	Define ledger_port_t correctly.
+ * 	* Revision 1.4.6.12
+ * 	CR9955 - fix typo in max size of "policy_base" variable array.
+ * 	* Revision 1.4.6.11
+ * 	CR10039 -- Add flavor interface typedefs
+ * 	CR9955 - Fix variable-size inline arrays to be only as
+ * 	large as necessary. Otherwise, and enormous reply message
+ * 	needs to be allocated by the kernel.
+ * 	CR9289 - delete old vm_statistics data type.
+ * 	* Revision 1.4.6.10
+ * 	CR9784 - Add vm_behavior_set support
+ * 	* End1.3merge
+ * 	[1994/11/02  18:32:07  dwm]
+ * 
+ * 	Update mk6_shared (based on nmk18b4) to cnmk_shared.
+ * 	[1994/10/04  19:06:35  bolinger]
+ * 
+ * Revision 1.4.46.5  1994/09/28  17:47:40  dswartz
+ * 	Merged with changes from 1.4.46.4
+ * 	[1994/09/28  17:46:14  dswartz]
+ * 
+ * 	mach_port_allocate* changes [CR 461]
+ * 	[1994/09/28  17:38:59  dswartz]
+ * 
+ * Revision 1.4.46.4  1994/09/23  02:39:24  ezf
+ * 	change marker to not FREE
+ * 	[1994/09/22  21:41:16  ezf]
+ * 
+ * Revision 1.4.46.3  1994/08/07  20:49:36  bolinger
+ * 	Merge up to colo_shared (post-b7, pre-MP).
+ * 	[1994/08/07  18:35:20  bolinger]
+ * 
+ * Revision 1.4.46.2  1994/06/26  22:59:04  bolinger
+ * 	Temporary patch to enable thread_state large enough to suit 860.
+ * 	[1994/06/26  22:55:03  bolinger]
+ * 
+ * Revision 1.4.46.1  1994/06/13  20:49:44  dlb
+ * 	Merge MK6 and NMK17
+ * 	[1994/06/13  20:47:58  dlb]
+ * 
+ * Revision 1.4.27.6  1994/06/25  03:46:57  dwm
+ * 	mk6 CR98 - add flavor interface typedefs,
+ * 	reduce sizes of inline arrays.  Add copious comments. [thanks jeffc]
+ * 	[1994/06/24  21:54:40  dwm]
+ * 
+ * Revision 1.4.27.7  1994/07/08  20:08:53  dwm
+ * 	mk6 CR227 - Add vm_behavior_t.
+ * 	[1994/07/08  20:02:14  dwm]
+ * 
+ * Revision 1.4.27.6  1994/06/25  03:46:57  dwm
+ * 	mk6 CR98 - add flavor interface typedefs,
+ * 	reduce sizes of inline arrays.  Add copious comments. [thanks jeffc]
+ * 	[1994/06/24  21:54:40  dwm]
+ * 
+ * Revision 1.4.27.5  1994/03/17  22:38:58  dwm
+ * 	The infamous name change:  thread_activation + thread_shuttle = thread.
+ * 	[1994/03/17  21:28:35  dwm]
+ * 
+ * Revision 1.4.27.4  1994/01/21  01:23:09  condict
+ * 	Change user_subsystem_t from ool to in-line.
+ * 	[1994/01/21  01:21:11  condict]
+ * 
+ * Revision 1.4.27.3  1994/01/20  04:39:06  condict
+ * 	Remove simport kern/ipc_subsystem.h.  (This is private to kernel.)
+ * 	[1994/01/20  02:48:57  condict]
+ * 
+ * 	Add subsystem_t and user_subsystem_t, for RPC subsystem objects.
+ * 	[1994/01/12  22:25:13  condict]
+ * 
+ * Revision 1.4.27.2  1994/01/12  17:56:31  dwm
+ * 	Coloc: initial restructuring to follow Utah model.
+ * 	add act_t, act_array_t
+ * 	[1994/01/12  17:30:38  dwm]
+ * 
+ * Revision 1.4.27.1  1993/12/10  19:37:09  dwm
+ * 	Re-hack of workaround: KERNEL_STACK_SIZE back to 1 page;
+ * 	lower THREAD_STATE_MAX to 64 ints instead.
+ * 	[1993/12/10  19:36:39  dwm]
+ * 
+ * Revision 1.4.6.9  1993/10/05  22:23:07  watkins
+ * 	Merge forward.
+ * 	[1993/10/05  22:04:27  watkins]
+ * 
+ * Revision 1.4.18.2  1993/09/28  19:42:19  watkins
+ * 	Support mor's; basic ledger/security types; merge to b8.
+ * 	Brezak's ledger/security types will override these.
+ * 
+ * Revision 1.4.6.8  1993/08/05  19:09:24  jeffc
+ * 	CR9508 - Delete dead code. Remove MACH_IPC_TYPED
+ * 	[1993/08/03  20:18:23  jeffc]
+ * 
+ * Revision 1.4.6.7  1993/08/03  19:05:06  gm
+ * 	CR9596: Change KERNEL to MACH_KERNEL.
+ * 	CR9600: Change *_array_t to *_port_array_t types.
+ * 	[1993/08/02  18:08:17  gm]
+ * 
+ * Revision 1.4.6.6  1993/07/27  18:09:13  rod
+ * 	ANSI prototypes:  use ipc_types.h instead ipc_space.h.  CR #9523.
+ * 	[1993/07/27  11:57:22  rod]
+ * 
+ * Revision 1.4.6.5  1993/06/29  21:55:43  watkins
+ * 	Merge new policy definitions forward.
+ * 	[1993/06/29  20:50:26  watkins]
+ * 
+ * 	Policy definitions for new scheduling interfaces.
+ * 
+ * 	Define type for mach_port_info_t.
+ * 	Obsolete old_mach_port_status_t.
+ * 	[1993/06/22  18:32:16  brezak]
+ * 
+ * Revision 1.4.6.4  1993/06/29  17:54:38  brezak
+ * 	Define type for processor_slot_t.
+ * 	[1993/06/28  20:59:06  brezak]
+ * 
+ * Revision 1.4.6.3  1993/06/15  20:28:24  brezak
+ * 	Add xxx_vm_statistics for obsolete support.
+ * 	[1993/06/14  14:11:02  brezak]
+ * 
+ * Revision 1.4.3.2  1993/06/08  19:02:58  brezak
+ * 	vm_statistics struct is now 12 ints long.
+ * 
+ * Revision 1.3.8.2  1993/06/02  23:45:55  jeffc
+ * 	Added to OSF/1 R1.3 from NMK15.0.
+ * 	[1993/06/02  21:17:04  jeffc]
+ * 
+ * Revision 1.4  1993/04/19  16:35:28  devrcs
+ * 	Merge untyped ipc:
+ * 	Introducing new MIG syntax for Untyped IPC (via compile option
+ * 	MACH_IPC_TYPED)
+ * 	[1993/02/17  23:45:50  travos]
+ * 
+ * 	vm_sync changes
+ * 	[1993/03/03  12:34:03  david]
+ * 
+ * 	Added import for mach/excepion.h
+ * 	[1992/12/23  13:09:32  david]
+ * 
+ * Revision 1.3  1992/12/16  10:24:46  devrcs
+ * 	Fixed so other than NORMA_IPC kernels can be built
+ * 	[1992/12/11  18:45:18  david]
+ * 
+ * Revision 1.2  1992/12/07  21:29:20  robert
+ * 	integrate any changes below for 14.0 (branch from 13.16 base)
+ * 
+ * 	Joseph Barrera (jsb) at Carnegie-Mellon University 05-Aug-92
+ * 	Added inline_existence_map_t.
+ * 	[1992/12/06  20:25:35  robert]
+ * 
+ * Revision 1.1  1992/09/30  02:22:51  robert
+ * 	Initial revision
+ * 
+ * $EndLog$
+ */
+/* CMU_HIST */
+/*
+ * Revision 2.9.3.4  92/06/24  18:05:27  jeffreyh
+ * 	Add host_paging_t type under NORMA_IPC
+ * 	[92/06/17            jeffreyh]
+ * 
+ * Revision 2.9.3.3  92/03/03  16:22:12  jeffreyh
+ * 	Changes from TRUNK
+ * 	[92/02/26  12:10:11  jeffreyh]
+ * 
+ * Revision 2.11  92/01/14  16:45:29  rpd
+ * 	Added translations for memory_object_name_t.
+ * 	[92/01/06  21:49:29  rpd]
+ * 
+ * Revision 2.10  92/01/03  20:46:29  dbg
+ * 	Changed emulation_vector_t to pass data out-of-line.  Renamed
+ * 	old type to xxx_emulation_vector_t for compatibility.
+ * 	Removed vm_page_data_t.
+ * 	[92/01/03            dbg]
+ * 
+ * Revision 2.9.3.2  92/02/21  11:23:57  jsb
+ * 	Use mach_xmm_obj_t to avoid include of norma/xmm_obj.h.
+ * 	[92/02/10  08:46:47  jsb]
+ * 
+ * 	NORMA_VM: use xmm_kobj_lookup to convert memory_object_control ports.
+ * 	[92/02/09  14:44:33  jsb]
+ * 
+ * Revision 2.9.3.1  92/01/09  18:44:25  jsb
+ * 	From durriya@ri.osf.org: defined kernel_boot_info_t.
+ * 	[92/01/08  15:00:30  jsb]
+ * 
+ * Revision 2.9  91/08/28  11:15:16  jsb
+ * 	Increased the size of mach_port_status_t, for mps_seqno.
+ * 	Added old_mach_port_status_t, for compatibility purposes.
+ * 	[91/08/09            rpd]
+ * 	Add memory_object_return_t for precious page support.
+ * 	[91/07/03  14:04:25  dlb]
+ * 
+ * Revision 2.8  91/06/25  10:30:10  rpd
+ * 	Changed the port-based type declarations
+ * 	to use mach_port_t as the C type name.
+ * 	[91/05/23            rpd]
+ * 
+ * Revision 2.7  91/06/06  17:08:02  jsb
+ * 	Added emulation_vector_t for new get/set emulation vector calls.
+ * 	[91/05/24  17:45:33  jsb]
+ * 
+ * Revision 2.6  91/05/14  16:55:06  mrt
+ * 	Correcting copyright
+ * 
+ * Revision 2.5  91/02/05  17:33:39  mrt
+ * 	Changed to new Mach copyright
+ * 	[91/02/01  17:18:30  mrt]
+ * 
+ * Revision 2.4  90/08/07  18:00:26  rpd
+ * 	Added processor_set_name_array_t.
+ * 	[90/08/06            rpd]
+ * 
+ * Revision 2.3  90/06/02  14:58:35  rpd
+ * 	Added mach_port_status_t.
+ * 	[90/05/13            rpd]
+ * 	Converted to new IPC.
+ * 	[90/03/26  22:33:34  rpd]
+ * 
+ * Revision 2.2  90/01/22  23:05:44  af
+ * 	Added vm_attribute()'s types.
+ * 	[89/12/09  10:45:16  af]
+ * 
+ * Revision 2.1  89/08/03  17:17:40  rwd
+ * Created.
+ * 
+ * Revision 2.3  89/02/25  18:37:59  gm0w
+ * 	Changes for cleanup.
+ * 
+ * Revision 2.2  89/01/15  16:30:33  rpd
+ * 	Moved from kern/ to mach/.
+ * 	[89/01/15  14:36:47  rpd]
+ * 
+ * Revision 2.6  89/01/12  07:57:37  rpd
+ * 	Moved standard stuff to std_types.defs.  Moved debugging definitions
+ * 	like ipc_statistics_t out to other files.
+ * 	[89/01/12  04:50:24  rpd]
+ * 
+ * Revision 2.5  89/01/04  13:37:11  rpd
+ * 	Increased size of fpa_counters_t.
+ * 	[89/01/03  16:46:38  rpd]
+ * 	
+ * 	Added fpa_counters_t type.
+ * 	[89/01/01  15:03:09  rpd]
+ * 
+ * Revision 2.4  88/09/25  22:15:16  rpd
+ * 	Bumped size of callout_statistics_t to account for the
+ * 	new field, cos_num_untimeout_hit.
+ * 	[88/09/09  23:14:38  rpd]
+ * 	
+ * 	Fixed log.  Changed includes to the new style.
+ * 	Added definitions of callout_info_t,
+ * 	callout_info_array_t, callout_statistics_t.
+ * 	[88/09/09  04:46:31  rpd]
+ * 
+ */
+/* CMU_ENDHIST */
+/* 
+ * Mach Operating System
+ * Copyright (c) 1991,1990,1989,1988 Carnegie Mellon University
+ * All Rights Reserved.
+ * 
+ * Permission to use, copy, modify and distribute this software and its
+ * documentation is hereby granted, provided that both the copyright
+ * notice and this permission notice appear in all copies of the
+ * software, derivative works or modified versions, and any portions
+ * thereof, and that both notices appear in supporting documentation.
+ * 
+ * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+ * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+ * 
+ * Carnegie Mellon requests users of this software to return to
+ * 
+ *  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+ *  School of Computer Science
+ *  Carnegie Mellon University
+ *  Pittsburgh PA 15213-3890
+ * 
+ * any improvements or extensions that they make and grant Carnegie Mellon
+ * the rights to redistribute these changes.
+ */
+/*
+ */
+/*
+ *	Mach kernel interface type declarations
+ */
+
+#ifndef	_MACH_MACH_TYPES_DEFS_
+#define _MACH_MACH_TYPES_DEFS_
+
+/*
+ *	For KernelServer and KernelUser interfaces, Mig will
+ *	automagically use ipc_port_t instead of mach_port_t
+ *	on the kernel side of the interface.  For example,
+ *	convert_task_to_port really returns ipc_port_t.
+ *	Doing this in Mig saves many explicit conditional
+ *	cusertype/cservertype declarations.
+ *
+ *	Mig doesn't translate the components of an array.
+ *	For example, Mig won't use the thread_t translations
+ *	to translate a thread_array_t argument.
+ */
+
+#include <mach/std_types.defs>
+#if	KERNEL_SERVER
+#include <norma_vm.h>
+#endif	/* KERNEL_SERVER */
+
+type mach_port_status_t = struct[10] of integer_t;	/* obsolete */
+
+		/* mach_port_info_t: can hold either a
+		 * mach_port_status_t (9 ints) or a
+		 * mach_port_limits_t (1 int). If new flavors of
+		 * mach_port_{get,set}_attributes are added, the size of
+		 * this array may have to be increased. (See mach/port.h)
+		 */
+type mach_port_flavor_t 	= int;
+type mach_port_info_t		= array[*:10] of integer_t;
+
+type task_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: task_t convert_port_to_task(mach_port_t)
+		outtran: mach_port_t convert_task_to_port(task_t)
+		destructor: task_deallocate(task_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type thread_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: thread_t convert_port_to_thread(mach_port_t)
+		outtran: mach_port_t convert_thread_to_port(thread_t)
+		destructor: thread_deallocate(thread_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type thread_act_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: thread_act_t convert_port_to_act(mach_port_t)
+		outtran: mach_port_t convert_act_to_port(thread_act_t)
+		destructor: act_deallocate(thread_act_t)
+#endif	KERNEL_SERVER
+		;
+
+		/* thread_state_t: This inline array can hold
+		 * a machine-dependent amount of data, defined in
+		 * mach/machine/???? (currently THREAD_STATE_MAX,
+		 * in mach/thread_state.h)
+		 */
+#include <mach/machine/thread_state.h>
+type thread_state_flavor_t	= int;
+type thread_state_t		= array[*:THREAD_STATE_MAX] of natural_t;
+
+type task_port_array_t = ^array[] of task_t;
+type thread_port_array_t = ^array[] of thread_t;
+type thread_act_array_t = ^array[] of thread_act_t;
+type thread_act_port_array_t = ^array[] of thread_act_t;
+
+type vm_task_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: vm_map_t convert_port_to_map(mach_port_t)
+		destructor: vm_map_deallocate(vm_map_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type ipc_space_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: ipc_space_t convert_port_to_space(mach_port_t)
+		destructor: space_deallocate(ipc_space_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type vm_address_t = natural_t;
+type vm_offset_t = natural_t;
+type vm_size_t = natural_t;
+type vm_prot_t = int;
+type vm_inherit_t = int;
+type xxx_vm_statistics_data_t = struct[13] of integer_t;
+type vm_behavior_t = int;
+type vm_statistics_data_t = struct[12] of integer_t;
+type vm_machine_attribute_t = int;
+type vm_machine_attribute_val_t = int;
+type vm_sync_t = int;
+
+		/* thread_info_t: this inline array can hold any of:
+		 * thread_basic_info_t (10 ints)
+		 * policy_timeshare_info_t (5 ints)
+		 * policy_fifo_info_t (4 ints)
+		 * policy_rr_info_t (5 ints)
+		 * if other thread_info flavors are added, this
+		 * definition may need to be changed. (See
+		 * mach/thread_info.h and mach/policy.h) */
+type thread_flavor_t		= int;
+type thread_info_t		= array[*:12] of integer_t;
+
+		/* task_info_t: this inline array can hold any of:
+		 * task_basic_info_t (8 ints)
+		 * task_events_info_t (7 ints)
+		 * task_thread_times_info_t (4 ints)
+		 * policy_timeshare_info_t (5 ints)
+		 * policy_fifo_info_t (4 ints)
+		 * policy_rr_info_t (5 ints)
+		 * If other task_info flavors are added, this
+		 * definition may need to be changed. (See
+		 * mach/task_info.h and mach/policy.h) */
+type task_flavor_t		= int;
+type task_info_t		= array[*:8] of integer_t;
+
+type memory_object_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: ipc_port_t null_conversion(mach_port_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type memory_object_control_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+#if	NORMA_VM
+		intran: xmm_obj_t xmm_kobj_lookup(mach_port_t)
+#else	NORMA_VM
+		intran: vm_object_t vm_object_lookup(mach_port_t)
+#endif	/* NORMA_VM */
+#endif	/* KERNEL_SERVER */
+		;
+
+type memory_cache_control_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+#if	NORMA_VM
+		intran: xmm_obj_t xmm_kobj_lookup(mach_port_t)
+#else	NORMA_VM
+		intran: ipc_port_t null_conversion(mach_port_t)
+#endif	/* NORMA_VM */
+#endif	/* KERNEL_SERVER */
+		;
+
+type memory_object_name_t = mach_port_t
+		ctype: mach_port_t
+		;
+
+type memory_object_rep_t = mach_port_t
+		ctype: mach_port_t
+#if     KERNEL_SERVER
+                intran: ipc_port_t null_conversion(mach_port_t)
+#endif  /* KERNEL_SERVER */
+                ;
+
+type memory_object_copy_strategy_t = int;
+type memory_object_return_t = int;
+
+type machine_info_data_t = struct[5] of integer_t;
+type machine_slot_data_t = struct[8] of integer_t;
+
+type host_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: host_t convert_port_to_host(mach_port_t)
+		outtran: mach_port_t convert_host_to_port(host_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type host_priv_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: host_t convert_port_to_host_priv(mach_port_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type host_paging_t = mach_port_t        /* XXX to build norm_internals.defs */
+                ctype: mach_port_t;
+
+type security_port_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: host_t convert_port_to_host_security(mach_port_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+		/* host_info_t: variable-sized inline array that can contain:
+		 * host_basic_info_t (5 ints)
+		 * host_sched_info_t (2 ints)
+		 * kernel_resource_sizes_t (5 ints)
+		 * host_load_info_t (6 ints)
+		 * vm_statistics_t (12 ints)
+		 * If other host_info flavors are added, this definition may
+		 * need to be changed. (See mach/{host_info,vm_statistics}.h)*/
+type host_flavor_t		= int;
+type host_info_t 		= array[*:12] of integer_t;
+
+type processor_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: processor_t convert_port_to_processor(mach_port_t)
+		outtran: mach_port_t convert_processor_to_port(processor_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type processor_port_array_t 	= ^array[] of processor_t;
+
+		/* processor_info_t: variable-sized inline array that can
+		 * contain:
+		 * processor_basic_info_t: (5 ints)
+		 * If other processor_info flavors are added, this definition
+		 * may need to be changed. (See mach/processor_info.h) */
+type processor_flavor_t		= int;
+type processor_info_t		= array[*:5] of integer_t;
+
+type processor_slot_t		= array[*:1024] of int;
+
+type processor_set_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: processor_set_t convert_port_to_pset(mach_port_t)
+		outtran: mach_port_t convert_pset_to_port(processor_set_t)
+		destructor: pset_deallocate(processor_set_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type processor_set_port_array_t = ^array[] of processor_set_t;
+
+type processor_set_name_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: processor_set_t convert_port_to_pset_name(mach_port_t)
+		outtran: mach_port_t convert_pset_name_to_port(processor_set_t)
+		destructor: pset_deallocate(processor_set_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type processor_set_name_port_array_t = ^array[] of processor_set_name_t;
+
+		/* processor_set_info_t: variable-size inline array
+		 * that can hold:
+		 * processor_set_basic_info (5 ints)
+		 * processor_set_load_info (4 ints)
+		 * policy_timeshare_base_t (1 int)
+		 * policy_fifo_base_t (1 int)
+		 * policy_rr_base_t (1 int)
+		 * policy_timeshare_base_t (1 int)
+		 * policy_fifo_base_t (1 int)
+		 * policy_rr_base_t (1 int)
+		 * policy_t (1 int)
+		 * If other flavors are added, this definition may
+		 * need to be changed. (see mach/processor.h) */
+type processor_set_flavor_t	= int;
+type processor_set_info_t	= array[*:5] of integer_t;	
+
+type kernel_version_t           = c_string[*:512];
+type kernel_boot_info_t         = c_string[*:4096];
+
+type time_value_t = struct[2] of integer_t;
+
+type user_subsystem_t		= array[*:16384] of char;
+
+type subsystem_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: subsystem_t convert_port_to_subsystem(mach_port_t)
+		outtran: mach_port_t convert_subsystem_to_port(subsystem_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type mach_port_qos_t = struct[2] of integer_t;
+
+type emulation_vector_t		= ^array[] of vm_offset_t;
+
+type inline_existence_map_t	= array[*:512] of char;
+
+type policy_t			= int;
+		/* policy_info_t: variable-size inline array. Can hold:
+		 * policy_timeshare_info_t (5 ints)
+		 * policy_fifo_info_t (4 ints)
+		 * policy_rr_info_t (5 ints) */
+type policy_base_t		= array[*:5] of integer_t;
+type policy_info_t		= array[*:2] of integer_t;
+type policy_limit_t		= array[*:1] of integer_t;
+
+type ledger_port_t = mach_port_t
+                ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: ledger_t convert_port_to_ledger(mach_port_t)
+		outtran: mach_port_t convert_ledger_to_port(ledger_t)
+#endif	/* KERNEL_SERVER */
+                ;
+
+type ledger_port_array_t 	= ^array[] of ledger_port_t;
+type ledger_item_t		= integer_t;
+
+type security_token_t		= MACH_MSG_TYPE_INTEGER_64;
+
+		/* memory_object_info_t: variable-size inline array:
+		 * memory_object_attr_info_t (5 ints)
+		 * XXX actually it's 6 ints temporarily (object_ready!)
+		 * memory_object_behave_info_t (4 ints)
+		 * memory_object_perf_info_t (2 ints)
+		 * old_memory_object_attr_info_t (3 ints)
+		 * memory_object_norma_info_t (5 ints)
+		 * If other flavors are added, this definition may
+		 * need to be changed. (see mach/memory_object.h) */
+type memory_object_flavor_t	= int;
+type memory_object_info_t	= array[*:6] of int;
+
+		/* vm_region_info_t: variable-size inline array that can hold:
+		 * vm_region_basic_info_t (8 ints)
+		 * If other flavors are added, this definition may
+		 * need to be changed. (see mach/vm_region.h) */
+type vm_region_flavor_t		= int;
+type vm_region_info_t		= array[*:8] of int;
+
+type exception_mask_t		= int;
+type exception_behavior_t	= int;
+
+type	exception_port_array_t	=
+			array[*:32] of mach_port_t;
+
+type	exception_behavior_array_t	=
+			array[*:32] of exception_behavior_t;
+
+type	exception_flavor_array_t	=
+			array[*:32] of thread_state_flavor_t;
+
+type	exception_mask_array_t	=
+			array[*:32] of exception_mask_t;
+
+#if	KERNEL_SERVER
+simport <kern/ipc_kobject.h>;	/* for null conversion */
+simport <kern/ipc_tt.h>;	/* for task/thread conversion */
+simport <kern/ipc_host.h>;	/* for host/processor/pset conversions */
+simport <kern/ipc_subsystem.h>;	/* for subsystem conversions */
+simport <kern/task.h>;		/* for task_t */
+simport <kern/thread.h>;	/* for thread_t */
+simport <kern/host.h>;		/* for host_t */
+simport <kern/processor.h>;	/* for processor_t, processor_set_t */
+simport <kern/subsystem.h>;	/* for subsystem_t */
+simport <vm/vm_object.h>;	/* for vm_object_t */
+simport <vm/vm_map.h>;		/* for vm_map_t */
+simport <ipc/ipc_types.h>;	/* for ipc_space_t */
+#if	NORMA_VM
+simport <xmm/xmm_obj.h>;
+#endif	/* NORMA_VM */
+#endif	/* KERNEL_SERVER */
+
+import <mach/mach_types.h>;
+import <mach/exception.h>;
+
+#endif	/* _MACH_MACH_TYPES_DEFS_ */

@@ -1,0 +1,20 @@
+/Makefile/1.1.1.1/Sun Oct 25 06:21:33 1998//
+/event.c/1.1.1.1/Sun Oct 25 06:21:35 1998//
+/event_monitor.c/1.1.1.1/Sun Oct 25 06:21:36 1998//
+/hostbyname.c/1.1.1.1/Sun Oct 25 06:21:36 1998//
+/hoststr.c/1.1.1.1/Sun Oct 25 06:21:37 1998//
+/list.c/1.1.1.1/Sun Oct 25 06:21:37 1998//
+/msg.c/1.1.1.1/Sun Oct 25 06:21:48 1998//
+/msg_internal.h/1.1.1.1/Sun Oct 25 06:21:48 1998//
+/netmask.c/1.1.1.1/Sun Oct 25 06:21:49 1998//
+/ocsum.c/1.1.1.1/Sun Oct 25 06:21:50 1998//
+/part.c/1.1.1.1/Sun Oct 25 06:21:51 1998//
+/path.c/1.1.1.1/Sun Oct 25 06:21:53 1998//
+/prottbl.c/1.1.1.1/Sun Oct 25 06:21:56 1998//
+/romopt.c/1.1.1.1/Sun Oct 25 06:21:57 1998//
+/sessn_gc.c/1.1.1.1/Sun Oct 25 06:21:58 1998//
+/upi.c/1.1.1.1/Sun Oct 25 06:22:03 1998//
+/upi_defaults.c/1.1.1.1/Sun Oct 25 06:22:03 1998//
+/xk_debug.c/1.1.1.1/Sun Oct 25 06:22:03 1998//
+D/alloc////
+D/idmap////

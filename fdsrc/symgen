@@ -1,0 +1,4 @@
+#!/bin/sh
+echo IOStorageFamily @ $1
+echo swim3 @ $2
+kmodsyms -k mach_kernel-mine -d /System/Library/Extensions/IOStorageFamily.kext/Contents/MacOS/IOStorageFamily@$1 -o swim3.syms build/swim3.kext/Contents/MacOS/swim3@$2

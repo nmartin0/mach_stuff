@@ -1,0 +1,103 @@
+#!/bin/sh
+#
+# $XConsortium: mergelib.cpp,v 1.4 94/04/17 20:10:43 rws Exp $
+# 
+# Copyright (c) 1989  X Consortium
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+# X CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+# AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# 
+# Except as contained in this notice, the name of the X Consortium shall not be
+# used in advertising or otherwise to promote the sale, use or other dealings
+# in this Software without prior written authorization from the X Consortium.
+# 
+# Author:  Jim Fulton, MIT X Consortium
+# 
+# mergelib - merge one library into another; this is commonly used by X
+#     to add the extension library into the base Xlib.
+#
+
+usage="usage:  $0  to-library from-library [object-filename-prefix]"
+objprefix=_
+
+case $# in
+    2) ;;
+    3) objprefix=$3 ;;
+    *) echo "$usage" 1>&2; exit 1 ;;
+esac
+
+tolib=$1
+fromlib=$2
+
+if [ ! -f $fromlib ]; then
+    echo "$0:  no such from-library $fromlib" 1>&2
+    exit 1
+fi
+
+if [ ! -f $tolib ]; then
+    echo "$0:  no such to-library $tolib" 1>&2
+    exit 1
+fi
+
+
+#
+# Create a temp directory, and figure out how to reference the 
+# object files from it (i.e. relative vs. absolute path names).
+#
+
+tmpdir=tmp.$$
+origdir=..
+
+mkdir $tmpdir
+
+if [ ! -d $tmpdir ]; then
+    echo "$0:  unable to create temporary directory $tmpdir" 1>&2
+    exit 1
+fi
+
+case "$fromlib" in
+    /?*) upfrom= ;;
+    *)  upfrom=../ ;;
+esac
+
+case "$tolib" in
+    /?*) upto= ;;
+    *)  upto=../ ;;
+esac
+
+
+#
+# In the temp directory, extract all of the object files and prefix
+# them with some symbol to avoid name clashes with the base library.
+#
+cd $tmpdir
+ar x ${upfrom}$fromlib
+for i in *.o; do
+    mv $i ${objprefix}$i
+done
+
+
+#
+# Merge in the object modules, ranlib (if appropriate) and cleanup
+#
+ar clq ${upto}$tolib *.o
+ranlib ${upto}$tolib
+cd $origdir
+rm -rf $tmpdir
+
+
+

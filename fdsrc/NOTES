@@ -1,0 +1,40 @@
+NOTES:
+
+* STILL BROKEN: 
+
+1.  The format code can't initialize GCR disks (800k).  When the
+    track goes by for re-read, only sectors 1-10 or 1-11 are seen,
+    which means that sector 0 and sometimes sector 11 are lost or
+    corrupted.  The most likely cause would be that the code to
+    initialize the track in the cache is broken and is writing a
+    track that's too long.  More info when I find the bug.
+  a.  it looks like the format code was writing too long a track, for
+      one thing.  This has been fixed.  I've also fixed a few related
+      glitches caused by an incorrect fix for the long track problem.
+  b.  there is some question about whether it is reasonable to format
+      the track cache for GCR in the places where this is done.
+  c.  the track cache must be purged after formatting or reads will
+      fail.  Hard.
+
+2.  Formatting nit: you should not be allowed to try to format a
+    SSDD disk as double-sided.  This should be done in a way that
+    doesn't prevent you from taking a DSDD disk that wass previously
+    formatted single-sided and reformatting it as double-sided.
+    This requires actually checking for index marks on the back
+    side of the disk and doing the right thing.  :-)
+
+Cleanup: do SWIMIIICopyRegs in EnterHardwareLockSection.
+
+* WARNINGS (that should be cleaned up):
+
+1.  Need to include headers for kvtophys, delay, flush_dcache, invalidate_dcache,
+    IOMalloc, sleep, wakeup in order to verify usage....
+2.  Verify use of invalidate_dcache in place of invalidate_cache_for_io.
+3.  dbdmasupport.c: implicit declaration of IOMallocContiguous and IOFreeContiguous.
+4.  extern.c: implicit declarations of delay, invalidate_cache_for_io, and
+    flush_dcache.
+5.  floppy_iocache.c: implicit declarations of flush_dcache and invalidate_dcache.
+6.  grcswimiiihal.c: implicit declaration of PrintDMA and kvtophys.
+    incompatible pointer type for arg 2 of dbdma_start.
+7.  swimiiicommonhal.c: implicit declaration of delay.
+

@@ -1,0 +1,24 @@
+Additional notes about formatting floppies (recorded for posterity):
+
++ 1.  After ready asserts after seek, must wait 300 ms before format.
++ 2.  After seek, should wait 150 usec. before checking for ready or
+      else could see prior ready before the line gets deasserted. (< 1 msec)
+      AIEE.  One spec suggests more like 150 msec!
++ 3.  After mode change, wait 600 msec.
++ 4.  After head change, wait 100 microseconds (0.1 msec)
++ 5.  MFM Format mode doesn't set write intr.  (Was really trying GCR)
++ 6.  GCR Format mode doesn't set write intr.
++ 7.  MFM Format mode gives 128 in error flags, returns -72 (bad data mark
+      checksum).  Error actually means CRC error on data field.
++ 7.  Format mode only sends DMA done interrupt, not an interrupt from
+      SWIM itself.  (Turns out that code was using virtual address because
+      the old X server version of this code passed virtual addresses to
+      StartDMA, while our code base uses physical addresses.  Doh!)
++ 8.  Chip appears lobotomized afterwards, with all registers zeroed.
+      (I accidentally used the dma vaddr instead of the chip vaddr
+      as the base address in the PrintRegs() function.  Oops.)
++ 9.  Verify SetDBDMAPhysicalAddress (is different in X Server version, 
+      including changes to when interrupts are generated.)
++10.  floppycore.c:2185 - 600 msec delay should not happen when polling for
+      media presence....  :-)
+

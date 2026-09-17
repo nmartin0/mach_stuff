@@ -1,0 +1,14 @@
+/Makefile/1.1.1.1/Fri Oct  2 21:12:05 1998//
+/entry.S/1.2/Wed Nov 18 23:52:46 1998//
+/head.S/1.1.1.1/Fri Oct  2 21:12:06 1998//
+/ioport.c/1.2/Wed Nov 18 23:52:47 1998//
+/ksyms.c/1.1.1.1/Fri Oct  2 21:12:06 1998//
+/ldt.c/1.1.1.1/Fri Oct  2 21:12:06 1998//
+/process.c/1.1.1.1/Fri Oct  2 21:12:06 1998//
+/ptrace.c/1.2/Wed Nov 18 23:52:47 1998//
+/setup.c/1.1.1.1/Fri Oct  2 21:12:07 1998//
+/signal.c/1.1.1.1/Fri Oct  2 21:12:07 1998//
+/sys_i386.c/1.1.1.1/Fri Oct  2 21:12:07 1998//
+/traps.c/1.2/Wed Nov 18 23:52:47 1998//
+/vm86.c/1.1.1.1/Fri Oct  2 21:12:08 1998//
+D

@@ -1,0 +1,135 @@
+/*
+ * @OSF_COPYRIGHT@
+ */
+/*
+ * HISTORY
+ * $Log: clock.defs,v $
+ * Revision 1.2.8.2  1994/09/23  02:34:39  ezf
+ * 	change marker to not FREE
+ * 	[1994/09/22  21:39:11  ezf]
+ *
+ * Revision 1.2.8.1  1994/08/07  20:48:34  bolinger
+ * 	Merge up to colo_b7.
+ * 	[1994/08/01  21:01:16  bolinger]
+ * 
+ * Revision 1.2.6.1  1994/06/25  03:46:35  dwm
+ * 	mk6 CR98 - add flavor interface typedefs (clock_flavor_t)
+ * 	[1994/06/24  21:54:21  dwm]
+ * 
+ * Revision 1.2.2.2  1993/06/09  02:39:32  gm
+ * 	Added to OSF/1 R1.3 from NMK15.0.
+ * 	[1993/06/02  21:15:34  jeffc]
+ * 
+ * Revision 1.2  1993/04/19  16:31:57  devrcs
+ * 	Changed timespec to tvalspec.
+ * 	[93/03/19            jat]
+ * 
+ * 	Fixed copyright
+ * 	[93/03/17            bernadat]
+ * 
+ * 	Changed clock_get/set_res to clock_get/set_attributes.
+ * 	[92/12/14            jat]
+ * 
+ * 	Changed clock_get_res interface to return only
+ * 	the current alarm resolution.
+ * 	[92/10/14            jat]
+ * 
+ * 	Deleted clock_sleep ipc interface.
+ * 	[92/08/28            jat]
+ * 
+ * 	Added OSF copyright notice.
+ * 	[92/08/26            jat]
+ * 
+ * 	Initial version for new kernel alarm clock facility.
+ * 	[92/03/07            jat]
+ * 
+ * $EndLog$
+ */
+
+/*
+ * 	File:		mach/clock.defs
+ *	Purpose:	Kernel clock subsystem definitions. This
+ *			file defines the clock request interface.
+ */
+
+subsystem
+#if	KERNEL_SERVER
+	  KernelServer
+#endif	/* KERNEL_SERVER */
+		       clock 3125000;
+
+#include <mach/std_types.defs>
+#include <mach/mach_types.defs>
+#include <mach/clock_types.defs>
+
+
+/*
+ *	Get service port for a processor set.
+ *	Available to all.
+ */
+routine host_get_clock_service(
+		host		: host_t;
+		clock_id	: clock_id_t;
+	out	clock		: clock_t);
+
+/*
+ *	Get control port for a processor set.
+ *	Privileged.
+ */
+routine host_get_clock_control(
+		host_priv	: host_priv_t;
+		clock_id	: clock_id_t;
+	out	clock_ctrl	: clock_ctrl_t);
+
+/*
+ *	Get the clock time.
+ *	Available to all.
+ */
+routine	clock_get_time(
+		clock		: clock_t;
+	out	cur_time	: tvalspec_t);
+
+/*
+ *	Get clock attributes.
+ *	Available to all.
+ */
+routine	clock_get_attributes(
+		clock		: clock_t;
+	in	flavor		: clock_flavor_t;
+	out	clock_attr	: clock_attr_t, CountInOut);
+
+/*
+ *	Set the clock time.
+ *	Privileged.
+ */
+routine	clock_set_time(
+		clock_ctrl	: clock_ctrl_t;
+		new_time	: tvalspec_t);
+
+/*
+ *	Set clock attributes.
+ *	Privileged.
+ */
+routine	clock_set_attributes(
+		clock_ctrl	: clock_ctrl_t;
+	in	flavor		: clock_flavor_t;
+	in	clock_attr	: clock_attr_t);
+
+/*
+ *	Map the clock time.
+ *	Available to all.
+ */
+routine	clock_map_time(
+		clock		: clock_t;
+	out	pager		: memory_object_t);
+
+/*
+ *	Setup a clock alarm.
+ *	Available to all.
+ */
+routine clock_alarm(
+		clock		: clock_t;
+		alarm_type	: alarm_type_t;
+		alarm_time	: tvalspec_t;
+                alarm_port      : mach_port_t =
+                        MACH_MSG_TYPE_MAKE_SEND_ONCE|polymorphic);

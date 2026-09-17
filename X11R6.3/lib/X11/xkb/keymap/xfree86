@@ -1,0 +1,71 @@
+// $XConsortium: xfree86 /main/12 1996/08/31 12:17:30 kaleb $
+default xkb_keymap "us" {
+    xkb_keycodes	{ include "xfree86"		};
+    xkb_types		{ include "default"		};
+    xkb_compatibility	{ include "default"		};
+    xkb_symbols		{ include "us(pc105)"		};
+    xkb_geometry	{ include "pc"			};
+};
+xkb_keymap "us_microsoft" {
+    xkb_keycodes	{ include "xfree86"		};
+    xkb_types		{ include "default"		};
+    xkb_compatibility	{ include "default"		};
+    xkb_symbols		{ include "us(pc105)"		};
+    xkb_geometry	{ include "microsoft"		};
+};
+xkb_keymap "us_flexpro" {
+    xkb_keycodes	{ include "xfree86"		};
+    xkb_types		{ include "default"		};
+    xkb_compatibility	{ include "default"		};
+    xkb_symbols		{ include "us(pc105)"		};
+    xkb_geometry	{ include "keytronic(FlexPro)"	};
+};
+xkb_keymap "en_US" {
+    xkb_keycodes	{ include "xfree86"		};
+    xkb_types		{ include "default"		};
+    xkb_compatibility	{ include "default"		};
+    xkb_symbols 	{ include "en_US(pc105)"	};
+    xkb_geometry 	{ include "pc"			};
+};
+xkb_keymap "de"	{
+    xkb_keycodes	{ include "xfree86"		};
+    xkb_types		{ include "default"		};
+    xkb_compatibility	{ include "default"		};
+    xkb_symbols		{ include "en_US(pc105)+de"	};
+    xkb_geometry 	{ include "pc(pc102)"		};
+};
+xkb_keymap "fr"	{
+    xkb_keycodes	{ include "xfree86"		};
+    xkb_types		{ include "default"		};
+    xkb_compatibility	{ include "default"		};
+    xkb_symbols		{ include "en_US(pc105)+fr"	};
+    xkb_geometry 	{ include "pc(pc102)"		};
+};
+xkb_keymap "gb"	{
+    xkb_keycodes	{ include "xfree86"		};
+    xkb_types		{ include "default"		};
+    xkb_compatibility	{ include "default"		};
+    xkb_symbols		{ include "en_US(pc105)+gb"	};
+    xkb_geometry 	{ include "pc(pc102)"		};
+};
+xkb_keymap "th"	{
+    xkb_keycodes	{ include "xfree86"		};
+    xkb_types		{ include "default"		};
+    xkb_compatibility	{ include "default"		};
+    xkb_symbols		{ include "en_US(pc105)+th"	};
+    xkb_geometry 	{ include "pc(pc102)"		};
+};
+xkb_keymap "de_CH"	{
+    xkb_keycodes	{ include "xfree86"		};
+    xkb_types		{ include "default"		};
+    xkb_compatibility	{ include "default"		};
+    xkb_symbols		{ include "en_US(pc105)+de_CH"	};
+    xkb_geometry 	{ include "pc(pc102)"		};
+};
+xkb_keymap "fr_CH"	{
+    xkb_keycodes	{ include "xfree86"		};
+    xkb_types		{ include "default"		};
+    xkb_compatibility	{ include "default"		};
+    xkb_symbols		{ include "en_US(pc105)+fr_CH"	};
+    xkb_geometry 	{ include "pc(pc102)"		};
+};

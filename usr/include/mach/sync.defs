@@ -1,0 +1,157 @@
+/*
+ * @OSF_COPYRIGHT@
+ * 
+ */
+/*
+ * HISTORY
+ * $Log: sync.defs,v $
+ * Revision 1.1.19.1  1997/01/31  15:46:24  emcmanus
+ * 	Merged with nmk22b1_shared.
+ * 	[1997/01/30  08:39:19  emcmanus]
+ *
+ * Revision 1.1.15.2  1996/11/29  11:11:37  emcmanus
+ * 	Merged with rt3_merge.
+ * 	[1996/11/27  16:33:25  emcmanus]
+ * 
+ * Revision 1.1.16.2  1996/10/22  17:54:36  gdt
+ * 	Change 'semaphore_timedwait()' to accept a "tvalspec_t" timeout.
+ * 	Define 'semaphore_wait()' in terms of 'semaphore_timedwait()' function.
+ * 	[1996/10/22  17:52:47  gdt]
+ * 
+ * Revision 1.1.16.1  1996/10/18  15:31:58  gdt
+ * 	Add support for 'pthread_cond_timedwait()'
+ * 	[1996/10/18  15:31:13  gdt]
+ * 
+ * Revision 1.1.15.1  1996/10/14  13:31:43  emcmanus
+ * 	Added semaphore_signal_thread().
+ * 	[1996/10/14  13:16:34  emcmanus]
+ * 
+ * Revision 1.1.4.5  1995/06/13  18:19:52  sjs
+ * 	Merged from flipc_shared.
+ * 	[95/06/07            sjs]
+ * 
+ * Revision 1.1.12.1  1995/05/25  20:54:06  sjs
+ * 	Merge with rt3_shared (NSWC sandbox).
+ * 	[1995/05/25  11:20:10  sjs]
+ * 
+ * Revision 1.1.10.1  1995/05/22  21:16:42  joe
+ * 	Synchronizer MP fix:
+ * 	Added reference count support, defined destructor functions for
+ * 	semaphores and lock sets.
+ * 
+ * 	Removed the obsolete lock_assume_ownership interface.
+ * 	[1995/05/22  21:15:40  joe]
+ * 
+ * Revision 1.1.4.4  1995/01/10  05:17:51  devrcs
+ * 	mk6 CR801 - copyright marker not FREE_
+ * 	[1994/12/01  19:25:16  dwm]
+ * 
+ * Revision 1.1.4.1  1994/08/16  16:22:25  joe
+ * 	Original rt2_shared synchronizer code
+ * 
+ * $EndLog$
+ */
+/*
+ *	File: mach/sync.defs
+ *	Author: Joseph CaraDonna
+ *
+ *	Exported kernel calls	
+ *
+ */
+
+subsystem
+#if	KERNEL_SERVER
+	KernelServer
+#endif	/* KERNEL_SERVER */
+			sync 617000;
+
+#include <mach/std_types.defs>
+#include <mach/mach_types.defs>
+#include <mach/clock_types.defs>
+
+#if	KERNEL_SERVER
+import <kern/sync_lock.h>;
+import <kern/sync_sema.h>;
+import <kern/ipc_sync.h>;
+#endif	/* KERNEL_SERVER */
+
+
+type semaphore_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: semaphore_t convert_port_to_semaphore(mach_port_t)
+		outtran: mach_port_t convert_semaphore_to_port(semaphore_t)
+		destructor: semaphore_dereference(semaphore_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+type lock_set_t = mach_port_t
+		ctype: mach_port_t
+#if	KERNEL_SERVER
+		intran: lock_set_t convert_port_to_lock_set(mach_port_t)
+		outtran: mach_port_t convert_lock_set_to_port(lock_set_t)
+		destructor: lock_set_dereference(lock_set_t)
+#endif	/* KERNEL_SERVER */
+		;
+
+
+routine semaphore_create(
+		task		: task_t;
+	out	semaphore	: semaphore_t;
+		policy		: int;
+		value		: int);
+
+routine semaphore_destroy(
+		task		: task_t;
+		semaphore	: semaphore_t);
+
+routine semaphore_signal(
+		semaphore	: semaphore_t);
+
+routine semaphore_signal_all(
+		semaphore	: semaphore_t);
+
+routine semaphore_wait(
+		semaphore	: semaphore_t);
+
+routine lock_set_create(
+		task		: task_t;
+	out	new_lock_set	: lock_set_t;
+		n_ulocks	: int;
+		policy		: int);
+
+routine lock_set_destroy(
+		task		: task_t;
+		lock_set	: lock_set_t);
+
+routine lock_acquire(
+		lock_set	: lock_set_t;
+		lock_id		: int);
+
+routine lock_release(
+		lock_set	: lock_set_t;
+		lock_id		: int);
+
+routine lock_try(
+		lock_set	: lock_set_t;
+		lock_id		: int);
+
+routine lock_make_stable(
+		lock_set	: lock_set_t;
+		lock_id		: int);
+
+routine lock_handoff(
+		lock_set	: lock_set_t;
+		lock_id		: int);
+
+routine lock_handoff_accept(
+		lock_set	: lock_set_t;
+		lock_id		: int);
+
+routine semaphore_signal_thread(
+		semaphore	: semaphore_t;
+		thread		: thread_act_t);
+
+routine semaphore_timedwait(
+		semaphore	: semaphore_t;
+		wait_time	: tvalspec_t);

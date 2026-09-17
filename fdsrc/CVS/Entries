@@ -1,0 +1,20 @@
+/.cvsignore/1.1/Tue Feb  5 23:33:23 2002//
+/DEBUGINFO/1.3/Thu Mar 21 21:28:30 2002//
+/symgen/1.2/Tue Apr  2 03:21:48 2002//
+D/English.lproj////
+D/MkLinux_floppy////
+D/build////
+D/floppy.pbproj////
+/ANNOUNCE/1.5/Tue Apr  2 04:58:45 2002//
+/NOTES-format/1.1/Wed May 29 07:22:06 2002//
+/bus_device.h/1.6/Sun Jun  2 01:41:05 2002//
+/floppy.h/1.23/Sun Jun  2 01:41:05 2002//
+/floppy_iocache.c/1.2/Sun Jun  2 01:41:05 2002//
+D/FloppyMediaBSDClient////
+D/debug////
+D/fdformat////
+/NOTES/1.14/Sun Jun 23 04:06:35 2002//
+/fd.h/1.16/Sun Jun 23 04:06:35 2002//
+/floppy.cpp/1.59/Sun Jun 23 04:06:35 2002//
+/floppy_blkdev.cpp/1.42/Sun Jun 23 04:06:36 2002//
+/floppy_sleep.c/1.17/Sun Jun 23 04:06:36 2002//

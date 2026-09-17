@@ -1,0 +1,12 @@
+/.cvsignore/1.2/Thu Nov 12 16:46:29 1998//
+/Makefile/1.2/Mon Oct  5 23:47:25 1998//
+/dir.c/1.2/Mon Oct  5 23:47:26 1998//
+/file.c/1.1.1.1/Fri Oct  2 21:14:54 1998//
+/inode.c/1.5/Sat Apr 17 10:30:56 1999//
+/joliet.c/1.2/Wed Nov 18 22:42:49 1998//
+/namei.c/1.2/Mon Oct  5 23:47:28 1998//
+/rock.c/1.2/Mon Oct  5 23:47:29 1998//
+/rock.h/1.1.1.1/Fri Oct  2 21:14:54 1998//
+/symlink.c/1.1.1.1/Fri Oct  2 21:14:55 1998//
+/util.c/1.2/Mon Oct  5 23:47:30 1998//
+D

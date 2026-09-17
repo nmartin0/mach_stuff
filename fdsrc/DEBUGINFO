@@ -1,0 +1,8 @@
+gdb mach_kernel-mine
+source ~/xnu/osfmk/.gdbinit
+p proc0
+source ~/xnu/osfmk/.gdbinit
+add-symbol-file swim3.syms
+y
+target remote-kdp
+attach 17.203.35.150
