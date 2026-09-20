@@ -1,0 +1,50 @@
+
+README for issues specific to globegate's cvs distribution
+
+$Id: README.globegate,v 1.8 1999/01/20 04:31:58 dgatwood Exp $
+
+======================================================================
+
+(Undated)
+
+A mailing list exists for following changes and updates to globegate's
+MkLinux source distribution (CVS).  To subscribe, send email to
+
+cvs-mklinux-l-request@globegate.utm.edu
+
+with the word "subscribe" in the body of the message.
+
+
+-David Gatwood
+dgatwood@globegate.utm.edu
+
+------------------------------
+
+Mon Nov 28 13:13:00 EDT 1998
+
+This src allows you to configure in support for ADB mice. This also
+allows you to emulate three button mice on a one button mouse. This
+can be done by adding "adb_buttons=X[,keycode_1, keycode_2] to the
+vmlinux server line in /mach_servers/bootstrap.conf such as:
+/mach_servers/bootstrap.conf such as:
+-k ... /dev/.../vmlinux.globegate \"root=/dev/yourroot adb_buttons=..\"
+
+If X is 1, right control/alt will act as button two or three.
+If X is 2, it's right control/alt and a mouse click.  You can also
+specify the keycodes of what keys will be used instead.
+
+If this doesn't work, try specifying:
+-k ... /dev/.../vmlinux.globegate <your mach root> adb_buttons=...
+
+The mach root for SCSI is sd<scsi id number><partition letter 
+(0=a 1=b etc)
+
+Then you can use right control/right option as button 2/3 with gpm.
+Note, the \s are important.
+
+- Tom Rini
+tmrini@ntplx.net
+
+------------------------------
+
+

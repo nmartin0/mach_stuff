@@ -1,0 +1,172 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1991,1990,1989 Carnegie Mellon University
+ * All Rights Reserved.
+ * 
+ * Permission to use, copy, modify and distribute this software and its
+ * documentation is hereby granted, provided that both the copyright
+ * notice and this permission notice appear in all copies of the
+ * software, derivative works or modified versions, and any portions
+ * thereof, and that both notices appear in supporting documentation.
+ * 
+ * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+ * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+ * 
+ * Carnegie Mellon requests users of this software to return to
+ * 
+ *  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+ *  School of Computer Science
+ *  Carnegie Mellon University
+ *  Pittsburgh PA 15213-3890
+ * 
+ * any improvements or extensions that they make and grant Carnegie Mellon
+ * the rights to redistribute these changes.
+ */
+/*
+ * HISTORY
+ * 14-Dec-92  Randall Dean (rwd) at Carnegie-Mellon University
+ *	Modify for continuation based version.
+ *
+ * $Log:	csw.s,v $
+ * Revision 2.7.2.1  92/06/22  11:49:56  rwd
+ * 	Modified for single lock version of cproc.c
+ * 	[92/04/22            rwd]
+ * 
+ * Revision 2.7  91/07/31  18:36:32  dbg
+ * 	Fix for ANSI C preprocessor.
+ * 	[91/07/30  17:35:16  dbg]
+ * 
+ * Revision 2.6  91/05/14  17:56:56  mrt
+ * 	Correcting copyright
+ * 
+ * Revision 2.5  91/05/08  13:35:49  dbg
+ * 	Unlock lock with a locked instruction (xchg).
+ * 	[91/03/20            dbg]
+ * 
+ * Revision 2.4  91/02/14  14:20:02  mrt
+ * 	Changed to new Mach copyright
+ * 	[91/02/13  12:15:27  mrt]
+ * 
+ * Revision 2.3  91/01/08  16:46:20  rpd
+ * 	Don't use Times - horta doesn't like it for some reason.
+ * 	[91/01/06            rpd]
+ * 
+ * Revision 2.2  90/05/03  15:54:37  dbg
+ * 	Created.
+ * 	[90/02/05            dbg]
+ * 
+ */
+#include <i386/asm.h>
+#define B_ARG4	24(%ebp)
+#define B_ARG5	28(%ebp)
+#define ROUTINE 4
+#define ARGUMENT 0
+
+/*
+ * cthread_filter(con, type, a1, a2, a3, a4)
+ */
+
+ENTRY(cthread_filter)
+	pushl	%ebp
+	movl	%esp,%ebp
+	movl	B_ARG1,%ecx
+
+	cmpl	$0,%ecx
+	jne	1f
+
+0:	pushl	%ebx		! IN
+	pushl	%esi
+	pushl	%edi
+	movl	B_ARG0,%ecx
+	subl	$8,%esp
+	movl	%esp,(%ecx)
+	movl	B_ARG4,%ecx
+	pushl	%ecx
+	movl	B_ARG3,%ecx
+	pushl	%ecx
+	call	*B_ARG2
+
+1:	cmpl	$1,%ecx
+	jne	2f
+
+	movl	B_ARG0,%ebx	! COMPRESS
+	movl	(%ebx),%ebx
+	movl	B_ARG3,%eax
+	movl	%eax,ARGUMENT(%ebx)
+	movl	B_ARG2,%eax
+	movl	%eax,ROUTINE(%ebx)
+	movl	B_ARG4,%edx
+	movl	B_ARG5,%ecx
+	movl	(%ecx),%esp
+	xorl	%eax,%eax
+	xchg	%eax,(%edx)
+	movl	ARGUMENT(%esp),%esi
+	pushl	%esi
+	call	*8(%esp)
+
+
+2:	cmpl	$2,%ecx
+	jne	3f
+
+
+3:	cmpl	$3,%ecx
+	jne	4f
+
+	movl	B_ARG0,%ecx	!OUT
+	movl	B_ARG2,%eax
+	movl	(%ecx),%esp
+	addl	$8,%esp
+	popl	%edi
+	popl	%esi
+	popl	%ebx
+	popl	%ebp
+	ret
+
+4:	cmpl	$4,%ecx
+	jne	5f
+
+	movl	B_ARG0,%ecx	!PREPARE
+	movl	B_ARG2,%edx
+	movl	B_ARG3,%eax
+	movl	(%ecx),%ecx
+	movl	%edx,ROUTINE(%ecx)
+	movl	%eax,ARGUMENT(%ecx)
+	leave
+	ret
+
+5:	cmpl	$5,%ecx
+	jne	6f
+
+/*
+ * This whole get_state/set_state thing on blocked threads is REAL
+ * fuzzy.  Do we care beyond eip, ebp, and esp?  For now deal with
+ * only these.  It might make sense to save efl across internal
+ * context switching to allow single stepping to be specified
+ * for blocked threads.  I REALLY don't know
+ */
+
+	movl	B_ARG0,%ecx	!GET_STATE
+	movl	(%ecx),%ecx
+	movl	B_ARG2,%edx
+	movl	B_ARG5,%eax
+	pushl	%ebx
+	movl	ROUTINE(%ecx),%ebx /* eip will be the continuation */
+	movl	%ebx,48(%edx)
+	movl	%eax,60(%edx)	/* uesp is after the block */
+	addl	$20,%eax
+	movl	%eax,24(%edx)	/* point ebp to saved ebp */
+	popl	%ebx
+	leave
+	ret
+
+6:	movl	B_ARG0,%ecx	!SET_STATE
+	movl	(%ecx),%ecx
+	movl	B_ARG2,%edx
+	movl	48(%edx),%eax
+	movl	%eax, ROUTINE(%ecx) /* eip will be the continuation */
+/*
+ * I don't see any way to do other registers here that makes any sense
+ */
+	leave
+	ret

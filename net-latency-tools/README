@@ -1,0 +1,52 @@
+Network Latency Benchmarks
+version 1.0  (30 July 1993)
+
+Chris Maeda (cmaeda@cs.cmu.edu)
+
+This code is in the public domain.
+
+
+This package lets you measure and analyze round trip latency for tcp
+and udp.  It's made up of three programs:
+
+	udp_client -- a udp echo server
+	tcp_client -- a tcp echo server
+	client     -- a generic (tcp or udp) echo client
+
+Someday I might write some documentation, but here's an example of how
+to run them.
+
+On the server host (2000 is the size of the server's buffer):
+
+myserver% udp_server 2000
+server host 128.2.209.192, listening on udp port 3248
+
+
+On the client host:
+
+client% client myserver 3248 100 1 10
+# server: 128.2.209.192 port: 3248 - 100 1 byte udp packets
+# trial pkts    data    time(ms)        cache(ms)
+0       100     1       234     0
+1       100     1       234     0
+2       100     1       250     0
+3       100     1       329     0
+4       100     1       250     0
+5       100     1       453     0
+6       100     1       218     0
+7       100     1       219     0
+8       100     1       422     0
+9       100     1       234     0
+
+There are other options.  You have to read the code for now.
+
+There is only one analysis tool: a shell script that filters the
+output of the client program and spits out all datapoints with a given
+message size.  This currently assumes that you always send the same
+number of messages per trial.  The nice thing about this tool is that
+its output can be plotted with gnuplot or analyzed using a stat
+package.  It would be cool if someone wrote some analysis tools in
+perl or something.
+
+
+

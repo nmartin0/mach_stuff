@@ -1,0 +1,722 @@
+
+
+
+
+                     Mach  DOS  Installation  Notes
+
+
+
+                      School  of  Computer  Science
+
+                      Carnegie  Mellon  University
+
+       5000  Forbes  Avenue  Pittsburgh,  Pennsylvania  15213
+
+
+
+1.  Introduction
+
+
+
+This   document   describes   the   procedure   for   building   and
+installing   Mach   DOS   emulation   software   (Mdos).       This
+software  only  works  with  the  Mach  3.0  kernel.   Mdos  must  be
+executed  from  the  console.
+
+
+   The  Mach  DOS  system  supports  DOS  versions  3.1  to  5.0  and
+runs  Windows  3.0  in  real-mode.    We  have  successfully  run
+over  100  DOS  applications  ranging  from  business  software
+such   as   Lotus   123   and   Microsoft   Word   to   entertainment
+software  such  as  Wing  Commander,  Space  Quest  IV,  King's
+Quest   V,   Populous,   and   the   Microsoft   Flight   Simulator.
+Many  of  these  applications  are  extremely  demanding  in  terms
+of  both  graphics  performance  for  VGA  displays  and  sound
+generated  by  commercial  monaural  and  stereo  sound  boards.
+Note,  only  real-mode  DOS  software  will  execute  successfully
+with  the  Mach  DOS  software.    Protected  Mode  DOS  software
+such  as  Windows  3.1  currently  will  not  work.
+
+
+   A  key  feature  of  the  integration  between  the  Mach  DOS
+software  and  the  unix  server  is  the  ability  to  access  files
+in  the  Unix  File  System  (UFS)  from  within  the  Mach  DOS
+environment.    Using  this  ability  you  can  store,  transfer
+and  execute  files  from  either  the  normal  DOS  C:  partition
+or  the  Unix  File  System  D:  partition.   The  Unix  File  System
+features  include  access  to  any  transparent  network  as  well,
+including  AFS  and  RFS.
+
+
+
+2.  Setup  Requirements
+
+
+
+In  order  to  compile  and  run  the  Mdos  emulator  software,  you
+must  have  the  following:
+
+
+   - The  Mdos  release  source  code.
+
+
+   - A  bootable  version  of  DOS,  either  on  floppy  or  the
+     machine's  hard  disk  partition.    WE  DO  NOT  SUPPLY  DOS,
+     you  must  purchase  it.    You  must  use  a  version  of  DOS
+     between  3.1  and  5.0.
+
+
+   - You  must  have  a  version  of  Mach  3.0  MK73  or  later  than
+     running  on  an  Intel  80386/486  based  machine.
+
+
+   - A  corresponding  version  of  the  4.3  BSD  Unix  Server  at
+     least  as  current  as  UX32.
+
+
+
+3.  Building  the  Emulator
+
+
+
+To  build  the  Mdos  emulation  software,  you  should  change
+directory  to  the  mdos/src  directory.    Make  sure  that  the
+mach3  release  area  is  on  your  paths.   To  make  sure,  type:
+
+
+
+     setpath  -ib  /usr  /usr/mach3
+
+
+
+Note:    if  the  setpath  command  has  the  effect  of  getting
+cc  from  /usr/mach3,  you  should  also  set  the  GCC_EXEC_PREFIX
+environment  variable  as  follows:
+
+
+
+     setenv  GCC_EXEC_PREFIX  /usr/mach3/lib/gcc-
+
+
+
+You  can  do  a  wh  cc  to  find  out  what  compiler  you  will  be
+using.    If  you  are  using  /bin/cc  you  do  not  want  to  set
+GCC_EXEC_PREFIX.
+
+
+   Once  your  paths  are  setup,  you  should  just  type:
+
+
+
+     make
+
+
+
+Once  the  makefiles  have  completed,  you  then  enter:
+
+
+
+     make  install
+
+
+
+This  will  install  the  Mdos  files  in  the  mdos  build  area.   In
+addition  to  the  src  directory,  there  will  be  bin,  doc,  lib,
+and  man  directories.
+
+
+4.  Setting  up  Mach  for  DOS
+
+
+
+In  order  for  the  Mdos  emulation  software  to  work  with  your
+system,  you  must  first  set  up  some  Mach  devices.   Check  that
+your  /dev/iopl  and  disk  devices  are  set  correctly.
+
+
+
+4.1.   VGA  Access
+
+
+
+You  must  make  sure  that  you  have  a  /dev/iopl;  a  character
+device  with  major  16  and  minor  0.   It  must  be  read/writeable
+by  any  user.   This  is  used  to  access  the  VGA  display  memory
+and  the  I/O  ports.   You  can  easily  make  one  of  these  device
+files,  by  executing  MAKEDEV  in  the  /dev  directory  as  root  as
+follows:
+
+
+
+     MAKEDEV  iopl
+
+
+
+4.2.   Floppy  Access
+
+
+
+Make  sure  that  your  floppy  devices  are  correct.     If  you
+use  them  regularly,  they  are  probably  fine.    If  not,  the
+simplest  thing  to  do  is  to  remove  what  is  there  and  generate
+new  ones.
+
+
+
+  1. First,  remove  the  old  ones  as  root,  by  typing:
+
+
+          rm  -f  /dev/*fd*
+          rm  -f  /dev/*floppy*
+
+
+  2. Second,  change  directories  to  /dev  and  execute  MAKEDEV
+     as  root  by  typing:
+
+
+          MAKEDEV  f<size><unit>
+
+
+     Where  <size>  is  3  or  5  (3  for  3.5"  disks  and  5  for  5.25"
+     disks),  and  <unit>  is  either  0  or  1.   Do  this  for  each
+     floppy  device  you  have.   This  creates  /dev/[r]fd<unit>,
+     and  /dev/[r]floppy<unit>.
+
+
+  3. Make  sure  that  you  chmod  them,  so  that  any  user  can  read
+     and  write  them:
+
+
+          chmod  666  /dev/*fd*
+          chmod  666  /dev/*floppy*
+
+
+5.  Setting  up  the  Emulator
+
+
+
+The  setup  procedure  entails  creating  a  DOS  boot  floppy,
+copying  that  floppy  into  a  UFS  file  image,   and  copying
+several  Mach  DOS  configuration  files  onto  it.
+
+
+
+5.1.   Making  a  New  DOS  Floppy
+
+
+
+First  and  foremost,  you  should  make  a  brand  new,  freshly
+formatted  DOS  boot  floppy.   This  new  disk  should  be  written
+as  a  high  density  disk.     This  step  is  to  ensure  that
+your  boot  floppy  only  has  the  DOS  system  files  (which  are
+invisible)  and  a  COMMAND.COM  file  in  the  root  directory.   It
+absolutely  should  not  have  an  autoexec.bat,  or  config.sys
+file  on  it.     If  you  know  enough  about  DOS  to  create  a
+floppy  in  this  manner,  you  will  want  to  skip  the  detailed
+instructions.
+
+
+   Your  DOS  A:  floppy  can  be  either  3.5"  or  5.25";   it
+doesn't  matter.
+
+
+
+  1. Use  /etc/reboot  to  shut  down  Mach  3.0.
+
+
+  2. Boot  DOS.
+
+
+  3. Once  DOS  has  booted  and  you  have  a  prompt,  execute  the
+     format  command  as  follows:
+
+
+          format  a:   /s
+
+
+     This  will  ask  you  to  place  the  floppy  to  be  formatted
+     into  the  drive.     Place  the  new  disk  into  the  drive,
+     close  the  door,  and  press  a  key.
+
+
+
+   When  the  format  command  has  finished,  remove  your  new  DOS
+boot  floppy  from  the  A:  drive.   This  newly  formatted  floppy
+will  be  referred  to  as  the  DOS  boot  floppy  in  the  rest  of
+this  document.
+
+
+   Do  not  put  either  an  autoexec.bat,  or  a  config.sys  file
+on  this  floppy.   These  will  be  added  to  your  floppy  in  the
+next  stage.
+
+
+5.2.   Copying  DOS  Boot  Floppy  into  UFS
+
+
+
+You  must  have  a  copy  of  the  DOS  boot  code  and  the  actual  DOS
+operating  system  available  to  Mach  DOS.  This  can  be  either  a
+floppy  disk  in  the  disk  drive,  a  DOS  hard  disk  partition,
+or  it  can  be  Unix  File  System  image  of  a  DOS  boot  floppy.
+The  latter  is  the  usual  choice  and  is  discussed  in  the
+installation  procedures.   For  information  on  setting  up  your
+DOS  hard  disk  partition  for  Mach  DOS,  see  the  appendices.
+
+
+   By  default,  the  Mach  DOS  software  looks  for  a  file  called
+ms.dos  at  invocation.   It  looks  for  this  file  on  your  LPATH
+or  in  your  HOME/lib  directory.     To  generate  this  file,
+follow  these  instructions:
+
+
+
+  1. Remove  the  newly  formatted  DOS  boot  floppy  from  the
+     floppy  disk  drive.
+
+
+  2. Simultaneously  press  the  Control,  Alt,  and  Delete  keys.
+     This  reboots  your  machine  when  running  DOS.
+
+
+  3. Bring  Mach  3.0  up  and  log  in.
+
+
+  4. Change   directory   to   the   lib   directory   in   your   home
+     directory.
+
+
+  5. Insert  the  new  DOS  boot  floppy  in  the  A:  drive  and  close
+     the  door.
+
+
+  6. Execute  the  following  command:
+
+
+          cp  /dev/rfloppy  ms.dos
+
+
+     This  will  take  a  couple  of  minutes.
+
+
+
+5.3.   Copying  Special  Files  onto  Floppy  Image
+
+
+
+The  file  dos.floppy,  included  in  your  release,  is  an  image
+of  a  DOS  floppy  that  contains  several  important  Mach  DOS
+files.     In  order  for  the  Mach  DOS  software  to  execute
+correctly,  and  to  enable  access  to  the  Unix  File  System,
+you  must  copy  the  files  from  this  floppy  image  onto  your
+DOS  boot  floppy.    These  files  must  be  present  on  any  DOS
+media  you  wish  to  boot  from  including  your  DOS  hard  disk
+partition.    For  further  information  on  the  files  contained
+in  the  dos.floppy  image,  refer  to  the  appendices.
+
+
+   In  order  to  copy  the  files  from  the  dos.floppy  file  to
+your  ms.dos  file,  follow  these  instructions:
+
+
+  1. Change  directory  to  the  mdos  build  area.
+
+
+  2. Start  the  Mach  DOS  software  by  executing  the  following
+     instruction:
+
+
+          mdos  -f  -db  dos.floppy
+
+
+     This  will  begin  Mdos  execution.
+
+
+  3. Once  the  A>  prompt  is  displayed  enter:
+
+
+          b:cpbatch
+
+
+     And  hit  return.    This  will  copy  the  setup  files  onto
+     your  ms.dos  floppy  image.
+
+
+  4. Simultaneously  press  the  Control,  Alt,  and  Delete  keys.
+     This  exits  Mach  DOS.
+
+
+
+   The  installation  of  Mach  DOS  is  now  complete.    You  only
+need  to  type  mdos  to  begin  execution  of  Mach  DOS.  If  you
+plan   to   use   a   DOS   hard   disk   partition   with   Mach   DOS,
+make  sure  that  the  autoexec.bat  and  config.sys  files  don't
+include  any  drivers  that  adversely  effect  execution (see appendix D).
+
+
+
+6.  Executing  Mdos
+
+
+
+To  run  the  Mach  Dos  Emulator  you  only  need  to  type  "mdos"
+and  hit  enter.
+
+
+   For  more  information,  refer  to  the  man  page  in  the  man
+directory in  the  mdos  release  area.
+
+   Have  fun.
+
+
+
+
+7.  Setting  up  to  use  a  DOS  Hard  Disk  Partition
+
+
+
+If  you  didn't  leave  room  on  your  machine's  hard  disk  for  DOS
+and clobbered  all  of  the  hard  disk's  space,  your  machine
+doesn't have  a  DOS  hard  disk  partition  and  you  should  skip
+this  part  of  the  installation.   If  you  left  room  during  the
+Mach  installation  and  have  a  DOS  partition  on  your  machine's
+hard  disk,  you  can  use  it  with  the  Mdos  software.
+
+
+   In  order  for  the  Mdos  emulator  to  access  the  DOS  hard
+disk  partition,  you  must  create  an  entry  in  the  vtoc  (Volume
+Table  of  Contents)  which  points  to  the  correct  area  on  the
+disk.   To  do  this,  you  must  use  the  program  diskutil  which
+lives  in  the  /etc  directory.   You  should  read  the  man  page
+for  diskutil  and  become  familiar  with  its  operation.   Become
+root  and  proceed  as  follows:
+
+
+
+  1. Execute  the  /etc/diskutil  program  as  follows:
+
+
+          /etc/diskutil  vtoc
+
+
+     Examine  the  vtoc  printout,  and  find  an  empty  partition
+     entry  (ie.   h:   MT).   Typically  I  use  the  empty  partition
+     "h".
+
+
+  2. Execute  the  /etc/diskutil  program  again:
+
+
+          /etc/diskutil  fdisk
+
+
+     Examine  the  fdisk  printout.    Determine  which  partition
+     is  the  DOS  partition  (0-4).   The  DOS  partition  will  have
+     a  systid  of  either  1,  4,  or  6  (the  Mach  systid  number  is
+     99).
+
+
+  3. After  determining  the  DOS  partition  number  from  the
+     fdisk  output,  and  have  chosen  a  vtoc  partition,  execute
+     the  /etc/diskutil  program  again:
+
+
+          diskutil    dos    -<dos    partition    number>    -
+          <MT  vtoc  partition>
+
+
+     The  diskutil  program  will  make  the  correct  entry  into
+     the   vtoc   for   you   and   will   ask   if   it   should   save
+     the   changes   permanently.       Unless   you   have   strong
+     reservations,  say  yes.
+
+
+  4. Change   the   permissions   so   that   the   partition   is
+     read/writeable  by  everyone:
+
+
+          chmod  666  /dev/*hd0<MT  vtoc  partition>
+
+
+  5. Make   a   soft   link   in   the   /dev   directory   from   the
+     raw  partition  file  to  the  name  dosdisk  in  the  /dev
+     directory.
+
+
+          ln  -s  /dev/rhd0<MT  vtoc  partition>  /dev/dosdisk
+
+
+
+   That's  it,  your  DOS  hard  disk  partition  is  ready  for  use
+with  the  Mdos  emulation  software.
+
+
+Appendices
+
+
+
+A  Using  Low  Density  DOS  disks
+
+
+
+You  must  set  up  a  special  low  density  device  file  in  /dev  if
+you  are  going  to  use  low  density  disks  (by  default  they  are
+set  to  high  density  devices).
+
+
+
+B  The  dos.floppy  file
+
+
+
+This  file  is  an  image  of  a  real  DOS  formatted  5.25"  inch
+floppy  disk.   It  contains  the  cpbatch.bat  batch  file  that  is
+run  from  Mach  DOS  during  the  installation  procedure.
+
+
+   Included  on  this  "floppy"  are  the  following  files:
+
+
+
+   - autoexec.bat  This  file  sets  up  your  path,  and  executes
+     the  mfsini.exe  file.
+
+
+   - config.sys  This  file  contains  the  machfs.sys  device  in
+     it.
+
+
+   - machfs.sys  This  file  is  the  driver  that  install  the  UFS
+     as  a  DOS  network  drive  when  Mdos  is  executed.
+
+
+   - mfsini.exe  This  file  is  used  in  conjunction  with  the
+     machfs.sys  file,   to  initialize  the  UFS  access  under
+     Mdos.
+
+
+   - cpbatch.bat  This  file  is  used  to  copy  the  files  from
+     dos.floppy  onto  your  DOS  boot  floppy  image.
+
+
+
+C  Useful  DOS  programs
+
+
+
+It  will  be  handy  to  have  a  copy  of  the  most  useful  DOS
+programs  on  your  DOS  boot  floppy's  UFS  file  image.     I
+suggest  that  you  make  a  directory  named  DOS  on  your  DOS  A:
+drive  when  executing  the  Mdos  monitor  using  the  following
+command:
+
+
+
+     mkdir  a:\dos
+
+
+
+   Next,   copy   all   of   the   basic   DOS   programs   into   this
+directory.      These   programs   include   the   EDLIN.EXE,   and
+DEBUG.EXE  commands.    It  will  depend  on  where  you  get  these
+from  as  to  what  your  command  line  will  look  like.     An
+example  would  be:
+
+
+
+     copy  c:\dos\*.*  a:\dos
+
+
+
+   This  step  is  optional  for  installation,   but  you  will
+probably  want  these  files  sooner  or  later.    Just  make  sure
+that  you  don't  copy  a  autoexec.bat  or  config.sys  file  onto
+your  ms.dos  file.
+
+
+
+D  Special  DOS  Files
+
+
+
+D1.   Your  config.sys  file
+
+
+
+The  DOS  config.sys  file  resides  in  the  root  directory  of
+your   DOS   file   systems,   and   instructs   DOS   which   device
+drivers  to  load  into  your  system  at  boot  time.    You  can
+only  load  device  drivers  at  boot  time  (unless  you  know  DOS
+internals).    When  you  execute  the  Mdos  emulation  software,
+it  is  important  which  device  files  you  use,  and  which  ones
+you  absolutely  should  NOT  use.    Here  are  lists  of  drivers
+which  can  and  cannot  be  put  in  your  config.sys  file:
+
+
+
+   - Drivers  you  MUST  include:
+
+
+      --  MACHFS.SYS  You  must  include  this  driver  if  you  plan
+          on  using  the  UFS  as  a  DOS  drive.
+
+
+   - Drivers  you  CAN  include:
+
+
+      --  FILES=XX
+
+      --  BUFFERS=XX
+
+      --  DOS=HIGH
+
+      --  Ramdisks
+
+      --  Popupkeys
+
+
+   - Drivers  you  CANNOT  include:
+
+
+      --  Mouse  drivers  The  Mdos  software  has  a  built-in  mouse
+          driver.    The  mouse  driver  you  put  in  the  config.sys
+          file  will  fail  and/or  probably  hang.   This  is  not  a
+          bug,  just  don't  do  it  (we  do  the  work  for  you).
+
+      --  EMS  drivers  The  Mdos  software  also  has  a  built-in
+          EMS  driver.   Do  not  install  your  own.
+
+      --  XMS  drivers  The  Mdos  software  has  a  built-in  XMS
+          driver.   Do  not  install  your  own.
+
+
+   - Drivers  you  SHOULDN'T  include:
+
+
+      --  SmartDrives   The   Mdos   software   doesn't   chain   Int
+          0x13's  (ie.     your  driver  will  just  sit  there  and
+          never  be  called).   Don't  use  them.
+
+
+
+D2.   Your  autoexec.bat
+
+
+
+The  DOS  autoexec.bat  file  resides  in  the  root  directories  of
+your  DOS  file  systems  just  like  the  config.sys  file.    The
+autoexec.bat  batch  file  is  a  batch  file  which  is  executed
+at  DOS  boot  time,  after  the  devices  have  been  loaded  from
+the  config.sys  file.     Under  the  Mdos  emulation  software,
+like  the  config.sys  file,  the  autoexec.bat  file  must  contain
+certain  commands.    Unlike  the  config.sys  file,  there  isn't
+anything  which  should  be  kept  out.   The  only  thing  which  you
+must  put  in  your  autoexec.bat  file  is  the  line:
+
+
+
+     mfsini.exe
+
+
+
+This  line  should  execute  the  program  mfsini.exe  which  is
+supplied  in  the  dos.floppy  file.
+
+
+
+D3.   Modifying   config.sys   and   autoexec.bat   on   the   C:
+      partition
+
+
+
+In  next  release.
+
+
+
+E  Known  "Bugs"
+
+
+
+There   are   many   things   that   work   well   under   the   Mdos
+software,  and  many  things  that  don't  work  well.   This  is  a
+short  list  of  "features"  that  are  known  to  exist,  and  some
+of  their  corresponding  "bugs":
+
+
+
+   - CGA  based  programs  may  have  problems.     Specifically,
+     public  domain  programs  that  need  Mouse  driver  based
+     pointers  in  CGA  mode  won't  work.    If  you  want  to  get
+     down  and  dirty  with  the  code,  look  in  bios_mouse.c.
+
+
+   - Keyboard  bugs.    I've  fixed  all  the  keyboard  bugs  I've
+     run  across,  but  I've  heard  "rumors"  of  some  other  ones
+     existing.    If  you  come  across  a  particular  one,  send
+     some  mail  about  it.
+
+
+   - The  Mouse  under  Windows  only  works  when  the  Logitech
+     serial  mouse  driver  is  installed  with  the  Window's  setup
+     program.   I  plan  on  adding  more  mouse  support  code  that
+     will  autodetect  your  mouse  type,  and  emulate  its  driver.
+     To  do  this,  look  in  bios_com.c  for  the  logitech  mouse
+     driver  emulation  code.
+
+
+   - Sound  problems.     In  order  for  some  DOS  programs  to
+     get  the  sound  they  require  from  the  PC  speaker,  they
+     use  timer  interrupts  of  a  granularity  impossible  to
+     reproduce  with  any  accuracy  under  Mach.   I  suggest  that
+     if  this  type  of  sound  is  important  to  you,  that  you  buy
+     one  of  the  many  commercial  sound  cards  available  for
+     the  PC.  You  can  try  and  tweak  the  sound  code  that's
+     available.   Look  at  the  sources  in:   bios_kbd.c,  and  the
+     kernel's  i386/trap.c.
+
+
+   - DOS  uses  all  the  cycles  it  can  get.   When  DOS  is  waiting
+     for  input,  it  polls  the  keyboard.    Therefore  you  will
+     see  a  very  high  load  whenever  DOS  is  using  the  machine.
+     This  can  be  fixed.    One  of  several  possible  solutions
+     to  the  problem,  is  to  catch  the  DOS  exec  routine,  and
+     watch  for  COMMAND.COM.  When  running  this  shell,  block  on
+     keyboard  input  in  the  bios_kbd.c  code.
+
+
+   - Only   files   with   legal   DOS   file   system   names   are
+     recognized  in  the  UFS.  This  means  that  names  that  have
+     more  that  one  period  (dot)  in  them,  have  dollar  signs  or
+     commas  in  them,  or  that  are  longer  than  eight  letters
+     before  the  period,  or  longer  than  three  letters  after
+     the  period  are  not  recognized.     This  can  be  fixed,
+     but  the  DOS  DIR  command  will  be  very  confused.    Major
+     revision  to  the  code  in  dos_disk.c,  and  dos_fs.c  will  be
+     needed  to  change  this.
+
+
+   - The  DOS  DIR  command  is  slow  under  the  UFS  (especially
+     AFS).  This  is  because  an  lstat  must  be  done  on  each
+     file  in  the  directory.     The  lstat  is  needed  to  fill
+     out  all  of  the  fields  in  the  DOS  DIR  command.    This
+     could  be  made  to  work  much  faster,  possibly  by  utilizing
+     knowledge  of  a  directory  inode  (hack).     Code  changes
+     would  be  to  dos_disk.c,  and  dos_fs.c.
+
+
+   - You  cannot  FORMAT  disks  with  the  Mach  DOS  software.
+     This  applies  to  both  the  DOS  hard  disk  partition  and
+     floppy  disks.    The  reason  for  this,  is  that  the  BIOS
+     disk  device  drivers  do  not  work  under  Mach  DOS  and  the
+     BIOS  format  calls  are  not  emulated  by  the  Mach  DOS
+     software.   Currently,  you  must  do  all  DOS  formats  under
+     native  DOS.
+
+
+
+   I'm  sure  there  are  other  things  I  have  forgotten  to  write
+down  that  you  should  know.   If  you  come  across  anything  you
+think  should  be  added  to  this  list,  or  have  any  problems,
+please  feel  free  to  send  mail  and  let  us  know.    As  these
+problems  are  addressed,  this  list  will  grow  and  change,
+helping  future  Mdos  users.

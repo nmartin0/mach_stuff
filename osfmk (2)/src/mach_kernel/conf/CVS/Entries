@@ -1,0 +1,21 @@
+/.cvsignore/1.2/Wed Jul 28 00:04:04 1999//
+/Makefile/1.1.1.1/Mon Sep 28 15:09:45 1998//
+/config.common/1.1.1.1/Mon Sep 28 15:09:45 1998//
+/config.debug/1.1.1.1/Mon Sep 28 15:09:45 1998//
+/config.net/1.1.1.1/Mon Sep 28 15:09:45 1998//
+/config.norma/1.1.1.1/Mon Sep 28 15:09:45 1998//
+/config.stats/1.1.1.1/Mon Sep 28 15:09:45 1998//
+/copyright.cmu/1.1.1.1/Mon Sep 28 15:09:45 1998//
+/copyright.osf/1.1.1.1/Mon Sep 28 15:09:46 1998//
+/files/1.2/Fri Dec  4 10:04:05 1998//
+/fixsyms/1.1.1.1/Mon Sep 28 15:09:45 1998//
+/newvers.sh/1.1.1.1/Mon Sep 28 15:09:45 1998//
+/template.mk/1.3/Sat Dec  5 08:00:22 1998//
+/version.edit/1.3/Wed Jul 28 00:08:38 1999//
+/version.major/1.1.1.1/Mon Sep 28 15:09:45 1998//
+/version.minor/1.1.1.1/Mon Sep 28 15:09:45 1998//
+/version.patch/1.2/Tue Feb  9 16:47:08 1999//
+/version.variant/1.3/Wed Jul 28 00:08:38 1999//
+D/AT386////
+D/HP700////
+D/POWERMAC////

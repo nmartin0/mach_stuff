@@ -1,0 +1,113 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS 
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie the
+.\" rights to redistribute these changes.
+.\"
+.\" HISTORY
+.\" $Log:	dosmkfs.man,v $
+.\" Revision 2.1.1.2  93/09/01  14:16:37  af
+.\" 	Added reference to dosbadsect(8).
+.\" 	[93/09/01            af]
+.\" 
+.\" Revision 2.1.1.1  93/08/27  13:22:07  af
+.\" 	Created.
+.\" 	[93/08/27            af]
+.\" 
+.\"
+.TH DOSMKFS 8 "Aug 20, 1993"
+.CM 4
+.SH NAME
+dosmkfs \- construct an MS-DOS file system
+.SH SYNOPSIS
+.B dosmkfs
+[ \-N ]
+special size
+[ sectors-per-track
+[ tracks-per-cylinder
+[ cluster-size
+[ sector-size
+[ media-code
+[ boot-sectors
+[ root-direntries
+[ number-of-FAT ] ] ] ] ] ] ] ]
+.SH DESCRIPTION
+.PP
+.I Dosmkfs
+constructs a file system by writing on the file
+.I special,
+usually a character-device special file.
+The \-N flag prevents any actual writes.
+The numeric \fBsize\fR specifies the number of sectors in the file system.
+.I Dosmkfs
+builds a file system with a root directory,
+and a DOS boot sector containing a (invalid) bootstrap.
+The root directory contains three invisible entries, ``IO.SYS''
+``MSDOS.SYS'' and the label entry ``MS-DOS_5''.
+The optional arguments allow fine tune control over the
+parameters of the file system.
+.PP
+.B Sectors-per-track
+specify the number of sectors per track on the disk.
+.B Tracks-per-cylinder
+specify the number of tracks per cylinder on the disk.
+.PP
+.B Cluster-size
+gives the block size for files on the file system.
+It must be a multiple of the \fBsector-size\fR.
+Default is 4192 bytes.
+.B Sector-size
+gives the logical sector size for the filesystem, usually the same
+as the physical sector size of the underlying media.
+It must be at least 512 bytes, which is the default.
+.PP
+.B Boot-sectors
+specifies the number of sectors to be reserved for the secondary bootstrap,
+default is 1 sector.
+.PP
+.B Root-direntries
+specifies how many entries to allocate in the root directory, which is the
+only one that cannot grow dynamically.  The default is as many
+as will fit in a single cluster, e.g. 128 for a 4192 cluster size.
+.PP
+.B Number-of-FAT
+(number of File Allocation Tables) specifies how many copies of the
+FAT to allocate on the disk.  Default is two copies, the primary
+and one alternate backup copy.
+.PP
+.B Media-code
+is either an hexadecimal number as per MS-DOS encodings, or a symbolic
+name of a specific type of medium. Currently defined names are:
+``3.5inX18X2'' or ``3.5in'' for a 3.5 inch floppy disk, double side, double density,
+18 sectors per track.
+.br
+Similarly for ``5inX15X2'', ``3.5inX9X2'', ``5inX9'', ``5inX9X2'', ``8inXs'', ``8in'', ``5inX8'',
+``5inX8X2''.
+.br
+Use ``disk'' for any fixed disk.
+.PP
+.SH "SEE ALSO"
+dosfsck(8), dosbadsect(8)
+.PP
+A. Forin, G. Malan
+``An MS-DOS File System for UNIX'',
+\fIProceedings of the 1994 Winter Usenix Conference.

@@ -1,0 +1,11 @@
+.config
+.config.old
+.menuconfig
+.menuconfig.log
+.ver
+.version
+.name
+.depend
+vmlinux
+System.map
+*.d

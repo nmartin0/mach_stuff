@@ -1,0 +1,11 @@
+/.cvsignore/1.1/Wed Nov 11 21:15:50 1998//
+/Makefile/1.1.1.1/Fri Oct  2 21:15:29 1998//
+/autofs_i.h/1.1.1.1/Fri Oct  2 21:15:29 1998//
+/dir.c/1.1.1.1/Fri Oct  2 21:15:30 1998//
+/dirhash.c/1.1.1.1/Fri Oct  2 21:15:30 1998//
+/init.c/1.1.1.1/Fri Oct  2 21:15:30 1998//
+/inode.c/1.1.1.1/Fri Oct  2 21:15:30 1998//
+/root.c/1.2/Thu Mar  4 04:25:38 1999//
+/symlink.c/1.1.1.1/Fri Oct  2 21:15:30 1998//
+/waitq.c/1.1.1.1/Fri Oct  2 21:15:31 1998//
+D

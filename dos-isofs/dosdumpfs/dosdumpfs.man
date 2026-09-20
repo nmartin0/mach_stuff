@@ -1,0 +1,67 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS 
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie the
+.\" rights to redistribute these changes.
+.\"
+.\" HISTORY
+.\" $Log:	dosdumpfs.man,v $
+.\" Revision 2.1.1.2  93/12/01  11:24:57  af
+.\" 	Documented -l and -hH switches.
+.\" 	[93/12/01            af]
+.\" 
+.\" Revision 2.1.1.1  93/09/01  20:44:10  af
+.\" 	Created.
+.\" 	[93/09/01            af]
+.\" 
+.\" 
+.\"
+.TH DOSDUMPFS 8 "Aug 20, 1993"
+.CM 4
+.SH NAME
+dosdumpfs \- dump MS-DOS file system information
+.SH SYNOPSIS
+.B dosdumpfs [-l][-H][-h]
+filesys|special
+.SH DESCRIPTION
+.PP
+.I Dosdumpfs
+prints various informations about the given filesystem, looking
+up the volume label and the File Allocation Table (FAT).
+.PP
+The
+.I l
+switch only shows the volume label.
+.PP
+The
+.I h
+switch shows the free (rather than allocated) blocks in the FAT table.
+The
+.I H
+switch is similar, but also gives a per-range count to help visualize
+the disk allocation status.
+.SH "SEE ALSO"
+dosbadsect(8), dosmkfs(8), dosfsck(8),
+.PP
+A. Forin, G. Malan
+``An MS-DOS File System for UNIX'',
+\fIProceedings of the 1994 Winter Usenix Conference.

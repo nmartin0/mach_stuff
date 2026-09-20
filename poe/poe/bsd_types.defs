@@ -1,0 +1,65 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1991,1990 Carnegie Mellon University
+ * All Rights Reserved.
+ * 
+ * Permission to use, copy, modify and distribute this software and its
+ * documentation is hereby granted, provided that both the copyright
+ * notice and this permission notice appear in all copies of the
+ * software, derivative works or modified versions, and any portions
+ * thereof, and that both notices appear in supporting documentation.
+ * 
+ * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+ * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+ * 
+ * Carnegie Mellon requests users of this software to return to
+ * 
+ *  Software Distribution Coordinator   or   Software.Distribution@CS.CMU.EDU
+ *  School of Computer Science
+ *  Carnegie Mellon University
+ *  Pittsburgh PA 15213-3890
+ * 
+ * any improvements or extensions that they made and grant Carnegie Mellon
+ * the rights to redistribute these changes.
+ */
+/*
+ * HISTORY
+ * $Log:	bsd_types.defs,v $
+ * Revision 2.3  91/12/19  20:27:52  mrt
+ * 	Updated to new copyright
+ * 
+ * Revision 2.2  90/09/08  00:15:57  rwd
+ * 	Taken from XUX22.
+ * 	[90/07/14            rwd]
+ * 
+ */
+/*
+ * Types for BSD kernel interface.
+ */
+
+#include <mach/std_types.defs>
+#include <mach/mach_types.defs>
+#include <bsd_types_gen.h>
+
+type	small_char_array= array[*:SMALL_ARRAY_LIMIT] of char;
+type	char_array	= ^array[] of char;
+type	path_name_t	= array[*:PATH_LENGTH] of char;
+type	timeval_t	= struct[2] of int;
+type	timeval_2_t	= array[2] of timeval_t;
+type	timeval_3_t	= array[3] of timeval_t;
+type	statb_t		= struct[13] of int;
+type	rusage_t	= struct[18] of int;
+type	sockarg_t	= array[*:128] of char;
+type	fd_set		= struct[FD_SET_LIMIT] of int;
+type	entry_array	= array[*:16] of int;
+type	gidset_t	= array[GROUPS_LIMIT] of int;
+type	rlimit_t	= array[2] of int;
+type	sigvec_t	= struct[3] of int;
+type	sigstack_t	= struct[2] of int;
+type	timezone_t	= struct[2] of int;
+type	itimerval_t	= struct[4] of int;
+type	hostname_t	= (MACH_MSG_TYPE_STRING_C, 8*HOST_NAME_LIMIT);
+type	cfname_t	= (MACH_MSG_TYPE_STRING_C, 8*64);
+
+import <bsd_types.h>;

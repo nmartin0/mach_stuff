@@ -1,0 +1,17 @@
+/Makefile/1.1.1.1/Sun Oct 25 06:19:46 1998//
+/README/1.1.1.1/Sun Oct 25 06:19:48 1998//
+/boot.c/1.1.1.1/Sun Oct 25 06:19:51 1998//
+/i386at.c/1.1.1.1/Sun Oct 25 06:19:52 1998//
+/lilo.s/1.1.1.1/Sun Oct 25 06:19:52 1998//
+/lilo_env.c/1.1.1.1/Sun Oct 25 06:19:53 1998//
+/mach_boot.c/1.1.1.1/Sun Oct 25 06:19:55 1998//
+/malloc.c/1.1.1.1/Sun Oct 25 06:19:56 1998//
+/more_asm.s/1.1.1.1/Sun Oct 25 06:19:57 1998//
+/net.c/1.1.1.1/Sun Oct 25 06:19:58 1998//
+/net.h/1.1.1.1/Sun Oct 25 06:19:58 1998//
+/net_debug.c/1.1.1.1/Sun Oct 25 06:19:59 1998//
+/net_debug.h/1.1.1.1/Sun Oct 25 06:19:59 1998//
+/start.s/1.1.1.1/Sun Oct 25 06:20:00 1998//
+/table.c/1.1.1.1/Sun Oct 25 06:20:01 1998//
+D/net////
+D/protocols////

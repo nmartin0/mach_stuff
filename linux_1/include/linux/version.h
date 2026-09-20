@@ -1,0 +1,2 @@
+#define UTS_RELEASE "2.0.32-osfmach3"
+#define LINUX_VERSION_CODE 131104

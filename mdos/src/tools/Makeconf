@@ -1,0 +1,11 @@
+#
+# HISTORY
+# $Log:	Makeconf,v $
+# Revision 2.2  91/12/05  16:44:49  grm
+# 	Initial release
+# 	[91/12/05  14:26:33  grm]
+# 
+#
+# Makeconf for tools
+
+OBJECTDIR=OBJ

@@ -1,0 +1,18 @@
+Bugs/Misfeatures:
+	split bdev/cdev switch table
+	allow close on unmodified files
+	fix Bsd1_pid_by_task:  make sure task is poe task
+	remove excess printfs
+
+AT&Tisms:
+	resolve external include files
+
+Orginization:
+	resolve external include files
+	remove #ifdefs from init_sysent
+
+Improvements:
+	new file system (bsd4.3 reno)
+	network code (X kernel interface)
+	export map_file interface to allow more file systems
+	Support raw devices (disks for df)

@@ -1,0 +1,135 @@
+/*
+ * Mach Operating System
+ * Copyright (c) 1991,1990 Carnegie Mellon University
+ * All Rights Reserved.
+ * 
+ * Permission to use, copy, modify and distribute this software and its
+ * documentation is hereby granted, provided that both the copyright
+ * notice and this permission notice appear in all copies of the
+ * software, derivative works or modified versions, and any portions
+ * thereof, and that both notices appear in supporting documentation.
+ * 
+ * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS 
+ * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+ * 
+ * Carnegie Mellon requests users of this software to return to
+ * 
+ *  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+ *  School of Computer Science
+ *  Carnegie Mellon University
+ *  Pittsburgh PA 15213-3890
+ * 
+ * any improvements or extensions that they make and grant Carnegie the
+ * rights to redistribute these changes.
+ */
+/*
+ * HISTORY
+ * $Log:	cpu_request.defs,v $
+ * Revision 2.3  91/02/08  16:05:10  mrt
+ * 	Added new Mach copyright and author notices
+ * 
+ * Revision 2.2  90/01/24  23:33:36  mrt
+ * 	Created
+ * 	[90/01/18            dlb]
+ * 
+ */
+/*
+ *	File: 	cpu_request.defs
+ *	Author:	David Black, Carnegie Mellon University
+ *	Date:	Jan 1990
+ *
+ *	MiG definition file for processor_server
+ */
+
+subsystem cpu_request 3000;
+
+#include <mach/mach_types.defs>
+type cpu_request_t		= port_t;
+
+import <servers/cpu_server.h>;
+
+/*
+ *	Reserve processors for the processor sets according to the
+ *	requests.  Would like to do this in one call, but MiG can't
+ *	handle arrays of structures that contain ports or more than
+ *	one inline array per message.
+ */
+
+routine cpu_request_create(
+		server			: port_t;
+		total_processors	: int;
+		time			: int;
+	out	delay			: int;
+	out	cpu_request		: cpu_request_t);
+
+routine cpu_request_add(
+		cpu_request		: cpu_request_t;
+		processor_set		: processor_set_t;
+		processors		: int;
+	out	processors_left		: int);
+		
+
+/*
+ *	Activate processors for reservation.  The maximum delay until
+ *	the reservation is satisfied is returned.  options is used to
+ *	request options in handling the request (e.g. destroy when done).
+ */
+
+routine cpu_request_activate(
+		cpu_request		: cpu_request_t;
+		options			: int;
+		total_time		: int;
+	out	delay			: int);
+
+/*
+ *	Destroy request, releasing any processors.  Only destroys processor
+ *	sets if destroy_when_done was requested.
+ */
+
+routine cpu_request_destroy(
+		cpu_request		: cpu_request_t);
+
+/*
+ *	Find out information about a request.
+ */
+
+routine cpu_request_status(
+		cpu_request		: cpu_request_t;
+	out	reserved_processors	: int;
+	out	assigned_processors	: int;
+	out	active			: boolean_t;
+	out	options			: int;
+	out	time			: int);
+
+/*
+ *	Find out information about the server.
+ */
+
+routine cpu_server_info(
+		server			: port_t;
+	out	max_time		: int;
+	out	max_total_time		: int;
+	out	max_processors		: int;
+	out	delay			: int);
+
+/*
+ *	Indicate that request should generate notifications and
+ *	where they should be sent.
+ */
+
+routine cpu_request_set_notify(
+		cpu_request		: cpu_request_t;
+		notify_port		: port_t);
+
+/*
+ *	Variant of cpu_request_activate for a single task.  Allows server
+ *	to optimize release of processors if task is still running.
+ */
+
+routine cpu_request_activate_task(
+		cpu_request		: cpu_request_t;
+		options			: int;
+		total_time		: int;
+		task			: task_t;
+	out	delay			: int);

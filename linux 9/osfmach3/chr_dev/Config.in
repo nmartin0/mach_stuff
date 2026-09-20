@@ -1,0 +1,28 @@
+# Copyright (c) 1991-1998 Open Software Foundation, Inc. 
+#  
+# 
+# 
+# MkLinux
+
+#
+# Character device configuration
+#
+mainmenu_option next_comment
+comment 'Character devices'
+
+tristate 'Standard/generic serial support' CONFIG_SERIAL
+tristate 'Parallel printer support' CONFIG_PRINTER
+bool 'Mouse Support (not serial mice)' CONFIG_MOUSE
+if [ "$CONFIG_MOUSE" = "y" ]; then
+	tristate 'Support for PowerMac mouse' CONFIG_MACMOUSE
+fi
+
+bool 'Support for user misc device modules' CONFIG_UMISC
+
+tristate 'Video For Linux' CONFIG_VIDEO_DEV
+if [ "$CONFIG_VIDEO_DEV" != "n" ]; then
+  dep_tristate 'PlanB Video-In on PowerMac' CONFIG_VIDEO_PLANB $CONFIG_VIDEO_DEV
+fi
+
+define_bool CONFIG_CHR_DEV_ST y
+endmenu

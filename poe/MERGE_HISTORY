@@ -1,0 +1,1101 @@
+    
+    
+    
+==========================================================================
+   ***** POE Version POE1  (rwd) *****
+    
+    
+New features:
+--- --------
+
+All features are new.  This works on my sun for things I do.  I make
+no claims beyond that.  Versions that work for me on pmax and 386
+coming soon to a release area near you.
+
+Special notes:
+------- -----
+
+Use at your own risk.
+
+******** CUT HERE ******** summary of log messages ******** CUT HERE ********
+[ ./conf/version.edit ]
+1
+[ ./Makefile ]
+Added boot program.
+[90/09/03            rwd]
+Clean up.  Don't make deviceUser.c here.
+[90/08/07            rwd]
+[ ./bdev_fops.c ]
+Include cthread_self in debugging output.
+[90/09/04            rwd]
+First checkin
+[90/08/31  13:17:45  rwd]
+[ ./boot.c ]
+First Checkin.
+[90/09/07  17:15:46  rwd]
+[ ./bsd_1.defs ]
+Taken from XUX22.
+[90/07/14            rwd]
+[ ./bsd_copy.c ]
+First checkin
+[90/08/31  13:26:51  rwd]
+[ ./bsd_descrip.c ]
+First checkin
+[90/08/31  13:27:01  rwd]
+[ ./bsd_dops.c ]
+First checkin
+[90/08/31  13:27:21  rwd]
+[ ./bsd_exception.c ]
+First checkin
+[90/08/31  13:27:31  rwd]
+[ ./bsd_exec.c ]
+Remove mi_pager == 1 hack.
+[90/09/04            rwd]
+Converted exec to XUX22 version which keeps args in emulator.
+[90/07/14            rwd]
+[ ./bsd_exit.c ]
+Remove sleeps in wait and reaper thread.
+[90/09/06            rwd]
+Wire repear thread.
+[90/07/16            rwd]
+[ ./bsd_fops.c ]
+Lets do FOP_OPEN, shall we.
+[90/07/20            rwd]
+[ ./bsd_fops2.c ]
+First checkin
+[90/08/31  13:29:41  rwd]
+[ ./bsd_fork.c ]
+Pass rootdevice argument to init program.
+[90/09/05            rwd]
+Use port_allocate_name.
+[90/09/03            rwd]
+First checkin
+[90/08/31  14:16:23  rwd]
+[ ./bsd_host.c ]
+First checkin
+[90/08/31  13:30:25  rwd]
+[ ./bsd_io.c ]
+Convert files to mapped window.
+[90/08/28            rwd]
+[ ./bsd_ioctl.c ]
+First checkin
+[90/08/31  13:31:17  rwd]
+[ ./bsd_ioctl.h ]
+First checkin
+[90/08/31  13:31:40  rwd]
+[ ./bsd_itimer.c ]
+First checkin
+[90/08/31  13:31:52  rwd]
+[ ./bsd_lookup.c ]
+First checkin
+[90/08/31  13:32:02  rwd]
+[ ./bsd_misc.c ]
+Have dprintf print cthread_self also.
+[90/09/04            rwd]
+Define dprintf here.
+[90/07/25            rwd]
+[ ./bsd_mman.c ]
+First Checkin
+[ ./bsd_types.h ]
+Taken from XUX22.
+[90/09/08            rwd]
+[ ./bsd_mount.c ]
+First checkin
+[90/08/31  13:33:01  rwd]
+[ ./bsd_msg.h ]
+First checkin
+[90/08/31  13:33:11  rwd]
+[ ./bsd_prot.c ]
+First checkin
+[90/08/31  13:33:28  rwd]
+[ ./bsd_select.c ]
+Change select to allow for NULL fd_sets.
+[90/07/14            rwd]
+[ ./bsd_server_side.c ]
+Add more unused stubs.  Convert to variable length
+pathname.
+[90/07/16            rwd]
+[ ./bsd_signal.c ]
+Hasstatus change must notify reaper.  Added signal_condition.
+[90/09/06            rwd]
+First checkin
+[90/08/31  13:34:01  rwd]
+[ ./bsd_special.c ]
+Spilt out partially to machine dependant.
+[90/07/20            rwd]
+[ ./bsd_types.defs ]
+Taken from XUX22.
+[90/07/14            rwd]
+[ ./bsd_types_gen.h ]
+First checkin
+[90/08/31  13:35:05  rwd]
+[ ./conf/copyright ]
+First Checkin.
+[ ./conf/newvers.sh ]
+First checkin
+[90/08/31  13:36:15  rwd]
+[ ./conf/version.major ]
+First Checkin.
+[ ./conf/version.minor ]
+First Checkin.
+[ ./conf/version.patch ]
+First Checkin.
+[ ./conf/version.variant ]
+First Checkin.
+[ ./config.h ]
+Create.  Define standalone parameter.
+[90/07/13            rwd]
+[ ./exc.defs ]
+First checkin
+[90/08/31  13:40:27  rwd]
+[ ./fentry.h ]
+First checkin
+[90/08/31  13:52:03  rwd]
+[ ./fnode.h ]
+Convert to a mapped window.
+[90/08/28            rwd]
+[ ./init_sysent.c ]
+First checkin
+[90/08/31  13:41:56  rwd]
+[ ./loader_info.h ]
+First checkin
+[90/08/31  13:51:53  rwd]
+[ ./main.c ]
+	Define mach_port_allocate_name until bug fix to libmach_sa
+	propogates.
+[90/09/03            rwd]
+Added mapped time support.
+[90/08/13            rwd]
+
+Added standard way to get ports plus standalone version.
+[90/07/13            rwd]
+[ ./map_file.c ]
+Include cthread_self in debugging output.
+[90/09/04            rwd]
+First checkin
+[90/08/31  13:42:43  rwd]
+[ ./map_info.h ]
+First checkin
+[90/08/31  13:42:53  rwd]
+[ ./mem_fops.c ]
+First checkin
+[90/08/31  13:44:35  rwd]
+
+[90/08/31  13:35:41  rwd]
+[ ./memory_object.defs ]
+First checkin
+[90/08/31  13:53:04  rwd]
+[ ./minit.c ]
+Fix STANDALONE logic.
+[90/09/04            rwd]
+First Checkin
+[90/09/03  17:44:29  rwd]
+[ ./mips/bsd_machdep.c ]
+Added machine_deallocate_for_exec(). Added
+machine_adjust_for_emulator().
+[90/07/14            rwd]
+[ ./mips/conf.h ]
+Created from bsd_special.c.
+[90/07/20            rwd]
+[ ./mips/machine_ptrace.c ]
+This is really a machine dependant file.
+[90/07/14            rwd]
+[ ./mips/mips_ptrace.h ]
+Taken from XUX22 version by af.
+[90/07/14            rwd]
+[ ./mips/root_device.h ]
+First checkin
+[90/08/31  13:54:34  rwd]
+[ ./mips/vmparam.h ]
+Created.
+[90/07/14            rwd]
+[ ./pipe_fops.c ]
+Remove sleeps and add pipe condition.
+[90/09/06            rwd]
+First checkin
+[90/08/31  13:54:53  rwd]
+[ ./server_loop.c ]
+Use cthread_data fot ut.
+[90/09/06            rwd]
+Convert to new cthread semantics.
+[90/08/16            rwd]
+[ ./subr_cbuf.c ]
+First checkin
+[90/08/31  13:55:16  rwd]
+[ ./subr_copy.c ]
+First checkin
+[90/08/31  13:55:35  rwd]
+[ ./subr_fops.c ]
+First checkin
+[90/08/31  13:55:49  rwd]
+[ ./subr_fops.h ]
+First checkin
+[90/08/31  13:56:05  rwd]
+[ ./subr_timeout.c ]
+Wire cthread.
+[90/08/16            rwd]
+[ ./subr_uerror.c ]
+First checkin
+[90/08/31  13:56:37  rwd]
+[ ./sun3/bsd_machdep.c ]
+Created from mips version.  Added machine_adjust_for_emulator().
+[90/07/14            rwd]
+[ ./sun3/conf.h ]
+Created from mips/conf.h
+[90/07/20            rwd]
+[ ./sun3/exec.h ]
+First checkin
+[90/08/31  13:57:09  rwd]
+[ ./sun3/machine_ptrace.c ]
+Nop for now.
+[90/07/14            rwd]
+[ ./sun3/ptrace.h ]
+First checkin
+[90/08/31  13:57:32  rwd]
+[ ./sun3/root_device.h ]
+First checkin
+[90/08/31  13:57:41  rwd]
+[ ./sun3/vmparam.h ]
+First checkin
+[90/08/31  13:57:51  rwd]
+[ ./syscall.c ]
+Syscall tracing now prints cthread_self also.
+[90/09/04            rwd]
+Fully convert to new IPC structures.
+[90/07/19            rwd]
+[ ./sysent.h ]
+First checkin
+[90/08/31  13:58:23  rwd]
+[ ./tty_fops.c ]
+Replace all tv_sleeps with reasonable condtion_* logic.
+[90/07/26            rwd]
+
+Lets use device_read_inband and device_write.
+[90/07/20            rwd]
+
+Fix things sun was unhappier about than mips (was that possible?)
+For now, wire cthreads.
+[90/07/16            rwd]
+[ ./ufs_alloc.c ]
+First checkin
+[90/08/31  13:58:57  rwd]
+[ ./ufs_devpager.c ]
+Use port_allocate_name call.
+[90/09/03            rwd]
+Convert to new cthread semantics.
+[90/08/16            rwd]
+
+For now, wire cthreads.
+[90/07/16            rwd]
+[ ./ufs_dir.c ]
+Convert fileio to mapped window.
+[90/08/28            rwd]
+[ ./ufs_disk.h ]
+First checkin
+[90/08/31  13:59:40  rwd]
+[ ./ufs_dops.c ]
+First checkin
+[90/08/31  13:59:58  rwd]
+[ ./ufs_fops.c ]
+Convert fileio to mapped window.
+[90/08/28            rwd]
+[ ./ufs_fops.h ]
+First checkin
+[90/08/31  14:00:32  rwd]
+[ ./ufs_fs.h ]
+Taken from XUX22.
+[90/07/17            rwd]
+[ ./ufs_inode.c ]
+Fix indirect code.
+[90/09/04            rwd]
+First checkin
+[90/08/31  14:02:39  rwd]
+[ ./ufs_mount.c ]
+First checkin
+[90/08/31  14:02:50  rwd]
+[ ./ufs_pager.c ]
+Include cthread_self in debugging output.
+[90/09/04            rwd]
+Use port_allocate_name.
+[90/09/03            rwd]
+Converty to new cthread semantics.
+[90/08/16            rwd]
+
+Correctly terminate object.
+[90/08/16            rwd]
+
+For now, wire cthreads.
+[90/07/16            rwd]
+[ ./ufs_param.h ]
+Added UFS error codes.
+[88/10/10            dbg]
+
+MACH_KERNEL version: contains only those constants that the boot
+file system loader needs (they really should be in those files
+instead).
+[88/08/16            dbg]
+[ ./ux_param.h ]
+Include machine/vmparam.h for machine specific parameters.
+[90/07/14            rwd]
+[ ./ux_timeout.h ]
+First checkin
+[90/08/31  14:04:06  rwd]
+[ ./ux_user.h ]
+Added hasstatus_condition.
+[90/09/06            rwd]
+First checkin
+[90/08/31  14:04:15  rwd]
+    
+    
+    
+==========================================================================
+   ***** POE Version POE2  (rwd) *****
+    
+    
+New features:
+--- --------
+
+[PMAX]	  Works in coexist mode.  Can't use Standalone until libmach3_sa
+is built for pmax
+
+[I386]	Works.
+
+Bug fixes:
+--- -----
+
+Many
+
+Special notes:
+------- -----
+
+The sun version will not start XUX18 or later with the new emulator until a
+bug is tracked down.  It will work with new servers with old emulators.
+The pmax version needs a bug fix to the cthreads library and can't use the
+existing libmach3_vus port getting routines because of some bug.  The Poe
+code works though.  The i386 appears to work. fine.
+
+******** CUT HERE ******** summary of log messages ******** CUT HERE ********
+[ ./conf/version.edit ]
+2
+[ ./Makefile ]
+Add -O to CFLAGS.
+[90/09/26            rwd]
+Clean up depend for minit.
+[90/09/08            rwd]
+[ ./TODO ]
+change TODO.
+[ ./bsd_dops.c ]
+Add disfunctional Bsd_rename.
+[90/09/21            rwd]
+[ ./bsd_exec.c ]
+Zero bss that resides in mapped data area.
+[90/09/10            rwd]
+[ ./bsd_fork.c ]
+Must copy emulator to writeable string for bsd_lookup.
+[90/09/08            rwd]
+[ ./bsd_io.c ]
+Use map_file_lock/unlock.
+[90/09/11            rwd]
+[ ./bsd_lookup.c ]
+Remove extraneous printf in bsd_lookup.
+[90/09/26            rwd]
+[ ./bsd_special.c ]
+Declare enxio_special.
+[90/09/08            rwd]
+[ ./conf/newvers.sh ]
+Remove major.minor from version.
+[90/09/19            rwd]
+[ ./i386/bsd_machdep.c ]
+Set efl.
+[90/09/11            rwd]
+Taken from XUX16 and XMK23 versions.
+[90/09/10            rwd]
+[ ./i386/conf.h ]
+First Checkin
+[90/09/10  19:05:40  rwd]
+[ ./i386/eflags.h ]
+First Checkin.
+[90/09/18  18:02:17  rwd]
+[ ./i386/exec.h ]
+First Checkin
+[90/09/10  19:05:49  rwd]
+[ ./i386/machine_ptrace.c ]
+First Checkin
+[90/09/10  19:05:58  rwd]
+[ ./i386/root_device.h ]
+First Checkin
+[90/09/10  19:06:06  rwd]
+[ ./i386/vmparam.h ]
+First Checkin
+[90/09/10  19:06:13  rwd]
+[ ./init_sysent.c ]
+Add i386 entries.
+[90/09/19            rwd]
+[ ./main.c ]
+Change exit to _exit to not pick up version in libmach_sa.a
+Remove mach_port_allocate_name since library has been fixed.
+[90/09/24            rwd]
+Add setlinebuf for !STANDALONE case.
+[90/09/19            rwd]
+Fix signal code for i386.
+[90/09/08            rwd]
+[ ./map_file.c ]
+Enable locking.
+[90/09/11            rwd]
+[ ./mips/bsd_machdep.c ]
+Fix typo.
+[90/09/10  20:00:15  rwd]
+[ ./mips/coff.h ]
+First checkin.
+[90/09/10  20:00:52  rwd]
+[ ./mips/vmparam.h ]
+Fix STACK_END.
+[90/09/26            rwd]
+[ ./subr_fops.c ]
+Call map_file_init.
+[90/09/11            rwd]
+[ ./tty_fops.c ]
+Fix casting problem.
+[90/09/10            rwd]
+[ ./ufs_dir.c ]
+Fix name bug in denter.
+[90/09/26            rwd]
+Fix loop in dremove which could loop forever.
+[90/09/21            rwd]
+Use map_file_lock/unlock.
+[90/09/11            rwd]
+[ ./ufs_fops.c ]
+Call map_file_init.  Use map_file_lock/unlock.
+[90/09/11            rwd]
+[ ./ufs_pager.c ]
+Fix problem of writing to end of file first.
+[90/09/27            rwd]
+    
+    
+    
+==========================================================================
+   ***** POE Version POE3  (rwd) *****
+    
+    
+New features:
+--- --------
+
+Replace at&t inode code with 4.3/reno modified code.
+
+
+Special notes:
+------- -----
+
+************************** summary of log messages ***************************
+[ ./conf/version.edit ]
+3
+[ ./bsd_signal.c ]
+Remove excess printfs.
+[90/09/30            rwd]
+[ ./ufs_disk.h ]
+New file from berkley.
+[90/09/28            rwd]
+[ ./ufs_fops.h ]
+Added precalculated ud_nindir.
+[90/09/30            rwd]
+[ ./ufs_fs.h ]
+Taken from berkley.
+[90/09/28            rwd]
+[ ./ufs_inode.c ]
+Convert to new inode code from XUX26/from BSD4.3-Reno.
+[90/09/30            rwd]
+[ ./ufs_mount.c ]
+Calculate indirect blocks at mount time.
+[90/09/30            rwd]
+[ ./ufs_param.h ]
+Taken from XMK26.
+[90/09/28            rwd]
+[ ./utils/log-template.msg ]
+Add i386 templates.
+    
+    
+    
+==========================================================================
+   ***** POE Version POE4  (rwd) *****
+    
+    
+Organizational changes:
+-------------- -------
+
+The emulator source was pulled into this tree.  There has been some
+source file movement.  This was built completely from the release area
+includes and librarys
+
+
+************************** summary of log messages ***************************
+[ ./conf/version.edit ]
+4
+[ ./Makefile ]
+Created.
+[90/11/13            rwd]
+[ ./emulator/Makeconf ]
+Taken from UX21
+[90/11/14  15:12:03  rwd]
+[ ./emulator/Makefile ]
+Taken from UX21
+[90/11/14  15:12:19  rwd]
+[ ./emulator/allocator.c ]
+Taken from UX21
+[90/11/14  15:13:09  rwd]
+[ ./emulator/bsd_types_gen.c ]
+Taken from UX21
+[90/11/14  15:14:54  rwd]
+[ ./emulator/bsd_user_side.c ]
+Taken from UX21
+[90/11/14  15:15:07  rwd]
+[ ./emulator/emul_cache.c ]
+Taken from UX21
+[90/11/14  15:19:50  rwd]
+[ ./emulator/emul_generic.c ]
+Taken from UX21
+[90/11/14  15:20:00  rwd]
+[ ./emulator/emul_init.c ]
+Taken from UX21
+[90/11/14  15:20:32  rwd]
+[ ./emulator/emul_mapped.c ]
+Taken from UX21
+[90/11/14  15:20:42  rwd]
+[ ./emulator/emul_stack.h ]
+Taken from UX21
+[90/11/14  15:21:22  rwd]
+[ ./emulator/emul_stack_alloc.c ]
+Taken from UX21
+[90/11/14  15:20:53  rwd]
+[ ./emulator/emulator_base.c ]
+Taken from UX21
+[90/11/14  15:21:03  rwd]
+[ ./emulator/i386/emul_machdep.c ]
+Taken from UX21
+[90/11/14  15:05:53  rwd]
+[ ./emulator/i386/emul_vector.s ]
+Taken from UX21
+[90/11/14  15:06:03  rwd]
+[ ./emulator/mips/emul_machdep.c ]
+Taken from UX21
+[90/11/14  15:07:17  rwd]
+[ ./emulator/mips/emul_vector.s ]
+Taken from UX21
+[90/11/14  15:07:29  rwd]
+[ ./emulator/sun3/emul_machdep.c ]
+Taken from UX21
+[90/11/14  15:05:19  rwd]
+[ ./emulator/sun3/emul_vector.s ]
+Taken from UX21
+[90/11/14  15:05:31  rwd]
+[ ./emulator/syscall_table.c ]
+Taken from UX21
+[90/11/14  15:21:13  rwd]
+[ ./emulator/syscall_table.h ]
+Taken from UX21
+[90/11/14  15:21:33  rwd]
+[ ./emulator/vax/emul_machdep.c ]
+Taken from UX21
+[90/11/14  15:06:23  rwd]
+[ ./emulator/vax/emul_vector.s ]
+Taken from UX21
+[90/11/14  15:06:34  rwd]
+[ ./poe/Makeconf ]
+Use release area.  No more MACH3DPJ.
+[90/11/13            rwd]
+[ ./poe/Makefile ]
+Change AT386 to I386.
+[90/10/18            rwd]
+[ ./poe/i386/vmparam.h ]
+Add USRTEXT.
+[90/11/13            rwd]
+[ ./poe/mips/vmparam.h ]
+Add USRTEXT.
+[90/11/13            rwd]
+[ ./poe/sun3/vmparam.h ]
+Add USRTEXT.
+[90/11/13            rwd]
+    
+    
+    
+==========================================================================
+   ***** POE Version POE5  (rpd) *****
+    
+    
+Bug fixes:
+--- -----
+
+Fixed the pid_by_task syscall, so machid works.
+
+Fixed setitimer.
+
+Implemented init_process, reboot, kill(-1, sig), so halt/reboot work.
+
+Fixed the boot program to avoid a signal delivery race.
+
+Fixed to use dead-name notifications to detect processes
+which are task_terminate'd, so you return to Poe
+if the Unix server is killed.
+
+
+Special notes:
+------- -----
+
+Built on pmax, sun3, i386.  Tested on pmax.
+    
+    
+    
+==========================================================================
+   ***** POE Version POE6  (rpd) *****
+    
+    
+Bug fixes:
+--- -----
+
+Poe uses a single exception port to catch exceptions.
+It converts the task port in catch_exception_raise into
+a Unix process.  Previously, if a Poe process created
+a new task which raised an exception, Poe got confused
+and thought the process raised the exception.
+
+The boot program sets the exception port for the new task to null.
+Now when the Unix server takes an exception ddb gets invoked,
+because the Unix server doesn't have an exception port.
+
+Minor bug fix for gcc.
+
+
+************************** summary of log messages ***************************
+[ ./conf/version.edit ]
+6
+[ ./poe/boot.c ]
+Reset the exception port.
+[91/01/12            rpd]
+[ ./poe/bsd_exception.c ]
+Fixed catch_exception_raise to trust the task port,
+not the server port.
+[91/01/12            rpd]
+[ ./poe/bsd_fork.c ]
+Added exception_port.
+[91/01/12            rpd]
+[ ./poe/bsd_lookup.c ]
+Fixed path_split to return writeable static strings.
+[91/02/18            rpd]
+[ ./poe/bsd_misc.c ]
+Fixed Bsd_nothing to signal SIGSYS and return EINVAL.
+[90/12/14            rpd]
+[ ./poe/init_sysent.c ]
+Changed all uses of sys_nope to sys_null.
+[90/12/14            rpd]
+[ ./poe/server_loop.c ]
+Added exception_port.
+[91/01/12            rpd]
+[ ./emulator/mips/emul_vector.s ]
+Changed EF_ prefix to MSS_.
+[91/03/09            rpd]
+    
+    
+    
+==========================================================================
+   ***** POE Version POE7  (jjc) *****
+    
+    
+New features:
+--- --------
+
+Added support to POE for reading/writing raw disk partitions, so you can
+run fsck on top of POE.
+
+Picked up line discipline changes from Adam Richter at Berkeley.  CTRL-{h,u,w}
+work now.
+
+
+Bug fixes:
+--- -----
+
+Eliminated race between Bsd_exit() and dead_task_server() which caused bad
+exit status to be returned.
+
+Fixed Bsd_xread() to round buffer before trying to figure out whether the
+buffer will fit on the stack.
+
+Corrected major device number for /dev/null on non-MIPS machines, so "cat >
+/dev/null" won't crash POE on the 386 and Sun 3.
+
+Fixed pipe_close() to signal waiting readers or writers.  This bug made 
+"set foo=`wh -q foo`" hang.
+
+
+Special notes:
+------- -----
+
+These changes and bug fixes were intended to make it easier to startup the
+Multi-Server on POE.  Since POE can now run fsck, the ufs server doesn't need
+to worry about fsck-ing.  Most of the bug fixes were made so the Multi-Server
+startup script could be run on POE.  Unfortunately, POE lacks support for
+asynchronous signals like the SIGSEGVs that the Bourne shell counts on getting
+after it trips on some memory that needs to be allocated.  Sigh.  The shell on
+the Sun 3 has a big initial break, allowing it to run the Multi-Server startup
+script, but we're dropping the Sun 3 as a Multi-Server platform.  Double sigh.
+
+Compiled and tested on Sun 3, Pmax, and 386.
+
+************************** summary of log messages ***************************
+[ ./conf/version.edit ]
+7
+[ ./poe/bdev_fops.c ]
+Made changes to enable reading/writing raw disk partitions:
+	1) Modified bdev_special() to handle root disk as a character 
+	   or a block device.
+	2) Added a mode argument to bdev_make_special() for 
+	   device_open().
+	3) Tossed definition of D_READ and included 
+	   <device/device_types.h> for device modes instead.
+	4) Implemented bdev_read().
+	5) Included <ufs_param.h> for DEV_BSIZE.
+[91/04/16            jjc]
+[ ./poe/bsd_exit.c ]
+Eliminated race between Bsd_exit() and dead_task_server() both
+setting the status and flagging ut_hasstatus by just setting
+ut_hasstatus once in makedead() after the task has really died.
+Changed Bsd_exit() to just set the status not ut_hasstatus.
+Removed setting of ut_hasstatus and the status from dead_task_server().
+This bug caused wait() to pass back different status for the same
+child.
+[91/05/16            jjc]
+[ ./poe/bsd_fork.c ]
+Initialized ut_status in spawn_ux_task().
+[91/05/16            jjc]
+[ ./poe/bsd_io.c ]
+Fixed Bsd_xread() to check to see if the buffer will fit on the stack
+even after rounding up the beginning of the buffer to a page boundary.
+[91/04/16            jjc]
+[ ./poe/i386/root_device.h ]
+Added definitions for root character device name and number.
+[91/04/16            jjc]
+[ ./poe/mem_fops.c ]
+Fixed mem_special() to get /dev/null's major device number right 
+for non-MIPS machines.
+[91/04/16            jjc]
+[ ./poe/mips/root_device.h ]
+Added definitions for root character device name and number.
+[91/04/16            jjc]
+[ ./poe/pipe_fops.c ]
+Fixed pipe_close() to signal any waiting readers if closing
+the writer and signal any waiting writers if closing the reader.
+The routines, pipe_read() and pipe_write(), can deadlock otherwise.
+[91/05/07            jjc]
+[ ./poe/subr_cbuf.c ]
+Picked up line discipline support from Adam Richter at 
+Berkeley, adding cbuf_expunge().
+[91/05/30            jjc]
+[ ./poe/sun3/root_device.h ]
+Added definitions for root character device name and number.
+[91/04/16            jjc]
+[ ./poe/tty_fops.c ]
+Picked up line discipline support from Adam Richter at Berkeley:
+Added support for the flow control and line editting control
+characters (^D, ^O, ^S, ^Q, ^R, ^V, backspace, ^U, ^W), and the
+ioctls that stty uses to customize them.
+[91/05/30            jjc]
+    
+    
+    
+==========================================================================
+   ***** POE Version POE8  (mrt) *****
+    
+    
+New features:
+--- --------
+Added a include/Makefile that copies all the include/sys files from the
+Unix server ssrouces to the release area where Poe needs them. Poe will still 
+not build without some additional .h files, libmach3_sa.a and libmach3_vus.a 
+being available in a master release directory. See {poe,emulator}/Makeconf
+to reset that directory name for your site.
+
+Bug fixes:
+--- -----
+none
+
+Organizational changes:
+-------------- -------
+The sources were moved to live in mach/mach3/{merge,latest}/src/poe. This
+necessitated changes to {poe,emulator}/Makeconf.
+
+The Mach free-distribution copyright was added to all the files.
+
+Special notes:
+------- -----
+Poe was built for the i386, pmax and sun3. It was not tested.
+
+******** CUT HERE ******** summary of log messages ******** CUT HERE ********
+[ ./conf/version.edit ]
+8
+[ ./poe/conf/copyright ]
+updated to new copyright
+[ ./Makefile ]
+Updated to new copyright
+[ ./emulator/* ]
+Updated to new copyright
+[ ./poe/Makeconf ]
+Updated to new copyright
+[ ./poe/* ]
+Updated to new copyright
+[ ./poe/conf/copyright ]
+Changed the style of quotes so vers.c would compile.
+[ ./include/Makefile ]
+Created to copy over the include/sys files from the Unix server.
+
+    
+    
+    
+==========================================================================
+   ***** POE Version POE9  (rpd) *****
+    
+    
+Organizational changes:
+-------------- -------
+
+I redid the Makefiles etc. so that poe uses the same scheme
+as MK69, UX31, and USER12.
+
+The new poe Makefiles install the following files in the release area:
+	special/poe.<version>
+		poe server; used as "/mach_servers/startup"
+	special/poe_emulator.<version>
+		emulator for poe; used as "/mach_servers/poe_emulator"
+	etc/poe_init
+		init program for poe; used as "/mach_servers/poe_init"
+	etc/boot
+		boot program; normally used as "/mach_servers/boot"
+
+The boot program can be used to start eg the UX31 server.
+For example, after booting & reaching a shell running under poe
+in the /mach_servers directory,
+	./boot ./unix_server <root>
+where <root> might be "hd0a" or "rz0a" and the UX31 Unix server
+is /mach_servers/unix_server.  (This hasn't changed; I'm just
+reminding you how it works.)
+
+I created a "Directories" directory so that m3tree works with poe.
+
+
+Special notes:
+------- -----
+
+I tested the i386 and mips versions with MK69 and UX31.
+The sun3 version was built but not tested.
+
+Contrary to recent reports on comp.os.mach, poe still
+uses some system header files (<sys/file.h>, <sys/signal.h>, etc.)
+that are not provided.
+    
+    
+    
+==========================================================================
+   ***** POE Version POE10  (mrt) *****
+    
+    
+New features:
+--- --------
+Poe now works on SCSI disks on i386 machines
+and supports more than one disk
+
+It now will take root device and server
+directory arguments.
+
+Added a brief document as to what Poe is and how it works
+as well as a few comments to the code.
+
+Organizational changes:
+-------------- -------
+Now builds with standard ODE tools
+
+Special notes:
+------- -----
+It was built and tested on DecStation 5000 and i386 machines
+
+It was also tested and built both in stand-alone mode and as
+a second server
+
+<Replace this text with any special information of interest for this version.>
+
+******** CUT HERE ******** summary of log messages ******** CUT HERE ********
+[ ./conf/version.edit ]
+10
+[ ./Makefile-common ]
+Not needed by odemake
+[ ./Directories/ALL ]
+Added include, include/i386,mips directories.
+[93/11/22            mrt]
+[ ./Directories/MI ]
+Added poe/include.
+[93/11/22            mrt]
+[ ./Directories/i386 ]
+Added poe/include/i386 directory.
+[93/11/22            mrt]
+[ ./Directories/mips ]
+Added poe/include/mips directory.
+[93/11/22            mrt]
+[ ./poe/i386/root_device.h ]
+root is no longer a constant
+[ ./poe/mips/root_device.h ]
+root is no longer a constant
+[ ./Makeconf ]
+Updated for odemake.
+[93/11/15            mrt]
+[ ./Makefile ]
+Updated for odemake.
+[93/11/15            mrt]
+[ ./conf/newvers.sh ]
+Copied over from BSDSS. No longer uses version.minor
+[93/11/17            mrt]
+[ ./emulator/Makefile ]
+Updated for odemake
+[93/11/15            mrt]
+[ ./emulator/allocator.c ]
+Corrected include of mach/mach.h to mach.h.
+[93/11/15            mrt]
+[ ./emulator/emul_generic.c ]
+Corrected include of mach/mach.h to mach.h.
+[93/11/15            mrt]
+[ ./emulator/emul_init.c ]
+Corrected include of mach/mach.h to mach.h.
+[93/11/15            mrt]
+[ ./emulator/emul_stack_alloc.c ]
+Corrected include of mach/mach.h to mach.h.
+[93/11/15            mrt]
+[ ./emulator/emulator_base.c ]
+Added -Xlinker switch to get the -D value passed to gcc linker.
+[94/03/24            mrt]
+[ ./emulator/i386/emul_machdep.c ]
+Corrected include of mach/mach.h to mach.h.
+Added casts.
+[93/11/17            mrt]
+[ ./emulator/i386/emul_vector.s ]
+Changed comments to c style.
+[93/11/17            mrt]
+[ ./emulator/mips/emul_machdep.c ]
+Corrected include of mach/mach.h to mach.h
+Added some casts for gcc.
+[93/11/15            mrt]
+[ ./emulator/mips/emul_vector.s ]
+Changed comments to standard c style.
+[93/11/16            mrt]
+[ ./poe/Makefile ]
+Fixed to build vers.c every time poe is built.
+Updated for odemake.
+[93/11/16            mrt]
+[ ./poe/bdev_fops.c ]
+Added comments. Changed bdev_speical to use the split
+block and char special device switches. Removed OLD_xxX
+routine.
+[94/03/09            mrt]
+[ ./poe/boot.c ]
+Added some comments.
+[94/03/19            mrt]
+[ ./poe/bsd_fork.c ]
+Changed emulator_name to emulator_path and init_name to init_path.
+These may be changed by main as the result of input args.
+[94/03/14            mrt]
+[ ./poe/bsd_io.c ]
+Added support for reading CMU style FASTLINKS.
+Do not create FASTLINKS
+[94/02/18            mrt]
+[ ./poe/bsd_lookup.c ]
+Added support for CMU style FASTLINKS.
+[94/02/19            mrt]
+[ ./poe/bsd_special.c ]
+Changed to differentiate between block and char special
+devices. Added comments.
+[94/03/09            mrt]
+[ ./poe/config.h ]
+Allow STANDALONE to be a compilation flag.
+[94/02/18            mrt]
+[ ./poe/i386/bsd_machdep.c ]
+Changed struct exec.a_info to a_magic to match change in
+i386/exec.h.
+[93/11/17            mrt]
+[ ./poe/i386/conf.h ]
+Split into block and char device tables since device
+3 is sd for block and mem for char. added zd for Sequent
+[94/02/20            mrt]
+[ ./poe/i386/spec.h ]
+Created for external special device declarations.
+[94/02/20            mrt]
+[ ./poe/include/Makefile ]
+Created.
+[93/11/16            mrt]
+[ ./poe/include/i386/Makefile ]
+Removed root_device.h and added spec.h
+	Created for odemake.
+[94/03/16            mrt]
+[ ./poe/include/mips/Makefile ]
+[93/11/22  18:04:49  mrt]
+[ ./poe/main.c ]
+Added code to parse input args from the kernel and
+to set the root device dynamically.
+Added different type for time() to match
+ __STDC__ include files.
+[93/11/17            mrt]
+[ ./poe/minit.c ]
+Fixed up the use of the input args.
+[94/03/15            mrt]
+[ ./poe/mips/conf.h ]
+Split into block and char device tables to be
+consistent with i386
+[94/03/12            mrt]
+[ ./poe/mips/spec.h ]
+Created for external special device declarations.
+[94/02/20            mrt]
+[ ./poe/subr_copy.c ]
+Added some comments.
+[94/03/16            mrt]
+[ ./poe/subr_fops.c ]
+Added comments.
+[94/03/09            mrt]
+[ ./poe/ufs_mount.c ]
+Changed ufs_mountroot to take root device and well as root
+name as input. No longer needs to call OLD_xxX to makeup
+root device.
+[94/03/14            mrt]
+[ ./poe/ux_user.h ]
+Added comments.
+[94/03/25            mrt]
+[ ./poe/bsd_exec.c ]
+Changed some print statements.
+[94/03/25            mrt]
+[ ./poe/bsd_special.c ]
+	Changed to differentiate between block and char special
+	devices. Added comments.
+[94/03/27            mrt]
+[ ./poe/fnode.h ]
+Added some comments.
+[94/03/27            mrt]
+[ ./poe/ufs_fops.h ]
+Added some comments.
+[94/03/27            mrt]
+[ ./poe/subr_fops.h ]
+Added some
+ comments.
+[94/03/27            mrt]
+[ ./poe/i386/conf.h ]
+Split into block and char device tables since device
+3 is sd for block and mem for char. added zd for Sequent
+[94/04/12            mrt]
+[ ./poe/Makefile ]
+Fixed to build vers.c every time poe is built.
+Updated for odemake.
+[94/04/13            mrt]
+[ ./poe/printf.c ]
+Fixed to work when poe is run as a second server.
+( ! STANDALONE)
+[94/04/13            mrt]
+[ ./poe/boot.c ]
+Added some comments.
+[94/04/12            mrt]
+[ ./doc/poe_notes.mss ]
+Created.
+
+[ ./rc ]
+Created
+

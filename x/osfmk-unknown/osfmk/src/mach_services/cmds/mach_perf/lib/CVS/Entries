@@ -1,0 +1,34 @@
+/Makefile/1.1.1.1/Mon Oct  5 23:06:48 1998//
+/cons.c/1.1.1.1/Mon Oct  5 23:06:48 1998//
+/debug.c/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/doprnt.c/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/exception.c/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/exception.defs/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/floor.c/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/fork.c/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/ipc_inherit.defs/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/mach.c/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/mach_prof.c/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/misc.c/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/printf.c/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/printf.defs/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/printf_types.h/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/prof.c/1.1.1.1/Mon Oct  5 23:06:49 1998//
+/prof_ctrl.defs/1.1.1.1/Mon Oct  5 23:06:50 1998//
+/prof_ctrl_types.h/1.1.1.1/Mon Oct  5 23:06:50 1998//
+/qsort.c/1.1.1.1/Mon Oct  5 23:06:50 1998//
+/random.c/1.1.1.1/Mon Oct  5 23:06:50 1998//
+/resources.c/1.1.1.1/Mon Oct  5 23:06:50 1998//
+/sched.c/1.1.1.1/Mon Oct  5 23:06:51 1998//
+/server.c/1.1.1.1/Mon Oct  5 23:06:51 1998//
+/server.defs/1.1.1.1/Mon Oct  5 23:06:51 1998//
+/stat.c/1.1.1.1/Mon Oct  5 23:06:51 1998//
+/test.c/1.1.1.1/Mon Oct  5 23:06:51 1998//
+/thread.c/1.1.1.1/Mon Oct  5 23:06:51 1998//
+/time.c/1.1.1.1/Mon Oct  5 23:06:51 1998//
+/ux_cons.c/1.1.1.1/Mon Oct  5 23:06:51 1998//
+/ux_prof.c/1.1.1.1/Mon Oct  5 23:06:51 1998//
+/ux_stubs.c/1.1.1.1/Mon Oct  5 23:06:52 1998//
+D/AT386////
+D/HP700////
+D/POWERMAC////

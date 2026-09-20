@@ -1,0 +1,272 @@
+--- adb_mouse.c	Tue Jul 28 00:57:40 1998
++++ adb_mouse.c.orig	Tue Jul 28 00:57:55 1998
+@@ -1,18 +1,4 @@
+ /*
+- * This code was modified March 5th 1998 to handle products based on the
+- * MacPoint Mouse/Trackball controllers by Fesh!.
+- *
+- * The following products are now handeled as multi button mice:
+- *
+- * CH Products 		- Trackball Pro
+- * Contour Design 	- Contour Mouse
+- * Hunter Digital	- NoHandsMouse
+- * MicroSpeed		- Mouse Deluxe
+- * MicroSpeed		- MacTRAC
+- *
+- */
+- 
+-/*
+  * Copyright 1996 1995 by Open Software Foundation, Inc. 1997 1996 1995 1994 1993 1992 1991  
+  *              All Rights Reserved 
+  *  
+@@ -120,26 +106,6 @@
+ #define UP 0x80
+ #define DOWN 0x00
+ 
+-#define EXTENDEDMOUSE 1
+-
+-#if EXTENDEDMOUSE
+-enum {
+-  HANDLER_ID_MICROSPEED = 0x2F,
+-  HANDLER_ID_TRACKBALL_PRO = 0x42,
+-  HANDLER_ID_CONTOUR_MOUSE = 0x66,
+-  HANDLER_ID_NOHANDS_MOUSE = 0x5F
+-};
+-
+-enum {
+-  BUTTON_MASK_LEFT = 1 << 0,
+-  BUTTON_MASK_MIDDLE = 1 << 1,
+-  BUTTON_MASK_RIGHT = 1 << 2,
+-  BUTTON_MASK_LEFT_TRACKBALL_PRO = (1 << 2) | (1 << 3),
+-  BUTTON_MASK_MIDDLE_TRACKBALL_PRO = 1 << 0,
+-  BUTTON_MASK_RIGHT_TRACKBALL_PRO = 1 << 1
+-};
+-#endif
+-
+ struct mouse_state {
+   unsigned char xpos;
+   unsigned char ypos;
+@@ -152,16 +118,9 @@
+ 
+ mouse_state_t last_state = {0, 0, UP, UP, UP}; /* all buttons up */
+ 
+-#if EXTENDEDMOUSE
+-void set_extended_mouse_mode(int number);
+-void extended_mouse_adbhandler(int number, unsigned char *buffer, int count);
+-#endif
+ void mouse_adbhandler(int number, unsigned char *buffer, int count);
+ int mouse_probe(caddr_t port, void *ui);
+ void mouse_attach(struct bus_device *dev);
+-#if MOUSE_DEBUG
+-void mouse_report(const char *str, const mouse_state_t *newstate);
+-#endif
+ void mouse_do_buttons(int button, int up);
+ 
+ boolean_t	mouse_initted = FALSE;
+@@ -206,23 +165,6 @@
+ 			continue;
+ 
+ 		if (devp->a_dev_type == ADB_DEV_MOUSE) {
+-#if EXTENDEDMOUSE
+-			unsigned short	orighandler = devp->a_dev_orighandler;
+-
+-/* 			printf("\ngot a mouse: orig handler is = %02X\n", orighandler); */
+-			switch (orighandler) {
+-			case HANDLER_ID_MICROSPEED:
+-			case HANDLER_ID_TRACKBALL_PRO:
+-			case HANDLER_ID_CONTOUR_MOUSE:
+-			case HANDLER_ID_NOHANDS_MOUSE:
+-				set_extended_mouse_mode(i);
+-				adb_register_dev(i, extended_mouse_adbhandler);
+-				break;
+-			default:
+-				adb_set_handler(devp, 4);
+-				break;
+-			}
+-#else
+ 			/* 
+ 			 * See if the mouse is a three button
+ 			 * mouse.. this is done by setting the
+@@ -230,7 +172,6 @@
+ 			 */
+ 
+ 			adb_set_handler(devp, 4);
+-#endif
+ 		}
+ 	}
+ 	adb_polling = FALSE;
+@@ -239,98 +180,6 @@
+ }
+ 
+ 
+-#if EXTENDEDMOUSE
+-void
+-set_extended_mouse_mode(int number)
+-{
+-  adb_request_t req;
+-  unsigned long reg1 = 1 << 12;                        /* set bit #12 for extended mouse mode */
+-
+-  adb_init_request(&req);
+-  ADB_BUILD_CMD2_BUFFER(&req, ADB_PACKET_ADB, (ADB_ADBCMD_WRITE_ADB | (number << 4) | 1), 4, (unsigned char *) &reg1);
+-  adb_send(&req, TRUE);
+-}
+-
+-
+-void
+-extended_mouse_adbhandler(int number, unsigned char *buffer, int count)
+-{
+-  if (count == 4) {
+-#if 0
+-    printf("extended_mouse_adbhandler - num: %d, buf0: %02X, buf1: %02X, buf2: %02X, buf3: %02X, count: %d\n",
+-	   number, (int)buffer[0], (int)buffer[1], (int)buffer[2], (int)buffer[3], count);
+-#endif
+-    /* If the tty is accepting mouse events, then pass them on. */
+-    if(vc_xservermode) {
+-      unsigned char x;
+-      unsigned char y;
+-      unsigned char buttons;
+-      unsigned char button_left, button_middle, button_right;
+-      unsigned char mask_left, mask_middle, mask_right;
+-#if MOUSE_DEBUG
+-      mouse_state_t newstate;
+-#endif
+-
+-      x = POS(buffer[1]);
+-      y = POS(buffer[0]);
+-      buttons = ~buffer[3] & 0x0F;                                                  /* mask the four possible buttons (negative logic) */
+-      if (adb_devices[number].a_dev_orighandler == HANDLER_ID_TRACKBALL_PRO) {      /* special arrangement of buttons for Trackball Pro */
+-	mask_left = BUTTON_MASK_LEFT_TRACKBALL_PRO;                                 /* set button mask for left button */
+-	mask_middle = BUTTON_MASK_MIDDLE_TRACKBALL_PRO;                             /* set button mask for middle button */
+-	mask_right = BUTTON_MASK_RIGHT_TRACKBALL_PRO;                               /* set button mask for right button */
+-      } else {
+-	mask_left = BUTTON_MASK_LEFT;                                               /* set button mask for left button */
+-	mask_middle = BUTTON_MASK_MIDDLE;                                           /* set button mask for middle button */
+-	mask_right = BUTTON_MASK_RIGHT;                                             /* set button mask for right button */
+-      }
+-      button_left = (buttons & mask_left) ? DOWN : UP;                              /* set button flag for left button */
+-      button_middle = (buttons & mask_middle) ? DOWN : UP;                          /* set button flag for middle button */
+-      button_right = (buttons & mask_right) ? DOWN : UP;                            /* set button flag for right button */
+-#if MOUSE_DEBUG
+-      newstate.xpos = x;
+-      newstate.ypos = y;
+-      newstate.left = button_left;
+-      newstate.middle = button_middle;
+-      newstate.right = button_right;
+-#endif
+-      if (x || y || button_left != last_state.left) {
+-#if MOUSE_DEBUG
+-	if (x || y) {
+-	  mouse_report("position", &newstate);
+-	} else if (button_left != last_state.left) {
+-	  mouse_report("left", &newstate);
+-	}
+-#endif
+-	ttyinput(MOUSE_ESCAPE, &vc_tty);	/* Let the TTY know this is mouse stuff. */
+-	ttyinput(y | button_left, &vc_tty); /* Send one position delta and the button state. */
+-	ttyinput(x, &vc_tty);	/* Send the second position delta. */
+-	last_state.xpos = x;
+-	last_state.ypos = y;
+-	last_state.left = button_left;
+-      }
+-      if (button_middle != last_state.middle) {
+-#if MOUSE_DEBUG
+-	  mouse_report("middle", &newstate);
+-#endif
+-	  ttyinput(KEY_MIDDLE_BUTTON | button_middle, &vc_tty);
+-	  last_state.middle = button_middle;
+-      }
+-      if (button_right != last_state.right) {
+-#if MOUSE_DEBUG
+-	  mouse_report("right", &newstate);
+-#endif
+-	  ttyinput(KEY_RIGHT_BUTTON | button_right, &vc_tty);
+-	  last_state.right = button_right;
+-      }
+-    }
+-  } else {
+-    /*    printf("extended_mouse_adbhandler: bad count: %d\n", count);*/
+-    mouse_adbhandler(number, buffer, count);
+-  }
+-}
+-#endif
+-
+-
+ void 
+ mouse_adbhandler(int number, unsigned char *buffer, int count)
+ {
+@@ -340,43 +189,32 @@
+ #endif
+   /* If the tty is accepting mouse events, then pass them on. */
+   if(vc_xservermode) {
+-#if MOUSE_DEBUG
+-    mouse_state_t newstate;
+-#endif
+-
+-#if MOUSE_DEBUG
+-    newstate.ypos = POS(buffer[0]);
+-    newstate.xpos = POS(buffer[1]);
+-    newstate.left = BUTTON(buffer[0]);
+-    newstate.middle = BUTTON(buffer[1]);
+-    newstate.right = BUTTON(buffer[2]);
+-#endif
+     if (POS(buffer[0]) || POS(buffer[1]) ||
+-	(BUTTON(buffer[0]) != last_state.left)) {
++	  (BUTTON(buffer[0]) != last_state.left)) {
+ #if MOUSE_DEBUG
+-      if (POS(buffer[0]) || POS(buffer[1])) {
+-	mouse_report("position", &newstate);
+-      } else if (BUTTON(buffer[0]) != last_state.left) {
+-	mouse_report("left", &newstate);
+-      }
+-#endif
+-      ttyinput(MOUSE_ESCAPE, &vc_tty);	/* Let the TTY know this is mouse stuff. */
+-      ttyinput(buffer[0], &vc_tty); /* Send one position delta and the button state. */
+-      ttyinput(buffer[1], &vc_tty);	/* Send the second position delta. */
+-      last_state.ypos = POS(buffer[0]);
+-      last_state.xpos = POS(buffer[1]);
+-      last_state.left = BUTTON(buffer[0]);
+-    }
++	  if (POS(buffer[0]) || POS(buffer[1]) {
++	    mouse_report("position");
++	  } else if (BUTTON(buffer[0]) != last_state.left)) {
++	    mouse_report("left");
++	  }
++#endif
++	  ttyinput(MOUSE_ESCAPE, &vc_tty);	/* Let the TTY know this is mouse stuff. */
++	  ttyinput(buffer[0], &vc_tty); /* Send one position delta and the button state. */
++	  ttyinput(buffer[1], &vc_tty);	/* Send the second position delta. */
++	  last_state.xpos = POS(buffer[0]);
++	  last_state.ypos = POS(buffer[1]);
++	  last_state.left = BUTTON(buffer[0]);
++	}
+     if (count > 2 && BUTTON(buffer[1]) != last_state.middle) {
+ #if MOUSE_DEBUG
+-	  mouse_report("middle", &newstate);
++	  mouse_report("middle");
+ #endif
+ 	  ttyinput(KEY_MIDDLE_BUTTON | BUTTON(buffer[1]), &vc_tty);
+ 	  last_state.middle = BUTTON(buffer[1]);
+     }
+     if (count > 2 && BUTTON(buffer[2]) != last_state.right) {
+ #if MOUSE_DEBUG
+-	  mouse_report("right", &newstate);
++	  mouse_report("right");
+ #endif
+ 	  ttyinput(KEY_RIGHT_BUTTON | BUTTON(buffer[2]), &vc_tty);
+ 	  last_state.right = BUTTON(buffer[2]);
+@@ -386,11 +224,12 @@
+ 
+ #if MOUSE_DEBUG
+ void
+-mouse_report(const char *str, const mouse_state_t *newstate)
++mouse_report(char *str)
+ {
+   printf(str);
+-  printf(", x=%X, y=%X, b0=%X, b1=%X, b2=%X, ",
+-	 newstate->xpos, newstate->ypos, newstate->left, newstate->middle, newstate->right);
++  printf(", b0=%X, b1=%X, b2=%X, x=%X, y=%X, ",
++	 (int)BUTTON(buffer[0]), (int)BUTTON(buffer[1]),
++	 (int)BUTTON(buffer[2]), (int)POS(buffer[0]), (int)POS(buffer[1]));
+   printf("last: lx=%X, ly=%X, ll=%X, lm=%X, lr=%X\n",
+ 	 (int)last_state.xpos, (int)last_state.ypos, (int)last_state.left,
+ 	 (int)last_state.middle, (int)last_state.right);

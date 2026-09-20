@@ -1,0 +1,14 @@
+/.cvsignore/1.2/Thu Nov 12 16:46:48 1998//
+/Makefile/1.1.1.1/Fri Oct  2 21:15:05 1998//
+/check.c/1.1.1.1/Fri Oct  2 21:15:06 1998//
+/dir.c/1.1.1.1/Fri Oct  2 21:15:06 1998//
+/emd.c/1.2/Mon Oct  5 23:47:48 1998//
+/file.c/1.1.1.1/Fri Oct  2 21:15:06 1998//
+/inode.c/1.2/Mon Oct  5 23:47:49 1998//
+/ioctl.c/1.1.1.1/Fri Oct  2 21:15:06 1998//
+/mangle.c/1.1.1.1/Fri Oct  2 21:15:07 1998//
+/namei.c/1.2/Mon Oct  5 23:47:50 1998//
+/notes/1.1.1.1/Fri Oct  2 21:15:07 1998//
+/rdir.c/1.2/Mon Oct  5 23:47:51 1998//
+/symlink.c/1.1.1.1/Fri Oct  2 21:15:07 1998//
+D

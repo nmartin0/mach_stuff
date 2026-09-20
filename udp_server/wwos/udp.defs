@@ -1,0 +1,72 @@
+/*
+ * Simpleminded UDP Server
+ *
+ * Copyright (C) 1992  Chris Maeda
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * Chris Maeda (cmaeda@cs.cmu.edu)
+ * School of Computer Science
+ * Carnegie Mellon University
+ * 5000 Forbes Ave
+ * Pittsburgh PA  15213-3890
+ * USA
+ */
+/*
+ * MIG file for a UDP server
+ */
+
+subsystem udp 178000;
+
+#include <mach/mach_types.defs>;
+#include "udp_types.defs";
+
+uimport "udp_defs.h";
+
+/*
+ * Use this routine to get a local udp endpoint.
+ */
+routine udp_getsport(
+		proc_port	: mach_port_t;
+	in	ipaddr		: unsigned;
+	out	portnum		: short);
+
+routine udp_sendto(
+		proc_port	: mach_port_t;
+	in	dst_ipaddr	: unsigned;
+	in	dst_uport	: short;
+	in	src_ipaddr	: unsigned;
+	in	src_uport	: short;
+	in	datagram	: datagram_t);
+
+routine udp_sendto_n(
+		proc_port	: mach_port_t;
+	in	dst_ipaddr	: unsigned;
+	in	dst_uport	: short;
+	in	src_ipaddr	: unsigned;
+	in	src_uport	: short;
+	in	datagram	: datagram_t;
+	in	n		: int);	/* number of packets to send */
+
+
+routine udp_recvfrom(
+		proc_port	: mach_port_t;
+	in	dst_ipaddr	: unsigned;
+	in	dst_uport	: short;
+	out	src_ipaddr	: unsigned;
+	out	src_uport	: short;
+	out	datagram	: datagram_t);
+
+

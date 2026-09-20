@@ -1,0 +1,25 @@
+/.cvsignore/1.1/Fri Oct 16 10:44:37 1998//
+/Makefile/1.1.1.1/Fri Oct  2 21:19:11 1998//
+/audio.c/1.1.1.1/Fri Oct  2 21:19:11 1998//
+/coproc.h/1.1.1.1/Fri Oct  2 21:19:12 1998//
+/dev_table.c/1.1.1.1/Fri Oct  2 21:19:12 1998//
+/dev_table.h/1.1.1.1/Fri Oct  2 21:19:12 1998//
+/dmabuf.c/1.1.1.1/Fri Oct  2 21:19:12 1998//
+/local.h/1.1.1.1/Fri Oct  2 21:19:12 1998//
+/midi_ctrl.h/1.1.1.1/Fri Oct  2 21:19:13 1998//
+/midi_synth.c/1.1.1.1/Fri Oct  2 21:19:13 1998//
+/midi_synth.h/1.1.1.1/Fri Oct  2 21:19:13 1998//
+/midibuf.c/1.1.1.1/Fri Oct  2 21:19:13 1998//
+/os.h/1.1.1.1/Fri Oct  2 21:19:13 1998//
+/patmgr.c/1.1.1.1/Fri Oct  2 21:19:13 1998//
+/sequencer.c/1.1.1.1/Fri Oct  2 21:19:14 1998//
+/sound_calls.h/1.1.1.1/Fri Oct  2 21:19:14 1998//
+/sound_config.h/1.1.1.1/Fri Oct  2 21:19:14 1998//
+/sound_switch.c/1.1.1.1/Fri Oct  2 21:19:14 1998//
+/sound_timer.c/1.1.1.1/Fri Oct  2 21:19:14 1998//
+/soundcard.c/1.1.1.1/Fri Oct  2 21:19:15 1998//
+/soundvers.h/1.1.1.1/Fri Oct  2 21:19:15 1998//
+/sys_timer.c/1.1.1.1/Fri Oct  2 21:19:15 1998//
+/tuning.h/1.1.1.1/Fri Oct  2 21:19:15 1998//
+/ulaw.h/1.1.1.1/Fri Oct  2 21:19:15 1998//
+D

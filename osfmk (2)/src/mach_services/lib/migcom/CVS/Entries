@@ -1,0 +1,30 @@
+/Makefile/1.2/Sun May 16 16:21:22 1999//
+/alloc.h/1.1/Sun May 16 14:23:40 1999//
+/error.c/1.1/Sun May 16 14:23:40 1999//
+/error.h/1.1/Sun May 16 14:23:40 1999//
+/global.c/1.1/Sun May 16 14:23:41 1999//
+/global.h/1.1/Sun May 16 14:23:41 1999//
+/header.c/1.1/Sun May 16 14:23:41 1999//
+/lexxer.h/1.1/Sun May 16 14:23:41 1999//
+/lexxer.l/1.1/Sun May 16 14:23:41 1999//
+/mig.c/1.1/Sun May 16 14:23:41 1999//
+/parser.y/1.1/Sun May 16 14:23:41 1999//
+/routine.c/1.1/Sun May 16 14:23:41 1999//
+/routine.h/1.1/Sun May 16 14:23:41 1999//
+/server.c/1.1/Sun May 16 14:23:41 1999//
+/statement.c/1.1/Sun May 16 14:23:41 1999//
+/statement.h/1.1/Sun May 16 14:23:41 1999//
+/strdefs.h/1.1/Sun May 16 14:23:41 1999//
+/string.c/1.1/Sun May 16 14:23:41 1999//
+/test.c/1.1/Sun May 16 14:23:41 1999//
+/type.c/1.1/Sun May 16 14:23:41 1999//
+/type.h/1.1/Sun May 16 14:23:42 1999//
+/user.c/1.1/Sun May 16 14:23:42 1999//
+/utils.c/1.2/Mon May 17 18:58:39 1999//
+/utils.h/1.1/Sun May 16 14:23:42 1999//
+/write.h/1.1/Sun May 16 14:23:42 1999//
+D/POWERMAC////
+D/alpha////
+D/hp_pa////
+D/i386////
+D/ppc////

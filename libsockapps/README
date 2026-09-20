@@ -1,0 +1,60 @@
+LIBSOCKETS APPS
+version 940603
+
+Chris Maeda (cmaeda@cs.cmu.edu)
+
+
+This package contains application programs that have been modified to
+work with the user-level sockets library distributed with the CMU UX
+server.  The following apps are included:
+
+	ftp/*		-- BSD FTP client
+	netlatency/*	-- measure user-user round trip times
+	telnet/*	-- BSD TELNET client
+	ttcp/*		-- measure user-user througput
+	x11perf/*	-- xlib benchmark
+
+They have been tested on MIPS DECstations running the CMU
+Mach 3.0 kernel version MK83, and the CMU UNIX server version UX42.
+They should also work on i386_mach without any problem.
+
+The applications must be linked with the sockets library,
+libsockets.a, and cthreads (libthreads.a) and libmach (libmach.a).  In
+addition, you must make sure that you link with the crt0 supplied with
+Mach.  Otherwise, cthread stacks will not be initialized properly.  In
+the CMU Mach environment, this is not too hard.  In a CMU csh, run the
+following command:
+
+	% setpath -i0 <location of mach3 release area>
+
+At CMU, the location of the mach3 release area is
+
+	/afs/cs.cmu.edu/project/mach3/latest/release/@sys
+
+Then run make in each directory.  The makefiles assume that LPATH will
+contain a directory that contains the libraries (and that the
+compiler/linker knows to search directories on LPATH).
+
+
+Modifying apps to run with libsockets:
+
+Look at main() in each app.  You basically have to call network_init
+before you do anything else.  This function takes the name of an init
+file.  Supply the name of a non-existent file.  You can also explore
+the libsockets code to see what you can customize in the init file.
+To learn more about the init file, look at
+ux/sockets/sock_kern/param.c in the UX distribution.
+
+Other than that, there should be nothing to do, since the library is
+supposed to be source compatible with (4.3BSD) sockets.  If you
+discover incompatibilities, please let me know.
+
+
+Problems to watch out for:
+
+There might be some compatibility problems with signal handlers if
+your handlers assume the app is single-threaded.  For example, signal
+handlers that call sigreturn (which does a longjmp) are likely to not
+work, since the library forces apps to become multithreaded programs.
+
+

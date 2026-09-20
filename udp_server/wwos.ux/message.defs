@@ -1,0 +1,20 @@
+/* add this to ux/server/uxkern/bsd_1.defs */
+
+/*
+ * Some experimental messages.
+ */
+
+routine bsd_ether_device_port(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	address		: sockarg_t;
+	out	device_port	: mach_port_copy_send_t);
+
+routine bsd_arp_resolve(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	devport		: mach_port_t;
+	in	in_address	: sockarg_t;
+	out	mac_address	: sockarg_t);
+
+

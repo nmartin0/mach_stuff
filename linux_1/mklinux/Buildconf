@@ -1,0 +1,27 @@
+#
+# Copyright (c) Open Software Foundation, Inc.
+#
+#
+# pmk1.1
+#
+
+setenv target_machine not_used_set_in_makeconf
+#replace setenv OBJECTDIR ../obj/${context}
+build_list /project/projects/build_list
+build_makeflags -r
+setenv PROJECT_NAME MKLINUX
+setenv project_name mklinux
+setenv RULES_MK osf.rules.mk
+#replace tools_base ${sandbox_base}/tools/${context}
+#replace object_base ${sandbox_base}/obj/${context}
+replace source_base ${sandbox_base}/src
+#replace export_base ${sandbox_base}/export/${context}
+setenv SOURCEBASE ${source_base}
+#setenv EXPORTBASE ${export_base}
+# replace setenv MAKESYSPATH ${source_base}/ode/mk
+replace setenv BACKED_SOURCEDIR ${source_base}
+replace setenv SOURCEDIR ""
+#replace setenv INCDIRS "-I${export_base}/usr/include"
+#replace setenv LIBDIRS "-L${export_base}/usr/lib"
+setenv USE_DASH_I_DASH 1
+setenv IDL_GEN_AUX_FILES 1

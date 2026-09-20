@@ -1,0 +1,7 @@
+PRODUCTION
+depend.mk
+version.edit
+version.variant
+version.major
+version.minor
+version.patch

@@ -1,0 +1,17 @@
+#
+# Copyright (c) Open Software Foundation, Inc.
+#
+# pmk1.1
+#
+
+#replace tools_base ${sandbox_base}/tools/${context}
+#replace object_base ${sandbox_base}/obj/${context}
+#replace export_base ${sandbox_base}/export/${context}
+replace source_base ${sandbox_base}/src
+#replace setenv EXPORTBASE ${export_base}
+replace setenv SOURCEBASE ${source_base}
+# replace setenv MAKESYSPATH ${source_base}/ode/mk:${MAKESYSPATH}
+replace setenv SOURCEDIR ${BACKED_SOURCEDIR}
+replace setenv BACKED_SOURCEDIR ${source_base}:${SOURCEDIR}
+#replace setenv INCDIRS "-I${export_base}/usr/include ${INCDIRS}"
+#replace setenv LIBDIRS "-L${export_base}/usr/lib ${LIBDIRS}"

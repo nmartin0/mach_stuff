@@ -1,0 +1,61 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS 
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie the
+.\" rights to redistribute these changes.
+.\"
+.\" HISTORY
+.\" $Log:	vmdis.1,v $
+.\" Revision 2.3  92/04/29  16:31:42  grm
+.\" 	Change the title from vmread to vmdis.
+.\" 	[92/04/21            grm]
+.\" 
+.\" Revision 2.2  91/12/05  16:45:19  grm
+.\" 	Created.
+.\" 	[91/12/05  14:35:13  grm]
+.\" 
+.TH VMDIS 1 8/29/91
+.CM 4
+.SH NAME
+vmdis \- read a task's address space and disassemble it as 8086 code.
+.SH SYNOPSIS
+\fBvmdis\fP [\fB-p] pid [addr] [size]
+.SH DESCRIPTION
+\fIvmdis(1)\fR reads and disassembles a task's address space as 8086
+assembly instructions.
+The \fIpid\fP argument, a unix server pid, specifies the task.
+The \fIaddr\fP argument is a hexadecimal number
+specifying the starting address.  This number may be an
+absolute address, or an 8086 style address using a colon
+to separate the segent and the offset.
+The \fIsize\fP argument is a hexadecimal number
+specifying the number of bytes of memory to disassemble.
+.PP
+You must either run as root or be the task's owner to gain access to
+the target task.
+.PP
+\fIvmdis\fP interprets the following options:
+.TP 8
+.B \-p\fR
+Memory will be interpreted as 80386 instructions.
+.SH "SEE ALSO"
+ps(1), vmread(1)

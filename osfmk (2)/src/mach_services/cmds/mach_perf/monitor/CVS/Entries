@@ -1,0 +1,15 @@
+/Makefile/1.1.1.1/Mon Oct  5 23:07:07 1998//
+/bg.defs/1.1.1.1/Mon Oct  5 23:07:07 1998//
+/cli.c/1.1.1.1/Mon Oct  5 23:07:07 1998//
+/cli_init.awk/1.1.1.1/Mon Oct  5 23:07:08 1998//
+/cli_init.conf/1.1.1.1/Mon Oct  5 23:07:08 1998//
+/common.mk/1.1.1.1/Mon Oct  5 23:07:08 1998//
+/cons.c/1.1.1.1/Mon Oct  5 23:07:08 1998//
+/device.defs/1.1.1.1/Mon Oct  5 23:07:08 1998//
+/mach_perf.c/1.1.1.1/Mon Oct  5 23:07:09 1998//
+/norma.c/1.1.1.1/Mon Oct  5 23:07:09 1998//
+/notify.defs/1.1.1.1/Mon Oct  5 23:07:09 1998//
+/synthetic.c/1.1.1.1/Mon Oct  5 23:07:09 1998//
+D/AT386////
+D/HP700////
+D/POWERMAC////

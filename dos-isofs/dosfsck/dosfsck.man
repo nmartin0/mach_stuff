@@ -1,0 +1,239 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS 
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie the
+.\" rights to redistribute these changes.
+.\"
+.\" HISTORY
+.\" $Log:	dosfsck.man,v $
+.\" Revision 2.1.1.1  93/08/27  11:52:26  af
+.\" 	Created.
+.\" 	[93/08/27            af]
+.\" 
+.\"
+.TH DOSFSCK 8 "Aug 20, 1993"
+.CM 4
+.SH NAME
+dosfsck \- MS-DOS file system consistency check and interactive repair
+.SH SYNOPSIS
+\fBdosfsck\fP [\fB -y\fP|\fB-n \fP] [\fB -p \fP] [\fB-b\fP FAT# ] [\fB -d\fP ] [\fB -r\fP ] [ filesystem ... ]
+
+.SH DESCRIPTION
+When used with the \fB-p\fR switch, \fIdosfsck\fR
+preens a standard set of filesystems or the specified filesystems.
+It is normally used in the script
+.B /etc/rc
+during automatic reboot.
+In this case
+.I dosfsck
+reads the table
+.B /etc/fstab
+to determine which file systems to check.  It will only check filesystems
+marked with the \fBdosfs\fR filesystem type.
+It uses the information there to inspect groups of disks in parallel taking
+maximum advantage of i/o overlap to check the file systems
+as quickly as possible.
+Filesystems marked with \fIpassno\fR equal to 1 are checked sequentially
+during the first pass, this would usually be the case only for the ``root''
+filesystem.  If \fIpassno\fR is 0 the filesystem is not checked, this would
+be the case for read-only filesystems such as a CD-ROM disk.
+All filesystems with \fIpassno\fR greater than 1 are checked in parallel.
+Only partitions in fstab that are mounted ``rw'' or ``ro'' are checked.
+.PP
+The program will fix as many inconsistencies as possible unless hardware 
+or software failures intervene.  The following problems will not be
+automatically corrected:
+.IP
+Loops in the File Allocation Table (FAT)
+.ns
+.IP
+Blocks allocated to more than one file
+.PP
+If
+.I dosfsck
+with the
+.B \-p
+option finds one of these inconsistencies, it exits
+with an abnormal return status and an automatic reboot will then fail.
+For each corrected inconsistency one or more lines will be printed
+identifying the file system on which the correction will take place,
+and the nature of the correction.  After successfully correcting a file
+system,
+.I dosfsck
+will print the number of files on that file system,
+the number of used and free clusters,
+and the number and percentage of fragments.  
+.PP
+Fragmentation is intended 
+as the number of sectors in the filesystem that are allocated
+but do not contain user data.  In a filesystem with a
+cluster size of 8192 bytes and sector size of 512 bytes a file that is
+1 byte long creates 15 fragments.  The percentage is calculated against
+the total size of the filesystem.
+.PP
+If sent a QUIT signal,
+.I dosfsck
+will finish the file system checks, then exit with an abnormal
+return status that causes the automatic reboot to fail.
+This is useful when you wish to finish the file system checks,
+but do not want the machine to come up multiuser.
+.PP
+If sent a INT signal,
+.I dosfsck
+will instead terminate immediately.
+.PP
+Without the
+.B \-p
+option,
+.I dosfsck
+audits and interactively repairs inconsistent conditions for file systems. 
+If the file system is inconsistent the operator is prompted for concurrence
+before each correction is attempted.
+It should be noted that some of the corrective actions which are not
+correctable under the
+.B \-p
+option will result in some loss of data.
+The amount and severity of data lost may be determined from the diagnostic
+output.
+The default action for each consistency correction
+is to wait for the operator to respond \fByes\fP or \fBno\fP.
+During this interactive repair the
+operator might establish the last answer as the default by hitting ^D,
+as if \fB-y\fR or \fB-n\fR had been specified.
+.PP
+The following flags are interpreted by
+.I dosfsck.
+.TP 6
+.B \-b
+Use the FAT specified after the flag as
+the FAT for the file system.  FAT number 0 is the primary FAT and is always
+present. Depending on how the disk was formatted there might be one or more 
+alternate FAT that can be used in case the primary is corrupted.
+.TP 6
+.B  \-y
+Assume a yes response to all questions asked by 
+.I dosfsck;
+this should be used with caution as this is a free license
+to continue after essentially unlimited trouble has been encountered.
+.TP 6
+.B  \-n
+Assume a no response to all questions asked by 
+.I dosfsck;
+do not open the file system for writing.
+.TP 6
+.B \-r
+Perform some more pedantic checks, such as non-null reserved fields
+and bits in directory entries, and timestamps that are too far into the 
+future to be credible.
+.TP 6
+.B \-d
+Debug mode, dumps the FAT table and lists each entry as it is checked.
+.PP
+If no filesystems are given to 
+.I dosfsck
+then a default list of file systems is read from
+the file
+.BR /etc/fstab
+as described above.
+.PP
+.ne 10
+Inconsistencies checked are as follows:
+.TP 6
+1.
+Disagreement between primary and alternate FAT table(s).
+.br
+.br
+.ns
+.TP 6
+2.
+Loops in the FAT lists of allocated clusters.
+.br
+.br
+.ns
+.TP 6
+3.
+Clusters allocated to more than one file.
+.br
+.br
+.ns
+.TP 6
+4.
+Directory checks:
+.br
+.br
+.ns
+.IP "" 12
+.br
+Missing ``.''` or ``..'' entries in a non-root directory.  Entries are
+added, preserving the existing entries if there is room and otherwise
+clobbering the first/second directory entry.
+.br
+
+.br
+Entries that do not have a corresponding cluster in the FAT.
+.br
+
+.br
+Used reserved fields and impossible timestamps.
+.br
+
+.br
+Inode numbers out of range.
+.br
+
+.br
+Self-referencing entries, and invalid references to the root or
+parent directory.
+.br
+.br
+.ns
+.TP 6
+5.
+Size checks:
+.br
+.br
+.ns
+.IP "" 12
+.br
+FAT chains with more/less blocks than the size in the directory entry.
+The directory entry is adjusted, not the FAT.
+.br
+.br
+.ns
+.TP 6
+6.
+Unreferenced FAT chains (orphaned files).
+.PP
+Orphaned files and directories (allocated but unreferenced) are,
+with the operator's concurrence, removed.
+.PP
+Checking the raw device is almost always faster.
+.SH FILES
+.br
+.ns
+.TP 21
+/etc/fstab
+contains default list of file systems to check.
+.SH "SEE ALSO"
+fstab(5),
+dosmkfs(8),
+reboot(8)

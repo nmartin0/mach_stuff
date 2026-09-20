@@ -1,0 +1,87 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990 Carnegie Mellon University
+.\" All Rights Reserved.
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation.
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS 
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie the
+.\" rights to redistribute these changes.
+.\"
+.\" HISTORY
+.\" $Log:	dosbadsect.man,v $
+.\" Revision 2.1.1.2  93/11/29  18:01:59  af
+.\" 	Added -f and -m switches.
+.\" 	[93/11/29            af]
+.\" 
+.\" Revision 2.1.1.1  93/09/01  14:15:40  af
+.\" 		Created.
+.\" 	[93/09/01            af]
+.\" 
+.\" 
+.\"
+.TH DOSBADSECT 8 "Aug 20, 1993"
+.CM 4
+.SH NAME
+dosbadsect \- badblock management for MS-DOS file systems
+.SH SYNOPSIS
+.B dosbadsect
+special [-u] [-f] [-m mark] [ blockno ... ]
+.SH DESCRIPTION
+.PP
+.I Dosbadsect
+marks a MS-DOS filesystem block or list of blocks as corrupted
+and not to be allocated by the filesystem code to either directories or files.
+The program reads the File Allocation Table(s) (FAT) and checks that
+the block is not in use.  If the block is free it is marked specially
+and the FAT tables are rewritten on disk.
+.PP
+The filesystem that resides on \fIspecial\fR should not be currently
+mounted, but this is not checked for.  If the filesystem is mounted
+the work of
+.I Dosbadsect
+will be lost when the filesystem is unmounted, in case the FAT tables
+must be updated.
+.PP
+If the
+.I u
+switch is used the opposite action is performed. The indicated blocks
+are check to be badblocks in the FAT(s) and if so they are marked
+free.
+.PP
+Without a list of badblocks the program scans the FAT and lists
+all badblocks.  The use of the
+.I u
+switch in this case produces a more verbose output.
+.PP
+The
+.I f
+switch will force the program to perform the operation and override
+any safeguards.
+.PP
+The
+.I m
+option allows permits selecting a badblock marker other than the
+default, which is 0xfffe.
+.PP
+.SH "SEE ALSO"
+dosfsck(8), dosmkfs(8)
+.PP
+A. Forin, G. Malan
+``An MS-DOS File System for UNIX'',
+\fIProceedings of the 1994 Winter Usenix Conference.

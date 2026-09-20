@@ -1,0 +1,21 @@
+/.cvsignore/1.1/Wed Oct 14 05:28:47 1998//
+/Config.in/1.2/Tue Mar  9 23:33:29 1999//
+/Makefile/1.1.1.1/Fri Oct  2 21:18:50 1998//
+/aztcd.c/1.1.1.1/Fri Oct  2 21:18:50 1998//
+/block_dev.c/1.4/Thu Jul 29 22:48:25 1999//
+/cdrom.c/1.2/Mon Oct 19 15:54:36 1998//
+/cdu31a.c/1.1.1.1/Fri Oct  2 21:18:51 1998//
+/floppy.c/1.3/Mon Dec 28 04:54:31 1998//
+/gen_disk.c/1.2/Thu Nov 19 00:39:28 1998//
+/hd.c/1.1.1.1/Fri Oct  2 21:18:52 1998//
+/ide.c/1.1.1.1/Fri Oct  2 21:18:52 1998//
+/mcd.c/1.1.1.1/Fri Oct  2 21:18:52 1998//
+/sbpcd.c/1.1.1.1/Fri Oct  2 21:18:52 1998//
+/scsi_ioctl.h/1.1/Mon Dec 28 07:29:22 1998//
+/scsi_procfs.c/1.2/Thu Nov 19 00:39:21 1998//
+/sd.c/1.1.1.1/Fri Oct  2 21:18:52 1998//
+/sg.c/1.2/Mon Dec 28 04:54:32 1998//
+/sony535.c/1.1.1.1/Fri Oct  2 21:18:53 1998//
+/sr.c/1.1.1.1/Fri Oct  2 21:18:52 1998//
+/xd.c/1.1.1.1/Fri Oct  2 21:18:53 1998//
+D

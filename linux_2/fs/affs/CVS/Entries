@@ -1,0 +1,10 @@
+/.cvsignore/1.1/Wed Nov 11 21:15:48 1998//
+/Makefile/1.1.1.1/Fri Oct  2 21:15:20 1998//
+/amigaffs.c/1.1.1.1/Fri Oct  2 21:15:19 1998//
+/bitmap.c/1.1.1.1/Fri Oct  2 21:15:19 1998//
+/dir.c/1.1.1.1/Fri Oct  2 21:15:19 1998//
+/file.c/1.1.1.1/Fri Oct  2 21:15:19 1998//
+/inode.c/1.1.1.1/Fri Oct  2 21:15:20 1998//
+/namei.c/1.1.1.1/Fri Oct  2 21:15:20 1998//
+/symlink.c/1.1.1.1/Fri Oct  2 21:15:20 1998//
+D

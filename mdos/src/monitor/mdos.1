@@ -1,0 +1,162 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1991,1990 Carnegie Mellon University
+.\" All Rights Reserved. 
+.\" 
+.\" Permission to use, copy, modify and distribute this software and its
+.\" documentation is hereby granted, provided that both the copyright
+.\" notice and this permission notice appear in all copies of the
+.\" software, derivative works or modified versions, and any portions
+.\" thereof, and that both notices appear in supporting documentation. 
+.\" 
+.\" CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS 
+.\" CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+.\" ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE. 
+.\" 
+.\" Carnegie Mellon requests users of this software to return to
+.\" 
+.\"  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+.\"  School of Computer Science
+.\"  Carnegie Mellon University
+.\"  Pittsburgh PA 15213-3890
+.\" 
+.\" any improvements or extensions that they make and grant Carnegie the
+.\" rights to redistribute these changes. 
+.\"
+.\" HISTORY
+.\" $Log:	mdos.1,v $
+.\" Revision 2.3  92/04/17  16:47:00  grm
+.\" 	Added profiling information.
+.\" 	[92/04/14  15:06:54  grm]
+.\" 
+.\" Revision 2.2.1.1  92/04/14  12:53:09  grm
+.\" 	Added paragraph describing the use of the DOS profiling key
+.\" 	sequence.
+.\" 	[92/03/05            grm]
+.\" 
+.\" Revision 2.2  92/02/02  23:02:43  rvb
+.\" 	Created.
+.\" 	[92/01/23  14:55:38  grm]
+.\" 
+.TH MDOS 1 1/23/92
+.CM 4
+.SH NAME
+mdos \- Mach DOS Emulator
+.SH SYNOPSIS
+\fBmdos\fP [ -dfsvDIKUVX ]
+.SH DESCRIPTION
+\fImdos(1)\fR starts a DOS emulator task which turns the console
+into a DOS environment under which many DOS programs may execute. 
+The \fImdos\fR emulator currently works only with Mach 3.0 running
+on Intel 386/486 based machines. 
+.PP
+\fImdos\fR can be executed without arguments, or it can take any
+number of specific switches at run time.  These options are recognized
+as follows:
+.TP
+.B \-dX " pathname"
+The
+.I pathname
+is used as the drive corresponding to the
+.I X
+drive under DOS.  The drive letter
+.I X
+is only supported for the A: and B: drive.  Supplying C: will
+produce unpredictable results.  An example is: -dA /dev/rfloppy.
+.TP
+.B \-f
+Floppy boot.  The -f switch tells the \fImdos\fR emulator to use
+the default floppy drive as the boot device.  The default boot is
+from /dev/dosdisk if it is present, otherwise \fImdos\fR boots from
+the default floppy image.  The default floppy image is the file
+\fIms.dos\fR.  To change this default, use the -dA switch.  Note:
+the -I switch overrides the -f switch for the specification of the
+boot sector.
+.TP
+.B \-s
+The -s option specifies a startup state for the \fImdos\fR emulator.
+Under this option the VGA support is turned off and all output
+goes to stderr.  Under normal operation, the VGA display
+memory is directly manipulated by the \fImdos\fR emulator.  Under the
+startup option the setup files are not needed to operate (mem.0000,
+mem.0400, vga.info, and font.info.vga).
+.TP
+.B \-v
+Disable the VGA.  This switch is not recommended for use except
+when debugging the VGA manipulation code.  Use the -s switch instead.
+.TP
+.B \-DX
+Disk debugging flag.  The
+.I X
+number determines the level of disk debugging output that will be
+output to the debugging file descriptor (See -X).  This number
+can vary between 0 for lowest to 3 for highest.
+.TP
+.B \-Ipathname
+Specifies the place where the boot block should be read from.  This
+switch should not be used unless the user knows what he/she is doing.
+.TP
+.B \-KX
+Keyboard debugging flag.  The
+.I X
+number determines the level of keyboard debugging output in the
+same manner as the -D switch determines the disk debugging.
+.TP
+.B \-UX
+General debugging flag.  Use this flag in the same manner as the -K and -D
+flags.
+.TP
+.B \-VX
+Video debugging flag.  Use this flag in the same manner as the -D -K  and 
+-U flags.
+.TP
+.B \-X
+This switch tells the \fImdos\fR emulator that debugging output should
+be written to a file named
+.I mon.out
+which will reside in the startup directory.  As a default the
+debugging output will go to stderr.
+.PP
+While the \fImdos\fR emulator is executing, there are a number of keyboard
+commands that can effect execution.  These commands are enacted by
+simulataneously pressing the control, alt and a letter or number key.
+.TP
+.B \Cntrl-Alt-Del
+This key sequence normally reboots a DOS machine.  Under the
+\fImdos\fR emulator, this sequence terminates the emulator and exits
+to the user's shell.
+.TP
+.B \Cntrl-Alt-Z
+This pauses the \fImdos\fR emulator and returns the user to his shell.
+\fIMdos\fR can be paused at any time in it's execution, even sound
+and video status will be kept intact.  The user's shell can be used to
+switch back and forth between paused \fImdos\fR emulators.  Caution:
+Do not put \fImdos\fR processes into the background.
+.TP
+.B \Cntrl-Alt-Esc
+This key sequence is used to toggle debugging output into the file
+mon.out.  This sequence dynamically sets the debugging switches as
+follows:  -D3 -K3 -U3 -V3.
+.TP
+.B \Cntrl-Alt-P
+This sequence toggles the DOS profiling output.  The sequence creates
+a file named \fIprof.out\fR.  The \fImdos\fR emulator must be built
+with the \fI-DPROFILING\fR switch to enable DOS profiling.  Currently,
+if the \fImdos\fR emulator is exited while profiling is being output,
+the results are undefined.  Therefore it is advisable to toggle
+profiling off before exiting the monitor.
+.PP
+The \fImdos\fR emulator can use UFS as a DOS network drive type.  See
+setup documentation for installation.  When active, \fImdos\fR uses
+the exported shell variable DOSROOT to determine where the root directory
+for the UFS DOS drive is located.  It is important that the user has write
+permission in this directory.  Some DOS programs write to the root
+directory indescriminately, so that this is a problem.
+.SH "SEE ALSO"
+Mdos Setup Documentation
+.SH BUGS
+The \fImdos\fR emulator only works with DOS programs that execute in
+.I Real Mode
+of 80x86 based machines.  Currently, programs that depend upon 80286
+or 80386 instructions or operating modes will not work.
+

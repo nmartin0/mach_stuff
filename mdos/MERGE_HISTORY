@@ -1,0 +1,122 @@
+
+
+==========================================================================
+   ***** MDOS Version MDOS56  (grm) *****
+    
+
+A new version of the Mach DOS software is now available.  This version
+contains several new features.  The most interesting of which is a
+secondary loader that loads the Mach DOS monitor code into high
+memory.  What this means, is that the mdos program itself is no longer
+three meg, but is about 170K.
+
+Sup service for Mach DOS is now available from CMU.  To get this
+release via sup use the sup collection below:
+
+mdos host=x29.mach.cs.cmu.edu hostbase=/i386 base=<HERE> crypt=mdos
+
+Edit <HERE> to be the directory where you want the code to be placed.
+
+The build procedure is outlined in mdos.install.{ps,doc} in the
+src/setup directory.  Remember that you must be running Mach 3.0
+release MK73 or later!
+
+NOTE:  IF THE MDOS.MON FILE INSTALLED IN LIB IS AROUND 16MEG, YOU
+ARE USING THE WRONG LOADER!!!  SUP YOUR APPLICATION BINARIES AGAIN!!
+
+New features:
+--- --------
+
+The loader describe above.
+
+The Interrupt Vector Table override code was rewritten to occur after
+COMMAND.COM executes instead of after the first keyboard event.  This
+means that the pause after your first keystroke is gone.
+
+I'm going to be out of town the rest of this week and all of next week
+(until May 11), so don't expect a reply to mail sent during this time.
+
+
+
+==========================================================================
+   ***** MDOS Version MDOS57  (grm) *****
+    
+
+Mistake merge.  Trouble checking in bios_supervga.c file.  Never released.
+
+
+
+==========================================================================
+   ***** MDOS Version MDOS58  (grm) *****
+    
+
+
+Mach DOS release MDOS58 is now available via sup from CMU.  This
+release has several new features along with some bug fixes.  The main
+things in this release are the new SuperVGA support and the timer fix
+(fixes sound problems and slow graphics).
+
+Again, for those who are new to the mdos mailing list, in order to sup
+the Mach DOS software collection you should add the following line to
+your supfile:
+
+mdos host=x29.mach.cs.cmu.edu hostbase=/i386 base=<HERE> crypt=mdos
+
+Edit <HERE> to be the directory where you want the code to be placed.
+
+NOTE: the crypt is "mdos" and is NOT site specific.
+
+The build procedure is outlined in mdos.install.{ps,doc} in the
+src/setup directory.  Remember that you must be running Mach 3.0
+release MK73 or later!
+
+New features:
+--- --------
+
+Provided framework for extensible SuperVGA code.  Provided the Tseng
+Lab's ET4000 support as a model.  Now you can pause or exit Mach DOS
+from the ET4000's high resolution modes like 800x600x256 or
+1024x768x256 now.  Before this would lead to a VERY confused VGA card.
+
+Bug fixes:
+--- -----
+
+Fixed the timer bug introduced with MK73.  Timeouts on ports round up
+to the nearest 10 milliseconds now, so the timer code in bios_misc.c
+had to compensate by subtracting 10 milliseconds from the timeout
+value.  This fixes the slow music and slow graphics in DOS
+applications that demand timer interrupts with small intervals.
+
+Corrected the single drive installation bug that was introduced in
+MDOS56.  This bug made it impossible for machines with only one
+floppy drive from accessing drive B: in mdos.  This has been fixed.
+
+Summary of log messages:
+
+[ ./src/monitor/Makefile ]
+Added bios_supervga.c
+[ ./src/monitor/bios_disk.c ]
+Minor bug fixes.
+[ ./src/monitor/bios_kbd.c ]
+Minor bug fix.
+[ ./src/monitor/bios_misc.c ]
+Fixed timing problem introduced by kernel bug fix in MK73
+(ipc_sched.c).  Removed extraneous code.
+[ ./src/monitor/bios_supervga.c ]
+Finished groundwork for generic SuperVGA support.  Implemented
+support code for the Tseng Lab's ET4000 SuperVGA chip set.
+[ ./src/monitor/bios_vga.c ]
+Finished the groundwork for SuperVGA.  Tseng Labs ET4000 works at
+this point.  changed the register and video ram save/restore
+state routines.  Added some constants.
+[ ./src/monitor/bios_video.c ]
+Removed some extraneous code.  Totally removed all max_rc usage,
+and replaced with direct access to SPRAM.
+[ ./src/monitor/bios_video_common.h ]
+Added some constants for the number of indices in VGA registers.
+Added MAX_VIDEO_MODES constant.
+[ ./src/monitor/v86.c ]
+Fixed single drive installation bug, introduced by changing
+config val in MDOS56.
+
+

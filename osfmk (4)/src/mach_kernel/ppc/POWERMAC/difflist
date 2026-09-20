@@ -1,0 +1,617 @@
+122,123d121
+< int  machine_has_pmu(void);
+< 
+243,244d240
+< 	if (machine_has_pmu())
+< 		return D_SUCCESS;
+79,91d78
+< /*
+<  * This code was modified March 5th 1998 to handle products based on the
+<  * MacPoint Mouse/Trackball controllers by Fesh!.
+<  *
+<  * The following products are now handeled as multi button mice:
+<  *
+<  * CH Products 		- Trackball Pro
+<  * Contour Design 	- Contour Mouse
+<  * Hunter Digital	- NoHandsMouse
+<  * MicroSpeed		- Mouse Deluxe
+<  * MicroSpeed		- MacTRAC
+<  *
+<  */
+122,141d108
+< #define EXTENDEDMOUSE 1
+< 
+< #if EXTENDEDMOUSE
+< enum {
+<   HANDLER_ID_MICROSPEED = 0x2F,
+<   HANDLER_ID_TRACKBALL_PRO = 0x42,
+<   HANDLER_ID_CONTOUR_MOUSE = 0x66,
+<   HANDLER_ID_NOHANDS_MOUSE = 0x5F
+< };
+< 
+< enum {
+<   BUTTON_MASK_LEFT = 1 << 0,
+<   BUTTON_MASK_MIDDLE = 1 << 1,
+<   BUTTON_MASK_RIGHT = 1 << 2,
+<   BUTTON_MASK_LEFT_TRACKBALL_PRO = (1 << 2) | (1 << 3),
+<   BUTTON_MASK_MIDDLE_TRACKBALL_PRO = 1 << 0,
+<   BUTTON_MASK_RIGHT_TRACKBALL_PRO = 1 << 1
+< };
+< #endif
+< 
+154,157d120
+< #if EXTENDEDMOUSE
+< void set_extended_mouse_mode(int number);
+< void extended_mouse_adbhandler(int number, unsigned char *buffer, int count);
+< #endif
+161,163d123
+< #if MOUSE_DEBUG
+< void mouse_report(const char *str, const mouse_state_t *newstate);
+< #endif
+208,224d167
+< #if EXTENDEDMOUSE
+< 			unsigned short	orighandler = devp->a_dev_orighandler;
+< 
+< /* 			printf("\ngot a mouse: orig handler is = %02X\n", orighandler); */
+< 			switch (orighandler) {
+< 			case HANDLER_ID_MICROSPEED:
+< 			case HANDLER_ID_TRACKBALL_PRO:
+< 			case HANDLER_ID_CONTOUR_MOUSE:
+< 			case HANDLER_ID_NOHANDS_MOUSE:
+< 				set_extended_mouse_mode(i);
+< 				adb_register_dev(i, extended_mouse_adbhandler);
+< 				break;
+< 			default:
+< 				adb_set_handler(devp, 4);
+< 				break;
+< 			}
+< #else
+232d174
+< #endif
+241,332d182
+< #if EXTENDEDMOUSE
+< void
+< set_extended_mouse_mode(int number)
+< {
+<   adb_request_t req;
+<   unsigned long reg1 = 1 << 12;                        /* set bit #12 for extended mouse mode */
+< 
+<   adb_init_request(&req);
+<   ADB_BUILD_CMD2_BUFFER(&req, ADB_PACKET_ADB, (ADB_ADBCMD_WRITE_ADB | (number << 4) | 1), 4, (unsigned char *) &reg1);
+<   adb_send(&req, TRUE);
+< }
+< 
+< 
+< void
+< extended_mouse_adbhandler(int number, unsigned char *buffer, int count)
+< {
+<   if (count == 4) {
+< #if 0
+<     printf("extended_mouse_adbhandler - num: %d, buf0: %02X, buf1: %02X, buf2: %02X, buf3: %02X, count: %d\n",
+< 	   number, (int)buffer[0], (int)buffer[1], (int)buffer[2], (int)buffer[3], count);
+< #endif
+<     /* If the tty is accepting mouse events, then pass them on. */
+<     if(vc_xservermode) {
+<       unsigned char x;
+<       unsigned char y;
+<       unsigned char buttons;
+<       unsigned char button_left, button_middle, button_right;
+<       unsigned char mask_left, mask_middle, mask_right;
+< #if MOUSE_DEBUG
+<       mouse_state_t newstate;
+< #endif
+< 
+<       x = POS(buffer[1]);
+<       y = POS(buffer[0]);
+<       buttons = ~buffer[3] & 0x0F;                                                  /* mask the four possible buttons (negative logic) */
+<       if (adb_devices[number].a_dev_orighandler == HANDLER_ID_TRACKBALL_PRO) {      /* special arrangement of buttons for Trackball Pro */
+< 	mask_left = BUTTON_MASK_LEFT_TRACKBALL_PRO;                                 /* set button mask for left button */
+< 	mask_middle = BUTTON_MASK_MIDDLE_TRACKBALL_PRO;                             /* set button mask for middle button */
+< 	mask_right = BUTTON_MASK_RIGHT_TRACKBALL_PRO;                               /* set button mask for right button */
+<       } else {
+< 	mask_left = BUTTON_MASK_LEFT;                                               /* set button mask for left button */
+< 	mask_middle = BUTTON_MASK_MIDDLE;                                           /* set button mask for middle button */
+< 	mask_right = BUTTON_MASK_RIGHT;                                             /* set button mask for right button */
+<       }
+<       button_left = (buttons & mask_left) ? DOWN : UP;                              /* set button flag for left button */
+<       button_middle = (buttons & mask_middle) ? DOWN : UP;                          /* set button flag for middle button */
+<       button_right = (buttons & mask_right) ? DOWN : UP;                            /* set button flag for right button */
+< #if MOUSE_DEBUG
+<       newstate.xpos = x;
+<       newstate.ypos = y;
+<       newstate.left = button_left;
+<       newstate.middle = button_middle;
+<       newstate.right = button_right;
+< #endif
+<       if (x || y || button_left != last_state.left) {
+< #if MOUSE_DEBUG
+< 	if (x || y) {
+< 	  mouse_report("position", &newstate);
+< 	} else if (button_left != last_state.left) {
+< 	  mouse_report("left", &newstate);
+< 	}
+< #endif
+< 	ttyinput(MOUSE_ESCAPE, &vc_tty);	/* Let the TTY know this is mouse stuff. */
+< 	ttyinput(y | button_left, &vc_tty); /* Send one position delta and the button state. */
+< 	ttyinput(x, &vc_tty);	/* Send the second position delta. */
+< 	last_state.xpos = x;
+< 	last_state.ypos = y;
+< 	last_state.left = button_left;
+<       }
+<       if (button_middle != last_state.middle) {
+< #if MOUSE_DEBUG
+< 	  mouse_report("middle", &newstate);
+< #endif
+< 	  ttyinput(KEY_MIDDLE_BUTTON | button_middle, &vc_tty);
+< 	  last_state.middle = button_middle;
+<       }
+<       if (button_right != last_state.right) {
+< #if MOUSE_DEBUG
+< 	  mouse_report("right", &newstate);
+< #endif
+< 	  ttyinput(KEY_RIGHT_BUTTON | button_right, &vc_tty);
+< 	  last_state.right = button_right;
+<       }
+<     }
+<   } else {
+<     /*    printf("extended_mouse_adbhandler: bad count: %d\n", count);*/
+<     mouse_adbhandler(number, buffer, count);
+<   }
+< }
+< #endif
+< 
+< 
+342,352d191
+< #if MOUSE_DEBUG
+<     mouse_state_t newstate;
+< #endif
+< 
+< #if MOUSE_DEBUG
+<     newstate.ypos = POS(buffer[0]);
+<     newstate.xpos = POS(buffer[1]);
+<     newstate.left = BUTTON(buffer[0]);
+<     newstate.middle = BUTTON(buffer[1]);
+<     newstate.right = BUTTON(buffer[2]);
+< #endif
+356,359c195,198
+<       if (POS(buffer[0]) || POS(buffer[1])) {
+< 	mouse_report("position", &newstate);
+<       } else if (BUTTON(buffer[0]) != last_state.left) {
+< 	mouse_report("left", &newstate);
+---
+> 	  if (POS(buffer[0]) || POS(buffer[1]) {
+> 	    mouse_report("position");
+> 	  } else if (BUTTON(buffer[0]) != last_state.left)) {
+> 	    mouse_report("left");
+365,366c204,205
+<       last_state.ypos = POS(buffer[0]);
+<       last_state.xpos = POS(buffer[1]);
+---
+> 	  last_state.xpos = POS(buffer[0]);
+> 	  last_state.ypos = POS(buffer[1]);
+371c210
+< 	  mouse_report("middle", &newstate);
+---
+> 	  mouse_report("middle");
+378c217
+< 	  mouse_report("right", &newstate);
+---
+> 	  mouse_report("right");
+388c227
+< mouse_report(const char *str, const mouse_state_t *newstate)
+---
+> mouse_report(char *str)
+391,392c230,232
+<   printf(", x=%X, y=%X, b0=%X, b1=%X, b2=%X, ",
+< 	 newstate->xpos, newstate->ypos, newstate->left, newstate->middle, newstate->right);
+---
+>   printf(", b0=%X, b1=%X, b2=%X, x=%X, y=%X, ",
+> 	 (int)BUTTON(buffer[0]), (int)BUTTON(buffer[1]),
+> 	 (int)BUTTON(buffer[2]), (int)POS(buffer[0]), (int)POS(buffer[1]));
+212,223d211
+< #define PSC_TEST
+< #ifdef PSC_TEST
+< 
+< #include "psc.h"
+< #if NPSC > 0
+< #include "scsi_5380.h"
+< extern struct bus_driver psc_driver;
+< int psc_intr();
+< #endif
+< 
+< #endif
+< 
+254,258d241
+< #if NPSC > 0
+< {&psc_driver,	"psc",	0,	(intr_t)psc_intr,
+< 	(caddr_t)PSC_BASE_PHYS,		0, (caddr_t)PSC_BASE_PHYS,
+< 	'?',	0,	0,	0, },
+< #endif /* NPSC > 0 */
+381,400d363
+< 
+< #if NPSC > 0
+< { &psc_driver, "rz", 0, NO_INTR, 0x0, 0, 0, '?', 0, 0, 0, 0, },
+< { &psc_driver, "rz", 1, NO_INTR, 0x0, 0, 0, '?', 0, 0, 1, 0, },
+< { &psc_driver, "rz", 2, NO_INTR, 0x0, 0, 0, '?', 0, 0, 2, 0, },
+< { &psc_driver, "rz", 3, NO_INTR, 0x0, 0, 0, '?', 0, 0, 3, 0, },
+< { &psc_driver, "rz", 4, NO_INTR, 0x0, 0, 0, '?', 0, 0, 4, 0, },
+< { &psc_driver, "rz", 5, NO_INTR, 0x0, 0, 0, '?', 0, 0, 5, 0, },
+< { &psc_driver, "rz", 6, NO_INTR, 0x0, 0, 0, '?', 0, 0, 6, 0, },
+< { &psc_driver, "rz", 7, NO_INTR, 0x0, 0, 0, '?', 0, 0, 7, 0, },
+< 
+< { &psc_driver, "tz", 0, NO_INTR, 0x0, 0, 0, '?', 0, 0, 0, 0, },
+< { &psc_driver, "tz", 1, NO_INTR, 0x0, 0, 0, '?', 0, 0, 1, 0, },
+< { &psc_driver, "tz", 2, NO_INTR, 0x0, 0, 0, '?', 0, 0, 2, 0, },
+< { &psc_driver, "tz", 3, NO_INTR, 0x0, 0, 0, '?', 0, 0, 3, 0, },
+< { &psc_driver, "tz", 4, NO_INTR, 0x0, 0, 0, '?', 0, 0, 4, 0, },
+< { &psc_driver, "tz", 5, NO_INTR, 0x0, 0, 0, '?', 0, 0, 5, 0, },
+< { &psc_driver, "tz", 6, NO_INTR, 0x0, 0, 0, '?', 0, 0, 6, 0, },
+< { &psc_driver, "tz", 7, NO_INTR, 0x0, 0, 0, '?', 0, 0, 7, 0, },
+< #endif /* NPSC > 0 */
+59,61d58
+< extern int	pb1400_expansion_bay;
+< 
+< 
+218,225d214
+< 
+< #ifdef PB1400_EXPBAY
+< 		if (pb1400_expansion_bay) { // #ifdef PB1400_EXPBAY
+< 			/* make sure we don't set enable_int again down below */
+< 			enable_int = 0;
+< 			}// #endif
+< #endif // PB1400_EXPBAY
+< 
+45,58d44
+< /******
+<  * G3 ATA drive boot workarounds
+<  *
+<  * The block 0 structure information is incorrect for G3 ATA drives
+<  * and possibly others. The symptoms show up as:
+<  *
+<  * 1) the driver descriptor magic is incorrect for the G3 ATA drive
+<  *    causing the partition discovery code to fail.
+<  * 2) the reported block size is incorrect... we force it to 512
+<  *    if it exceeds the threshold set here.
+<  */
+< #define IGNORE_DRIVER_DESCRIPTOR_MAGIC        1
+< #define FORCE_BLOCK_SIZE_THRESHOLD    8192
+< 
+316d301
+< #ifndef IGNORE_DRIVER_DESCRIPTOR_MAGIC
+318,319c303
+< 		printf("\nBAD SIGNATURE %x\n", m_dd->sbSig );
+< //		printf("\nBAD SIGNATURE\n");
+---
+> 		printf("\nBAD SIGNATURE\n");
+323d306
+< #endif /* IGNORE_DRIVER_DESCRIPTOR_MAGIC */
+331,339d313
+< #if MACH_DEBUG
+< 	printf( "from driver descriptor block size: %d\n", block_size );
+< #endif /* MACH_DEBUG */
+< 	if( block_size > FORCE_BLOCK_SIZE_THRESHOLD ) {
+< 		printf("forcing block size to 512 bytes\n" );
+< 		block_size = 512;
+< 		}
+< 
+< 
+416,418d389
+< 		printf( "found UNIX partition size %d offset %d\n",
+< 			lp->d_partitions[partno].p_size,
+< 			lp->d_partitions[partno].p_offset );
+67,69d66
+< // #define PMU_OLD
+< // #define PMU_DEBUG
+< 
+94d90
+< int		machine_has_pmu(void);
+581,606d576
+< pmu_set_real_time(adb_request_t *request)
+< {
+< 	int	x;
+< 	spl_t			s;
+< 	PMURequest		theRequest;
+< 	
+< 	s = spltty();
+< 
+< 	theRequest.pmCommand = kPMUtimeSet;
+< 	theRequest.pmSBuffer1 = theRequest.pmSBuffer2 = NULL;
+< 	theRequest.pmSLength1 = theRequest.pmSLength2 = 0;
+< 	theRequest.pmRBuffer = request->a_reply.a_buffer;
+< 	request->a_result = SendCommand(&theRequest);
+< 	request->a_reply.a_bcount = theRequest.pmRLength;
+< 	pmu_interrupt_state = PMU_STATE_IDLE;
+< 	pmu_request = NULL;
+< 	pmu_last_adb_command = 0;
+< 	
+< 	splx(s);
+< 
+< 	adb_done(request);
+< }
+< 
+< 
+< 
+< void
+613d582
+< 	if (powermac_info.class==POWERMAC_CLASS_POWERBOOK)
+615,616d583
+< 	else
+< 		theRequest.pmCommand = kPMUxNvramRead;
+626,628c593
+< 	command_buf[0] = request->a_cmd.a_header[3];						// offset to read from
+< 	// Note that a_bsize is the size of the buffer, not the number
+< 	// of bytes we wish to read.
+---
+> 	command_buf[0] = request->a_cmd.a_header[2];						// offset to read from
+632c597
+< 	if ((command_buf[0] + command_buf[1]) > 256)
+---
+> 	if ((command_buf[0] + command_buf[1]) > 255)
+634,635c599,600
+< 		printf("pmu: adjusting length\n");
+< 		command_buf[1] = (UInt8)(256-(int)command_buf[0]);
+---
+> 		printf("pmu: adjusting length");
+> 		command_buf[1] = 255-command_buf[0];
+639c604
+< 	theRequest.pmSLength1 = 2;
+---
+> 	theRequest.pmSLength1 = request->a_reply.a_bsize;
+739,747d703
+< 		case ADB_PSEUDOCMD_SET_REAL_TIME:
+< #ifdef PMU_DEBUG
+< 			printf("MkLinux does not trust itself to set the PRAM time on this system.\n");
+< #endif
+< 			//adb_done(request);
+< 			//ACK_PMU_Interrupt();
+< 			pmu_ignore_request(request);
+< 			break;
+< 
+909d864
+< 	theRequest.pmSLength2 = 0;
+1098d1052
+< #ifdef PMU_OLD
+1111,1126d1064
+< #else
+< 
+< 	int i=0, max_timeouts = 100;
+< 
+< 	while (i<max_timeouts) {
+< 		startTimer(&timer,TIMEOUT32MS);
+< 		while (!PMUtimeout(&timer))
+< 			if ( !(*gVIA2.dataB & (1<<v2PMack)) )
+< 				return TRUE;
+< #ifdef PMU_DEBUG
+< 		printf("WaitForAckLo: Timeout #%d!\n", ++i);
+< #endif
+< 	}
+< 	return FALSE;
+< 
+< #endif
+1138d1075
+< #ifdef PMU_OLD
+1151,1167d1087
+< #else
+< 
+< 	int i=0, max_timeouts = 100;
+< 
+< 	while (i < max_timeouts) {
+< 		startTimer(&timer,TIMEOUT32MS);
+< 
+< 		while (!PMUtimeout(&timer))
+< 			if ( *gVIA2.dataB & (1<<v2PMack) )
+< 				return ( TRUE );
+< #ifdef PMU_DEBUG
+< 		printf ("WaitForAckHi: Timeout #%d!\n", ++i);
+< #endif
+< 	}
+< 	return FALSE;
+< 
+< #endif
+1236,1242d1155
+< }
+< 
+< 
+< int machine_has_pmu(void)
+< {
+< if (pmu_initted) return 1;
+< return 0;
+90,97d89
+< 	switch (powermac_info.class) {
+< 	case	POWERMAC_CLASS_POWERBOOK:
+< 		pram = &adb_pram_ops;
+< 		pram_device = "pmu controller";
+< 		break;
+< 
+< 	default:
+< 	case	POWERMAC_CLASS_PCI:
+107,108d98
+< 		}
+< 		break;
+77,78d76
+< static unsigned int ati_chiptype;
+< 
+83,91d80
+< #define CONFIG_CHIP_ID	0xE0
+< 
+< #define MACH64_GX_ID		0xD7
+< #define MACH64_CX_ID		0x57
+< #define MACH64_CT_ID		0x4354
+< #define MACH64_ET_ID		0x4554
+< #define MACH64_VT_ID		0x5654
+< #define MACH64_VQ_ID		0x4749
+< #define MACH64_GT_ID		0x4754
+113c102
+< #if 0
+---
+> 
+120,124d108
+< 	"ATY,XCLAIM3D",
+< 	"ATY,XCLAIMVR",
+< 	"ATY,RAGEII_M",
+< 	"ATY,XCLAIMVRPro",
+< 	"ATY,mach64_3DU",
+127d110
+< #endif
+131a115
+> 	int	i;
+133d116
+< 	register unsigned int i,j;
+144d126
+< #if 0
+149d130
+< #endif
+177,181d157
+< 	/* find out chiptype */
+< 	i = (unsigned int) (regBasePhys + CONFIG_CHIP_ID);
+< 	__asm__ volatile ("lwbrx %0,0,%1" :  "=r" (j) : "r" (i));
+< 	ati_chiptype = j & 0x0000FFFF;
+< 
+219c195
+< 	int	i, scale;
+---
+> 	int	i;
+222,223d197
+< 	scale = (ati_chiptype != MACH64_GX_ID)
+< 		? ((ati_info.v_depth == 16) ? 3 : 0) : 0;
+225,226c199
+< 	for (i = 0; i < count ;i++, colors++) {
+< 		*(regBase + DAC_W_INDEX)  = i << scale;;
+---
+> 	*(regBase + DAC_W_INDEX)  = 0;
+227a201,202
+> 
+> 	for (i = 0; i < count ;i++, colors++) {
+143d142
+< #include "conf.h"
+326,328d324
+< /* Use caching */
+< volatile int	console_cache = 0;
+< 
+1803,1824d1798
+< #if 0
+< 		kr = pmap_add_physical_memory(vinfo.v_baseaddr,
+< 					      vinfo.v_baseaddr+
+< 					      (vinfo.v_height *
+< 					       vinfo.v_rowbytes),
+< 					      FALSE,
+< #ifdef CONSOLE_CACHE
+< 					      PTE_WIMG_WT_CACHED);
+< #else //CONSOLE_CACHE
+< 					      PTE_WIMG_IO);
+< #endif //CONSOLE_CACHE
+< 
+< #else // 1
+< 
+< if (console_cache) 
+< 		kr = pmap_add_physical_memory(vinfo.v_baseaddr,
+< 					      vinfo.v_baseaddr+
+< 					      (vinfo.v_height *
+< 					       vinfo.v_rowbytes),
+< 					      FALSE,
+< 					      PTE_WIMG_WT_CACHED);
+< else
+1831d1804
+< #endif // 0
+62d61
+< #include	"conf.h"
+98d96
+< #include "conf.h"
+387,389d384
+< #ifdef IDE_ZIP_HACK
+< 	else return 0;
+< #endif
+1167,1178d1161
+< 
+< #ifdef PB1400_EXPBAY
+< 	/*
+< 	 * On the 1400, the cdrom drive returns a block size of 2352.
+< 	 * But when it comes time to read a block, it only returns 2048.
+< 	 * So we force 2048; this probably means we can't read things
+< 	 * like audio CDs that need the full 2352 bytes.
+< 	 */
+< 	if (powermac_info.class == POWERMAC_CLASS_POWERBOOK)
+< 	    if (t->info.blksize == 2352)
+< 		t->info.blksize = 2048;
+< #endif
+102d101
+< #include "conf.h"
+135d133
+< #include <ppc/POWERMAC/powermac_gestalt.h>
+342,346d339
+< volatile int	pb1400_expansion_bay = 0;
+< #ifdef PB1400_EXPBAY
+< void	wdintr_powerbook(int unit, void *ssp);
+< #endif
+< 
+572c565
+< 	static char	*ata_names[] = { "ata", "ATA", "ide", "ata0", "ata1", "ata2", "ata3", "ata4", "ata5", NULL };
+---
+> 	static char	*ata_names[] = { "ata", "ATA", "ide", NULL };
+580d572
+< #ifndef PB1400_EXPBAY
+585,592d576
+< #else
+< 		if (unit == 0)
+< 		    addr = M2_IDE0_BASE;
+< 		else if (unit == 1)
+< 		    addr = M2_IDE1_BASE;
+< 		else
+< 		    return 0;
+< #endif
+637,638d620
+< 		if (powermac_info.machine == gestaltPowerBook2400 && unit) return 0;
+< 
+750d731
+< #ifndef PB1400_EXPBAY
+752,754d732
+< #else
+< 		pmac_register_int(PMAC_DEV_ATA0, SPLBIO, wdintr_powerbook);
+< #endif
+883d860
+< #ifndef PB1400_EXPBAY
+887,890d863
+< #else
+< 		if (atapi_attach(du->dk_ctrlr, du->dk_unit, wdaddrs[du->dk_ctrlr]))
+<  			wdtab[unit].b_active = 2;
+< #endif
+1452,1490d1424
+< 
+< 
+< #ifdef PB1400_EXPBAY
+< void
+< wdintr_powerbook(int _unit, void *ssp)
+< {
+< 	wdintr(0);
+< 	wdintr(1);
+< 
+< #if 0
+< 	/* 
+< 	 * We don't know which ide bus generated the interrupt.  The
+< 	 * following is an attempt to poll the devices by reading the
+< 	 * alternate status register.
+< 	 */
+< 	int intr = WDCS_READY | WDCS_WRTFLT | WDCS_SEEKCMPLT | WDCS_DRQ 
+< 			| WDCS_ECCCOR | WDCS_INDEX | WDCS_ERR;
+< 
+< 	if (wdaddrs[0]) {
+< 	    int ide0status = inb(wdaddrs[0] + 0x38);
+< 	    if (!(ide0status & WDCS_BUSY))
+< 		if (ide0status & intr)
+< 		    wdintr(0);
+< 		else
+< 		    printf("wdintr: ide0 %x\n", ide0status);
+< 	}
+< 
+< 	if (wdaddrs[1]) {
+< 	    int ide1status = inb(wdaddrs[1] + 0x38);
+< 	    if (!(ide1status & WDCS_BUSY))
+< 		if (ide1status & intr)
+< 		    wdintr(1);
+< 		else
+< 		    printf("wdintr: ide1 %x\n", ide1status);
+< 	}
+< #endif
+< }
+< #endif
+< 

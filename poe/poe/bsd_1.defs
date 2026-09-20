@@ -1,0 +1,505 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1991,1990 Carnegie Mellon University
+ * All Rights Reserved.
+ * 
+ * Permission to use, copy, modify and distribute this software and its
+ * documentation is hereby granted, provided that both the copyright
+ * notice and this permission notice appear in all copies of the
+ * software, derivative works or modified versions, and any portions
+ * thereof, and that both notices appear in supporting documentation.
+ * 
+ * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
+ * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+ * 
+ * Carnegie Mellon requests users of this software to return to
+ * 
+ *  Software Distribution Coordinator   or   Software.Distribution@CS.CMU.EDU
+ *  School of Computer Science
+ *  Carnegie Mellon University
+ *  Pittsburgh PA 15213-3890
+ * 
+ * any improvements or extensions that they made and grant Carnegie Mellon
+ * the rights to redistribute these changes.
+ */
+/*
+ * HISTORY
+ * $Log:	bsd_1.defs,v $
+ * Revision 2.3  91/12/19  20:26:51  mrt
+ * 	Updated to new copyright
+ * 
+ * Revision 2.2  90/09/08  00:06:30  rwd
+ * 	Taken from XUX22.
+ * 	[90/07/14            rwd]
+ * 
+ */
+/*
+ * IPC interface for selected UX server functions.
+ */
+subsystem bsd_1		101000;
+
+#include <mach/mach_types.defs>
+#include <bsd_types.defs>
+
+/*
+ * Calls that need the current thread
+ */
+routine Bsd1_execve(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fname		: path_name_t;
+	out	cfname		: cfname_t;
+	out	cfarg		: cfname_t;
+	out	entry		: entry_array);
+
+routine Bsd1_fork(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	new_state	: thread_state_t;
+	out	child_pid	: int);
+
+routine Bsd1_take_signal(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	out	old_mask	: int;
+	out	old_onstack	: int;
+	out	sig		: int;
+	out	code		: int;
+	out	handler		: int;
+	out	new_sp		: int);
+
+routine Bsd1_sigreturn(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	old_on_stack	: int;
+	in	old_sigmask	: int);
+
+routine	Bsd1_getrusage(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	which		: int;
+	out	rusage		: rusage_t);
+
+
+/*
+ * File name calls
+ */
+routine	Bsd1_chdir(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fname		: path_name_t);
+
+routine	Bsd1_chroot(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fname		: path_name_t);
+
+routine	Bsd1_open(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fname		: path_name_t;
+	in	mode		: int;
+	in	crtmode		: int;
+	out	fileno		: int);
+
+routine	Bsd1_creat(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fname		: path_name_t;
+	in	fmode		: int;
+	out	fileno		: int);
+
+routine	Bsd1_mknod(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fname		: path_name_t;
+	in	fmode		: int;
+	in	dev		: int);
+
+routine	Bsd1_link(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	target		: path_name_t;
+	in	linkname	: path_name_t);
+
+routine	Bsd1_symlink(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	target		: path_name_t;
+	in	linkname	: path_name_t);
+
+routine	Bsd1_unlink(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fname		: path_name_t);
+
+routine	Bsd1_access(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fname		: path_name_t;
+	in	fmode		: int);
+
+routine	Bsd1_stat(				/* stat/lstat */
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	follow		: boolean_t;
+	in	name		: path_name_t;
+	out	stat		: statb_t);
+
+routine	Bsd1_readlink(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	name		: path_name_t;
+	in	count		: int;
+	out	buf		: small_char_array);
+
+routine	Bsd1_chmod(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fname		: path_name_t;
+	in	fmode		: int);
+
+routine	Bsd1_chown(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fname		: path_name_t;
+	in	uid		: int;
+	in	gid		: int);
+
+routine	Bsd1_utimes(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fname		: path_name_t;
+	in	times		: timeval_2_t);
+
+routine	Bsd1_truncate(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fname		: path_name_t;
+	in	length		: int);
+
+routine	Bsd1_rename(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	from_name	: path_name_t;
+	in	to_name		: path_name_t);
+
+routine	Bsd1_mkdir(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	name		: path_name_t;
+	in	dmode		: int);
+
+routine	Bsd1_rmdir(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	name		: path_name_t);
+
+routine	Bsd1_xutimes(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fname		: path_name_t;
+	in	times		: timeval_3_t);
+
+routine	Bsd1_mount(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fspec		: path_name_t;
+	in	freg		: path_name_t;
+	in	ronly		: int);
+
+routine	Bsd1_umount(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fspec		: path_name_t);
+
+routine	Bsd1_acct(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	acct_on		: boolean_t;
+	in	fname		: path_name_t);
+
+routine	Bsd1_setquota(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fblk		: path_name_t;
+	in	fname		: path_name_t);
+
+/*
+ * Crucial IO
+ */
+routine	Bsd1_write_short(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fileno		: int;
+	in	data		: small_char_array;
+	out	amount_written	: int);
+
+routine	Bsd1_write_long(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fileno		: int;
+	in	data		: char_array;
+	out	amount_written	: int);
+
+routine	Bsd1_send_short(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fileno		: int;		/* socket */
+	in	flags		: int;
+	in	data		: small_char_array;
+	out	amount_written	: int);
+
+routine	Bsd1_send_long(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fileno		: int;		/* socket */
+	in	flags		: int;
+	in	data		: char_array;
+	out	amount_written	: int);
+
+routine	Bsd1_sendto_short(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fileno		: int;
+	in	flags		: int;
+	in	to		: sockarg_t;
+	in	data		: small_char_array;
+	out	amount_written	: int);
+
+routine	Bsd1_sendto_long(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fileno		: int;
+	in	flags		: int;
+	in	to		: sockarg_t;
+	in	data		: char_array;
+	out	amount_written	: int);
+
+routine	Bsd1_select(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	nd		: int;
+	inout	in_set		: fd_set;
+	inout	ou_set		: fd_set;
+	inout	ex_set		: fd_set;
+	in	in_valid	: boolean_t;
+	in	ou_valid	: boolean_t;
+	in	ex_valid	: boolean_t;
+	in	do_timeout	: boolean_t;
+	in	tv		: timeval_t;
+	out	rval		: int);
+
+/*
+ * Glue between MACH and U*X
+ */
+routine	Bsd1_task_by_pid(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	pid		: int;
+	out	task		: task_t = MACH_MSG_TYPE_PORT_SEND);
+
+/*
+ * More IO
+ */
+routine	Bsd1_recvfrom_short(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fileno		: int;
+	in	flags		: int;
+	in	len		: int;
+	out	from_addr	: sockarg_t;
+	out	data		: small_char_array);
+
+routine	Bsd1_recvfrom_long(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	fileno		: int;
+	in	flags		: int;
+	in	len		: int;
+	out	from_addr	: sockarg_t;
+	out	data		: char_array);
+
+routine	Bsd1_setgroups(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  gidsetsize		: int;
+	in  gidset		: gidset_t);
+
+routine	Bsd1_setrlimit(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  which		: int;
+	in  lim			: rlimit_t);
+
+routine	Bsd1_sigvec(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  signo		: int;
+	in  have_nsv		: boolean_t;
+	in  nsv			: sigvec_t;
+	out osv			: sigvec_t;
+	in  tramp		: int);
+
+routine	Bsd1_sigstack(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  have_nss		: boolean_t;
+	in  nss			: sigstack_t;
+	out oss			: sigstack_t);
+
+routine	Bsd1_settimeofday(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  have_tv		: boolean_t;
+	in  tv			: timeval_t;
+	in  have_tz		: boolean_t;
+	in  tz			: timezone_t);
+
+routine	Bsd1_adjtime(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  delta		: timeval_t;
+	out olddelta		: timeval_t);
+
+routine	Bsd1_setitimer(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  which		: int;
+	in  have_itv		: boolean_t;
+	in  itv			: itimerval_t;
+	out oitv		: itimerval_t);
+
+routine	Bsd1_sethostname(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  hostname		: hostname_t;
+	in  len			: int);
+
+routine	Bsd1_bind(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  s			: int;
+	in  name		: sockarg_t);
+
+routine	Bsd1_accept(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  s			: int;
+	out name		: sockarg_t;
+	out new_s		: int);
+
+routine	Bsd1_connect(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  s			: int;
+	in  name		: sockarg_t);
+
+routine	Bsd1_setsockopt(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  s			: int;
+	in  level		: int;
+	in  name		: int;
+	in  val			: sockarg_t);
+
+routine	Bsd1_getsockopt(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  s			: int;
+	in  level		: int;
+	in  name		: int;
+	out val			: sockarg_t);
+
+routine	Bsd1_getsockname(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  s			: int;
+	out name		: sockarg_t);
+
+routine	Bsd1_getpeername(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t;
+	in  s			: int;
+	out name		: sockarg_t);
+
+routine Bsd1_init_process(
+	    proc_port		: mach_port_t;
+	out	interrupt	: boolean_t);
+
+routine	Bsd1_table_set(
+	    proc_port		: mach_port_t;
+	out interrupt		: boolean_t;
+	in  id			: int;
+	in  index		: int;
+	in  lel			: int;
+	in  nel			: int;
+	in  addr		: small_char_array;
+	out nel_done		: int);
+
+routine	Bsd1_table_get(
+	    proc_port		: mach_port_t;
+	out interrupt		: boolean_t;
+	in  id			: int;
+	in  index		: int;
+	in  lel			: int;
+	in  nel			: int;
+	out addr		: char_array, dealloc;
+	out nel_done		: int);
+
+routine	Bsd1_pioctl(
+	    proc_port		: mach_port_t;
+	out interrupt		: boolean_t;
+	in  path		: path_name_t;
+	in  com			: int;
+	in  follow		: boolean_t;
+	in  in_data		: small_char_array;
+	in  out_data_wanted	: int;
+	out out_data		: small_char_array);
+
+routine Bsd1_emulator_error(
+	    proc_port		: mach_port_t;
+	in  err_message		: small_char_array);
+
+routine Bsd1_readwrite(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	which		: boolean_t;
+	in	fileno		: int;
+	in	size		: int;
+	out	amount		: int);
+
+routine Bsd1_share_wakeup(
+		proc_port	: mach_port_t;
+	in	lock_offset	: int);
+
+skip;	/* was Bsd1_signals_wakeup */
+
+routine Bsd1_maprw_request_it(
+		proc_port	: mach_port_t;
+	out interrupt		: boolean_t;
+	in	fileno		: int);
+
+routine Bsd1_maprw_release_it(
+		proc_port	: mach_port_t;
+	out interrupt		: boolean_t;
+	in	fileno		: int);
+
+routine Bsd1_maprw_remap(
+		proc_port	: mach_port_t;
+	out interrupt		: boolean_t;
+	in	fileno		: int;
+	in	offset		: int;
+	in	size		: int);
+
+/*
+ * More glue between MACH and U*X
+ */
+routine	Bsd1_pid_by_task(
+		proc_port	: mach_port_t;
+	out	interrupt	: boolean_t;
+	in	task		: task_t;
+	out	pid		: int;
+	out	command		: path_name_t;
+	out	rval		: int);

@@ -1,0 +1,40 @@
+#!/bin/csh -f
+# HISTORY
+# $Log:	rc,v $
+# Revision 2.2  94/04/14  11:34:33  mrt
+# 	Created
+# 
+# 
+#
+#  rc file to be run by poe_init when booting
+#  "multi-user".
+#  Install in /mach_servers
+
+echo Automatic reboot in progress... 
+date 
+/etc/fsck -p 
+switch ( $status )
+case 0:
+	date 
+	breaksw
+case 2:
+	exit 1
+	breaksw
+case 4:
+	/etc/reboot -n
+	breaksw			
+case 8:
+	echo "Automatic reboot failed... help!" 
+	exit 1
+	breaksw
+case 12:
+	echo "Reboot interrupted" 
+	breaksw
+default:
+	echo "Unknown error in reboot" 
+	exit 1
+	breaksw
+endsw
+/etc/mount -a
+
+

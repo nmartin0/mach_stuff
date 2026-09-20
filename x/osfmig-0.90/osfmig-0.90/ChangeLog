@@ -1,0 +1,43 @@
+2000-03-04  Peter Bruin  <pjbruin@dds.nl>
+
+	* powerpc: New directory, based on i386.
+	* mach/powerpc: Likewise.
+	* configure.in: Added cputype=powerpc.
+	* Makefile.am: Likewise.
+	* utils.c: Changes to varargs for PowerPC compatibility.
+
+1999-04-10  Mark Kettenis  <kettenis@gnu.org>
+
+	* global.c (SubrPrefix, RoutinePrefix): New variables.
+	(more_global): Prepend RoutinePrefix to ServerDemux if it is set.
+	* global.h (SubrPrefix, RoutinePrefix): Declare.
+	* routine.c (rtCheckRoutine): Prefix routine names with
+	RoutinePrefix.
+	* server.c: Prefix function calls and global variables in the
+	generated code with SubrPrefix.
+	* user.c: Likewise.
+	* utils.c: Likewise.
+	* migcom.c (parseArgs): Parse -prefix and -subrprefix options.
+
+	* utils.c (WriteIdentificationString): Change identification
+	message.
+	
+	* user.c (WriteUserIndividual): Write all the import and uimport
+	statements to each file.
+
+	* migcom.c (parseArgs): Parse -prefix and -subrprefix options.
+	(main): Change return type to `int'.
+	* mig.in: Add support for -prefix, -subrprefix and -imacros
+	options.  Rename shell variables C and M to cpp and migcom, and
+	set these from variables that are substituted by configure.
+
+	* vprint.c: New file.  Imported from FSF mig CVS archive.
+	
+	* configure.in: New file.  Imported from FSF mig CVS snapshot.
+	* Makefile.am: New file, based on the FSF mig CVS snapshot.
+	* mach/Makefile.am: New file.
+	* mach/i386/Makefile.am: New file.
+	* i386/Makefile.am: New file.
+
+	* migcom.c: Renamed from mig.c.
+	* mig.in: Renamed from mig.sh.

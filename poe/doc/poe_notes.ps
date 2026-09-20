@@ -1,0 +1,877 @@
+%!PS-Adobe-2.0
+%%Title: poe_notes.mss
+%%DocumentFonts: (atend)
+%%Creator: Mary Thompson and Scribe 7(1700)
+%%CreationDate: 14 April 1994 13:36
+%%Pages: (atend)
+%%EndComments
+% PostScript Prelude for Scribe.
+/BS {/SV save def 0.0 792.0 translate .01 -.01 scale} bind def
+/ES {showpage SV restore} bind def
+/SC {setrgbcolor} bind def
+/FMTX matrix def
+/RDF {WFT SLT 0.0 eq 
+  {SSZ 0.0 0.0 SSZ neg 0.0 0.0 FMTX astore}
+  {SSZ 0.0 SLT neg sin SLT cos div SSZ mul SSZ neg 0.0 0.0 FMTX astore}
+  ifelse makefont setfont} bind def
+/SLT 0.0 def
+/SI { /SLT exch cvr def RDF} bind def
+/WFT /Courier findfont def
+/SF { /WFT exch findfont def RDF} bind def
+/SSZ 1000.0 def
+/SS { /SSZ exch 100.0 mul def RDF} bind def
+/AF { /WFT exch findfont def /SSZ exch 100.0 mul def RDF} bind def
+/MT /moveto load def
+/XM {currentpoint exch pop moveto} bind def
+/UL {gsave newpath moveto dup 2.0 div 0.0 exch rmoveto
+   setlinewidth 0.0 rlineto stroke grestore} bind def
+/LH {gsave newpath moveto setlinewidth
+   0.0 rlineto
+   gsave stroke grestore} bind def
+/LV {gsave newpath moveto setlinewidth
+   0.0 exch rlineto
+   gsave stroke grestore} bind def
+/BX {gsave newpath moveto setlinewidth
+   exch
+   dup 0.0 rlineto
+   exch 0.0 exch neg rlineto
+   neg 0.0 rlineto
+   closepath
+   gsave stroke grestore} bind def
+/BX1 {grestore} bind def
+/BX2 {setlinewidth 1 setgray stroke grestore} bind def
+/PB {/PV save def newpath translate
+    100.0 -100.0 scale pop /showpage {} def} bind def
+/PE {PV restore} bind def
+/GB {/PV save def newpath translate rotate
+    div dup scale 100.0 -100.0 scale
+    /showpage {} def
+    /letter {} def
+    /lettersmall {} def
+    /note {} def
+    } bind def
+/GE {PV restore} bind def
+/FB {dict dup /FontMapDict exch def begin} bind def
+/FM {cvn exch cvn exch def} bind def
+/FE {end /original-findfont /findfont load def  /findfont
+   {dup FontMapDict exch known{FontMapDict exch get} if
+   original-findfont} def} bind def
+/BC {gsave moveto dup 0 exch rlineto exch 0 rlineto neg 0 exch rlineto closepath clip} bind def
+/EC /grestore load def
+/SH /show load def
+/MX {exch show 0.0 rmoveto} bind def
+/W {0 32 4 -1 roll widthshow} bind def
+/WX {0 32 5 -1 roll widthshow 0.0 rmoveto} bind def
+/RC {100.0 -100.0 scale
+612.0 0.0 translate
+-90.0 rotate
+.01 -.01 scale} bind def
+/URC {100.0 -100.0 scale
+90.0 rotate
+-612.0 0.0 translate
+.01 -.01 scale} bind def
+/RCC {100.0 -100.0 scale
+0.0 -792.0 translate 90.0 rotate
+.01 -.01 scale} bind def
+/URCC {100.0 -100.0 scale
+-90.0 rotate 0.0 792.0 translate
+.01 -.01 scale} bind def
+%%EndProlog
+%%Page: 0 1
+BS
+0 SI
+15 /Helvetica-Bold AF
+17301 8294 MT
+(A Brief Description of the POE server)SH
+10 /Helvetica AF
+26988 10647 MT
+(Mary Thompson)SH
+27654 12330 MT
+(14 April 1994)SH
+12 /Helvetica-Bold AF
+7200 16085 MT
+(1. Overview)SH
+10 /Helvetica AF
+8312 17511 MT
+(POE is a small multi-threaded server that runs on top)
+89 W( of Mach micro-kernel. It provides support for a)88 W
+7200 18937 MT
+(simple user)
+103 W( environment and allows bootstrapping of programs designed to be run on the Mach micro-)104 W
+7200 20363 MT
+(kernel. It uses the existing transparent emulation library taken from the)
+210 W( single-server environment to)209 W
+7200 21789 MT
+(provide binary compatible support for Unix system calls. It provides the Unix fork and)
+14 W( exec semantics and)15 W
+7200 23215 MT
+(thus supports the execution of some Unix binaries, including /bin/csh and and /bin/sh.)
+14 W( Poe is not intended)13 W
+7200 24641 MT
+(to support a complete Unix kernel environment, but only to give you enough tools to)
+243 W( start building)244 W
+7200 26067 MT
+(traditional "user level applications".)SH
+8312 28634 MT
+(It has three logical control paths: an external pager for mapped special)
+101 W( devices, a external pager for)100 W
+7200 30060 MT
+(mapped files, and a server loop waiting for requests from user processes.  The external pagers)
+87 W( service)88 W
+7200 31486 MT
+(paging requests from the kernel, the)
+63 W( user requests are mostly Unix system calls.  Each control path has)62 W
+7200 32912 MT
+(several cthreads implementing it.)SH
+12 /Helvetica-Bold AF
+7200 34898 MT
+(Unix features supported by POE)SH
+10 /Symbol AF
+9242 36468 MT
+(\267)SH
+/Helvetica SF
+9980 XM
+(Reading from a BSD 4.3 file system)SH
+/Symbol SF
+9242 38283 MT
+(\267)SH
+/Helvetica SF
+9980 XM
+(Reading and writing from raw \050character\051 disk devices)SH
+/Symbol SF
+9242 40098 MT
+(\267)SH
+/Helvetica SF
+9980 XM
+(Reading and writing to /dev/console and physical ttys)SH
+/Symbol SF
+9242 41913 MT
+(\267)SH
+/Helvetica SF
+9980 XM
+(Some Unix signal semantics)SH
+/Symbol SF
+9242 43728 MT
+(\267)SH
+/Helvetica SF
+9980 XM
+(Fork and exec)SH
+/Symbol SF
+9242 45543 MT
+(\267)SH
+/Helvetica SF
+9980 XM
+(Pipe and redirection semantics)SH
+12 /Helvetica-Bold AF
+7200 47529 MT
+(Unix features not supported by POE)SH
+10 /Symbol AF
+9242 49099 MT
+(\267)SH
+/Helvetica SF
+9980 XM
+(Sockets - network support)SH
+/Symbol SF
+9242 50914 MT
+(\267)SH
+/Helvetica SF
+9980 XM
+(Writing to disks as block devices or to File Systems.)SH
+8312 53481 MT
+(As a small multi-threaded)
+67 W( pure Mach server which provide some useful functionality, POE could have)68 W
+7200 54907 MT
+(been an excellent programming example. Unfortunately it was never documented and is almost totally)137 W
+7200 56333 MT
+(devoid of comments. This document is an attempt to provide some pointers to people trying to figure)
+49 W( out)50 W
+7200 57759 MT
+(how it works. Be warned that these notes were written after reading the code)
+47 W( and not by the people who)46 W
+7200 59185 MT
+(wrote the code, so there could be errors and there are plenty of omissions.)SH
+12 /Helvetica-Bold AF
+7200 62940 MT
+(2. Poe components)SH
+11 SS 
+7200 66622 MT
+(2.1. emulator)SH
+10 /Helvetica AF
+8312 68048 MT
+(The emulator subdirectory contains the code for the transparent)
+158 W( emulation library. These files were)159 W
+7200 69474 MT
+(taken from the emulation library of the Unix server and thus provide)
+53 W( redirection of all Unix systems calls.)52 W
+7200 70900 MT
+(The emulation library gets built as a)
+11 W( separate piece of code and is loaded by POE with each program that)12 W
+ES
+%%Page: 1 2
+BS
+0 SI
+10 /Helvetica-Bold AF
+30322 4329 MT
+(1)SH
+/Helvetica SF
+7200 7929 MT
+(it execs. This library is built as poe_emulator.<VERSION>. Syscall traps are caught)
+84 W( by the micro-kernel)83 W
+7200 9355 MT
+(and redirected to known locations in the user's copy of the emulation library. This code then makes)
+85 W( the)86 W
+7200 10781 MT
+(appropriate remote procedure call to the POE server to service the syscall.)SH
+8312 13348 MT
+(There are small pieces of machine dependent code in the i386 and mips subdirectories.)SH
+8312 15915 MT
+(The emulator should be installed as /mach_servers/poe_emulator)SH
+/Helvetica-Oblique SF
+37602 XM
+(and)SH
+/Helvetica SF
+39548 XM
+(/mach_servers/emulator.)SH
+11 /Helvetica-Bold AF
+7200 19597 MT
+(2.2. poe)SH
+10 /Helvetica AF
+8312 21023 MT
+(These are the files that comprise)
+157 W( the poe server. They build the file poe.<VERSION>. There are a)156 W
+7200 22449 MT
+(small number of machine dependent file in the i386 and mips subdirectories.)SH
+8312 25016 MT
+(The poe server should be installed as /mach_servers/startup.)SH
+11 /Helvetica-Bold AF
+7200 28698 MT
+(2.3. poe_init, boot)SH
+10 SS 
+8312 30124 MT
+(poe_init)SH
+/Helvetica SF
+12451 XM
+(is the)
+27 W( first program to be called by the POE server, i.e. the equivalent of /etc/init or mach_init.)28 W
+7200 31550 MT
+(If the boot switch -s was not given, poe_init will run the script)122 W
+/Helvetica-Bold SF
+35853 XM
+(/mach_servers/rc)SH
+/Helvetica SF
+(. It "exits" by exec'ing)121 W
+7200 32976 MT
+(/bin/csh. The)
+324 W( first)
+23 W( argument is its name, the second argument is the boot flags where -s is the only one it)24 W
+7200 34402 MT
+(uses, and the third argument will be used as its home directory.)SH
+8312 36969 MT
+(poe_init is)
+1 W( built from the file minit.c and can be build either in a stand-alone or second server version.  It)SH
+7200 38395 MT
+(should be installed as /mach_servers/poe_init.)SH
+/Helvetica-Bold SF
+8312 40962 MT
+(boot)SH
+/Helvetica SF
+10901 XM
+(is a program that can be used to bootstrap another server program.  It handles the)
+145 W( details of)146 W
+7200 42388 MT
+(making the privileged Mach)
+50 W( ports available to another server via the same interface the kernel uses. It is)49 W
+7200 43814 MT
+(built from boot.c in the poe directory. It forks and the child process exec's the program that was passed)
+SH( as)1 W
+7200 45240 MT
+(the first argument. The parent process waits to handle)
+92 W( the request for the privileged ports. Boot can be)91 W
+7200 46666 MT
+(run on a UX server system)
+33 W( and used to start the second server version of poe, or it can be run on poe to)34 W
+7200 48092 MT
+(start the multi-servers configuration server. The first argument to boot is the name of the file to run.)
+9 W( All the)8 W
+7200 49518 MT
+(rest of the arguments are passed on to that program.)SH
+11 /Helvetica-Bold AF
+7200 53200 MT
+(2.4. poe/include/{mips,i386})SH
+10 /Helvetica AF
+8312 54626 MT
+(These directories just contain Makefiles to)
+21 W( cause the .h files in the "machine" subdirectory to be copied)22 W
+7200 56052 MT
+(to the "poe/export" area for building.)SH
+11 /Helvetica-Bold AF
+7200 59734 MT
+(2.5. conf)SH
+10 /Helvetica AF
+8312 61160 MT
+(This directory)
+106 W( contains a few files used by the build process to create a version string to identify the)105 W
+7200 62586 MT
+(poe server.)SH
+12 /Helvetica-Bold AF
+7200 66341 MT
+(3. Build procedure)SH
+10 /Helvetica AF
+8312 67767 MT
+(This document assumes you have some background knowledge of)
+145 W( building and installing the Mach)146 W
+7200 69193 MT
+(system. The)
+340 W( poe Makefiles are set up to use the standard Mach)
+31 W( ODE build tools which are used to build)30 W
+7200 70619 MT
+(the kernel and other Mach collections.  Information)
+5 W( on how to obtain and use these tools can be found the)6 W
+ES
+%%Page: 2 3
+BS
+0 SI
+10 /Helvetica-Bold AF
+30322 4329 MT
+(2)SH
+/Helvetica SF
+7200 7929 MT
+(the Mach FTP area)
+1001 W( on mach.cs.cmu.edu in doc/unpublished/mach3_build.{ps,doc}. The)1000 W
+7200 9355 MT
+(mach3_setup.{ps,doc} document explains how to install the Mach kernel and servers. The)
+389 W( tools)390 W
+7200 10781 MT
+(themselves can be FTP'ed from public/src/buildtools)
+67 W( \050sources\051 or public/src/release \050binaries\051 or SUP'ed)66 W
+7200 12207 MT
+(as either the mach3.buildtools collection \050sources\051 or the mach3.release collections \050binaries\051)SH
+8312 14774 MT
+(The include files in the mach,)
+55 W( device and machine subdirectories should come from the version of the)56 W
+7200 16200 MT
+(kernel you are using. A normal kernel build will export the necessary files)
+1035 W( to)1034 W
+7200 17626 MT
+(.../export/<context>/include/mach. A)
+688 W( kernel release pass will put them in <TOSTAGE>/include/mach.)206 W
+7200 19052 MT
+(You can also get these files as part)
+144 W( of the mach3.release collection.  The POE build will find them in)143 W
+7200 20478 MT
+(either place. The TOSTAGE should correspond to the -systembase arg to setvar.csh. For)
+231 W( example,)232 W
+7200 21904 MT
+(/usr/mach or /usr/mach/latest.)SH
+8312 24471 MT
+(There are no rules in the poe Makefiles to install the)
+70 W( things that are built.  There are three files which)69 W
+7200 25897 MT
+(need to be put in a directory of your choosing \050usually /mach_servers\051 on the)
+9 W( root partition of the machine)10 W
+7200 27323 MT
+(you want to boot. Just copy the following files from the object area to </mach_servers>.)SH
+/Symbol SF
+9242 28795 MT
+(\267)SH
+/Helvetica SF
+9980 XM
+(<object>/poe/poe.<VERSION> => /mach_servers/startup)SH
+/Symbol SF
+9242 30610 MT
+(\267)SH
+/Helvetica SF
+9980 XM
+(<object>/poe/poe_init => /mach_servers/poe_init)SH
+/Symbol SF
+9242 32425 MT
+(\267)SH
+/Helvetica SF
+9980 XM
+(<object>/poe_emulator.<VERSION> => /mach_servers/poe_emulator)SH
+/Symbol SF
+9242 34240 MT
+(\267)SH
+/Helvetica SF
+9980 XM
+(ln /mach_servers/poe_emulator /mach_servers/emulator)SH
+8312 36807 MT
+(Then if you want copy src/poe/rc to /mach_servers/rc.)SH
+8312 39374 MT
+(These files currently build on a CMU-style BSD 4.3)
+123 W( system on i386 and DecStation machines. POE)122 W
+7200 40800 MT
+(supports a.out)
+39 W( load format on the i386 and coff load format on the DecStation. It recognizes the 4.3 BSD)40 W
+7200 42226 MT
+(syscalls and a 4.3 style file-system with CMU style fast links and super-root/local root distinction.)SH
+8312 44793 MT
+(The include files in /usr/include and)
+239 W( /usr/include/sys should be taken from your local system and)238 W
+7200 46219 MT
+(correspond to what your)
+87 W( binaries expect and what your file system looks like.  To the extent that this is)88 W
+7200 47645 MT
+(different from BSD 4.3, you may need to modify the POE)
+31 W( code to correspond to them.  Note that the files)30 W
+/Helvetica-Bold SF
+7200 49071 MT
+(poe/ufs_fs.h,ufs_disk.h)SH
+/Helvetica SF
+18736 XM
+(describe the layout of the disk. If they)
+144 W( do not correspond to the sys/fs.h and)145 W
+7200 50497 MT
+(sys/inode.h on your system they may need to be fixed.)SH
+8312 53064 MT
+(The areas that are likely to cause trouble)
+17 W( are the major and minor device numbers, the inode structure,)16 W
+7200 54490 MT
+(different syscalls and differences in load format.)SH
+8312 57057 MT
+(For example there are two choices of major and minor)
+45 W( device numbers for special devices provided in)46 W
+/Helvetica-Bold SF
+7200 58483 MT
+(poe/i386/conf.h,spec.h)SH
+/Helvetica SF
+(, one)
+75 W( for BSD 4.3 and one for NetBSD. However, no attempt has been made to)74 W
+7200 59909 MT
+(support the NetBSD load format.)SH
+8312 62476 MT
+(For Ultrix the device major and minors are different, and we also do not)
+134 W( support the ioctl TCGETP,)135 W
+7200 63902 MT
+(which Ultrix uses from isatty.c to find out whether a)
+65 W( device is a tty. Either change the programs that you)64 W
+7200 65328 MT
+(are trying to use to use ioctl TIOCGET or add support for TCGETP.)SH
+8312 67895 MT
+(Poe can be run)
+11 W( directly by the Mach kernel \050stand-alone mode\051 or as a user program by the UX server.)12 W
+7200 69321 MT
+(The second method is useful for debugging changes to)
+25 W( POE. poe_init and several files of poe need to be)24 W
+7200 70747 MT
+(compiled differently for these two cases. The differences have to do)
+44 W( with handling of output. Stand-alone)45 W
+ES
+%%Page: 3 4
+BS
+0 SI
+10 /Helvetica-Bold AF
+30322 4329 MT
+(3)SH
+/Helvetica SF
+7200 7929 MT
+(mode writes directly to the /dev/console device. Second server mode lets the UX)
+42 W( server handle output to)41 W
+7200 9355 MT
+(/dev/tty. Change the value of CFLAGS in poe/Makefile to build a second server version of poe.)SH
+12 /Helvetica-Bold AF
+7200 13110 MT
+(4. Initialization)SH
+10 /Helvetica AF
+8312 14536 MT
+(This is brief guide to how the system comes up.)SH
+8312 17103 MT
+(The DecStation boot program recognizes the switches -s for single user and -q for)80 W
+/Helvetica-Oblique SF
+45947 XM
+(query)SH
+/Helvetica SF
+48806 XM
+(and passes)80 W
+7200 18529 MT
+(them on to the Mach kernel. The i386 does the same for -s and -a)SH
+/Helvetica-Oblique SF
+36548 XM
+(ask)SH
+/Helvetica SF
+(.)SH
+8312 21096 MT
+(If the -a or -q switch is given, the kernel will prompt for the name of the mach_servers)
+201 W( directory,)200 W
+7200 22522 MT
+(otherwise it will)
+107 W( use the default)108 W
+/Helvetica-Bold SF
+21685 XM
+(/mach_servers)SH
+/Helvetica SF
+(. The kernel looks for the files)108 W
+/Helvetica-Bold SF
+42784 XM
+(startup)SH
+/Helvetica SF
+46559 XM
+(and)SH
+/Helvetica-Bold SF
+48613 XM
+(emulator)SH
+/Helvetica SF
+53222 XM
+(in)SH
+7200 23948 MT
+(that directory.  This directory name and the value of the -s)
+117 W( switch is passed on to POE as well as the)116 W
+7200 25374 MT
+(name of the root device, \050the)
+51 W( device we booted off of\051. See the files mk/bootstrap/{bootstrap.c,load.c} for)52 W
+7200 26800 MT
+(the details.)SH
+8312 29367 MT
+(POE starts at main in)99 W
+/Helvetica-Bold SF
+18533 XM
+(main.c)SH
+/Helvetica SF
+(. It calls a variety of routines to initialize local data structures, get)
+99 W( ports)98 W
+7200 30793 MT
+(from the kernel, and map the timer device.)SH
+/Helvetica-Oblique SF
+8312 33360 MT
+(server_init)SH
+/Helvetica SF
+13246 XM
+(initializes ports for communication)
+44 W( with user processes and spins off threads to listen in the)45 W
+7200 34786 MT
+(server loop)SH
+/Helvetica-Bold SF
+12424 XM
+(\050server_loop.c\051)SH
+/Helvetica SF
+(.)SH
+/Helvetica-Oblique SF
+8312 37353 MT
+(ufs_devpager)SH
+/Helvetica SF
+15316 XM
+(initializes the threads that act an an external pager for)
+667 W( mapped devices)666 W
+/Helvetica-Bold SF
+7200 38779 MT
+(\050ufs_devpager.c\051)SH
+/Helvetica SF
+(.)SH
+/Helvetica-Oblique SF
+8312 41346 MT
+(ufs_pager)SH
+/Helvetica SF
+13037 XM
+(initializes the threads that act as an external pager for mapped files)SH
+/Helvetica-Bold SF
+42996 XM
+(\050ufs_pager.c\051)SH
+/Helvetica SF
+(.)SH
+8312 43913 MT
+(Then the root device is mounted and POE proceeds to)
+96 W( spawn the first process)97 W
+/Helvetica-Bold SF
+44567 XM
+(\050bsd_fork.c\051)SH
+/Helvetica SF
+(. Spawn)97 W
+7200 45339 MT
+(reads in the emulator process)69 W
+/Helvetica-Bold SF
+20995 XM
+(/mach_servers/poe_emulator)SH
+/Helvetica SF
+(, creates)
+69 W( a mach task and thread, sets the)68 W
+7200 46765 MT
+(thread state to be executing)
+70 W( at the entry point of poe_emulator and then resumes that thread at main in)71 W
+/Helvetica-Bold SF
+7200 48191 MT
+(emul_init.c)SH
+/Helvetica SF
+(.)SH
+8312 50758 MT
+(At this point we are in the fourth task. The default pager is task 0, the kernel task 1, the poe server task)10 W
+7200 52184 MT
+(2 and poe_init will be task 3. The emulator proceeds to do some initialization of its)
+74 W( own data structures,)75 W
+7200 53610 MT
+(and then uses the system call execve to exec)SH
+/Helvetica-Bold SF
+27599 XM
+(poe_init)SH
+/Helvetica SF
+(.)SH
+12 /Helvetica-Bold AF
+7200 57365 MT
+(5. System calls)SH
+10 /Helvetica AF
+8312 58791 MT
+(The emulation library in)
+141 W( collusion with the kernel "trampoline" code provides support for system call)140 W
+7200 60217 MT
+(traps from standard Unix binaries. In a system that normally supported system calls)
+104 W( with a dynamically)105 W
+7200 61643 MT
+(loaded library the emulation library could)
+1 W( be replaced by a Mach/server specific version of this library.  But)SH
+7200 63069 MT
+(this code was designed to provide binary compatibility with BSD 4.3 binaries which expect the kernel)
+80 W( to)81 W
+7200 64495 MT
+(trap and handle syscall instructions.)SH
+8312 67062 MT
+(A syscall trap ends up in the kernel locore module)167 W
+/Helvetica-Bold SF
+32325 XM
+(<machine>/locore.s)SH
+/Helvetica SF
+42108 XM
+(at the)
+167 W( syscall entry. If the)166 W
+7200 68488 MT
+(syscall number corresponds)
+305 W( to an emulated system call, control is sent back to the user task at)306 W
+/Helvetica-Bold SF
+7200 69914 MT
+(emulator/<machine>/emul_vector.s)SH
+/Helvetica SF
+24207 XM
+(at the emul_common entry point.)SH
+ES
+%%Page: 4 5
+BS
+0 SI
+10 /Helvetica-Bold AF
+30322 4329 MT
+(4)SH
+/Helvetica SF
+8312 7929 MT
+(From there control goes to the)16 W
+/Helvetica-Bold SF
+22080 XM
+(emulator/<machine>/emul_machdep.c)SH
+/Helvetica SF
+40491 XM
+(at the entry emul_syscall. This)15 W
+7200 9355 MT
+(code dispatches through the routines in the sysent vector.)SH
+8312 11922 MT
+(The sysent vector was initialized by)222 W
+/Helvetica-Bold SF
+25594 XM
+(emulator/syscall_table.c)SH
+/Helvetica SF
+(. The routines in)
+222 W( it can be found in)223 W
+/Helvetica-Bold SF
+7200 13348 MT
+(bsd_user_side.c)SH
+/Helvetica SF
+(. They in turn call routines in)231 W
+/Helvetica-Bold SF
+29436 XM
+(bsd_1_user.c)SH
+/Helvetica SF
+36336 XM
+(which is code generated by mig from)230 W
+/Helvetica-Bold SF
+7200 14774 MT
+(poe/bsd_1.defs)SH
+/Helvetica SF
+(. These routines have names of the form)
+81 W( Bsd1_<syscall> and make mach_msg calls to)82 W
+7200 16200 MT
+(the POE)
+63 W( server with entry points in)62 W
+/Helvetica-Bold SF
+23308 XM
+(bsd_1Server.c)SH
+/Helvetica SF
+(. Since the emulation code is the same code that the)62 W
+7200 17626 MT
+(Unix server uses there is support here for all Unix system calls even if these calls)
+79 W( are not supported by)80 W
+7200 19052 MT
+(POE.)SH
+8312 21619 MT
+(The message is received in)377 W
+/Helvetica-Bold SF
+22646 XM
+(sever_loop.c)SH
+/Helvetica SF
+29415 XM
+(which first calls the dispatch loop bsd_1_server in)376 W
+/Helvetica-Bold SF
+7200 23045 MT
+(bsd_1Server.c)SH
+/Helvetica SF
+(. The routines in)170 W
+/Helvetica-Bold SF
+22166 XM
+(bsd_1Server.c)SH
+/Helvetica SF
+29452 XM
+(make calls to POE procedures with the same sort of)171 W
+7200 24471 MT
+(names i.e. Bsd1_<syscall>.  These calls can be found in)37 W
+/Helvetica-Bold SF
+32749 XM
+(bsd_server_side.c)SH
+/Helvetica SF
+(. These routines look up)
+37 W( the)36 W
+7200 25897 MT
+(task structure associated with)
+81 W( the port on which the message received and then may call a routine with)82 W
+7200 27323 MT
+(the name bsd_<syscall> which are found in the)
+56 W( various poe/bsd_<name>.c files. These routines actually)55 W
+7200 28749 MT
+(to the work that is requested.)SH
+8312 31316 MT
+(System calls that are not implemented)
+202 W( by bsd_1Server will be passed on to ux_generic_server in)203 W
+/Helvetica-Bold SF
+7200 32742 MT
+(syscall.c)SH
+/Helvetica SF
+(. If)
+480 W( the global variable)101 W
+/Helvetica-Bold SF
+22037 XM
+(silent)SH
+/Helvetica SF
+25028 XM
+(is set to zero, information about all)
+101 W( unimplemented system calls)100 W
+7200 34168 MT
+(that are made will be printed out here.)SH
+12 /Helvetica-Bold AF
+7200 37923 MT
+(6. Debugging variables)SH
+10 /Helvetica AF
+8312 39349 MT
+(The global)
+9 W( variable)10 W
+/Helvetica-Bold SF
+17067 XM
+(silent)SH
+/Helvetica SF
+19967 XM
+(is initialized to 1 in)10 W
+/Helvetica-Bold SF
+28409 XM
+(bsd_misc.c)SH
+/Helvetica SF
+(. The)
+298 W( routine dprintf, also in)10 W
+/Helvetica-Bold SF
+46599 XM
+(bsd_misc.c)SH
+/Helvetica SF
+(, will)10 W
+7200 40775 MT
+(print if)
+91 W( silent is set to zero, otherwise it does nothing. There are lots of calls to dprintf in the poe server)90 W
+7200 42201 MT
+(which will print out an abundance of information if silent is set to 0.)SH
+8312 44768 MT
+(There is also code in syscall.c to print out information about every unimplemented system call that)
+87 W( is)88 W
+7200 46194 MT
+(made if silent is 0.)SH
+8312 48761 MT
+(There is a POE call)303 W
+/Helvetica-Bold SF
+18719 XM
+(emulator_error)SH
+/Helvetica SF
+26413 XM
+(that can be called from the emulation code to print error)302 W
+7200 50187 MT
+(messages. It is implemented in)283 W
+/Helvetica-Bold SF
+22620 XM
+(bsd_misc.c)SH
+/Helvetica SF
+28628 XM
+(and defined as e_emulator_error in)283 W
+/Helvetica-Bold SF
+45885 XM
+(bsd_user_side.c)SH
+/Helvetica SF
+(.)SH
+7200 51613 MT
+(There is also a macro EPRINT defined in)346 W
+/Helvetica-Bold SF
+28419 XM
+(bsd_user_side.c)SH
+/Helvetica SF
+36879 XM
+(conditionally on DEBUG to use the)345 W
+7200 53039 MT
+(e_emulator_error call.)SH
+ES
+%%Page: i 6
+BS
+0 SI
+10 /Helvetica-Bold AF
+30461 4329 MT
+(i)SH
+12 SS 
+25533 8075 MT
+(Table of Contents)SH
+11 SS 
+9036 9319 MT
+(1. Overview)SH
+53388 XM
+(0)SH
+9036 10563 MT
+(2. Poe components)SH
+53388 XM
+(0)SH
+10 SS 
+11092 11712 MT
+(2.1. emulator)SH
+53444 XM
+(0)SH
+11092 12861 MT
+(2.2. poe)SH
+53444 XM
+(1)SH
+11092 14010 MT
+(2.3. poe_init, boot)SH
+53444 XM
+(1)SH
+11092 15159 MT
+(2.4. poe/include/{mips,i386})SH
+53444 XM
+(1)SH
+11092 16308 MT
+(2.5. conf)SH
+53444 XM
+(1)SH
+11 SS 
+9036 17552 MT
+(3. Build procedure)SH
+53388 XM
+(1)SH
+9036 18796 MT
+(4. Initialization)SH
+53388 XM
+(3)SH
+9036 20040 MT
+(5. System calls)SH
+53388 XM
+(3)SH
+9036 21284 MT
+(6. Debugging variables)SH
+53388 XM
+(4)SH
+ES
+%%Trailer
+%%Pages: 6
+%%DocumentFonts: Helvetica Helvetica-Bold Symbol Helvetica-Oblique
